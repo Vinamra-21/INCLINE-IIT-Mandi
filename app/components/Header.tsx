@@ -25,7 +25,7 @@ const Header = () => {
             <NavLink href="#about">About</NavLink>
             <NavLink href="#contact">Contact</NavLink>
             <button
-              onClick={toggleTheme}
+              onClick={() => toggleTheme}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               aria-label="Toggle theme">
               {theme === "dark" ? (
@@ -75,7 +75,7 @@ const Header = () => {
                 Contact
               </NavLink>
               <button
-                onClick={toggleTheme}
+                onClick={() => toggleTheme}
                 className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
                 <span className="mr-2">Toggle theme</span>
                 {theme === "dark" ? (
