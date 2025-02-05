@@ -1,78 +1,93 @@
 import React, { useState } from "react";
 import { Sun, Moon } from "lucide-react";
-import useDarkMode from "./useDarkMode"; // Assuming useDarkMode is in the same directory
+import { motion, AnimatePresence } from "framer-motion";
+import useDarkMode from "./useDarkMode";
 
 const Header = () => {
   const [theme, toggleTheme] = useDarkMode();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header
-      className={`bg-green-700 ${
-        theme === "dark" ? "dark:bg-green-900" : ""
-      } text-white`}>
-      <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <a href="/" className="text-2xl font-bold">
-          Indian Climate Explorer
-        </a>
-        <nav className="hidden md:flex space-x-6">
-          <NavLink href="#features">Features</NavLink>
-          <NavLink href="#about">About</NavLink>
-          <NavLink href="#contact">Contact</NavLink>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-green-600 transition-colors duration-200">
-            {theme === "dark" ? (
-              <Sun className="w-5 h-5" />
-            ) : (
-              <Moon className="w-5 h-5" />
-            )}
-          </button>
-        </nav>
-        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
+    <header className="fixed w-full top-0 z-50 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <a href="/" className="relative flex items-center space-x-3">
+            <img
+              src="./INCLINE.png"
+              alt="INCLINE Logo"
+              className="h-8 w-auto"
             />
-          </svg>
-        </button>
-      </div>
-      {isOpen && (
-        <motion.nav
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="md:hidden bg-green-600 dark:bg-green-800 py-4">
-          <div className="container mx-auto px-4 flex flex-col space-y-4">
-            <NavLink href="#features" onClick={() => setIsOpen(false)}>
-              Features
-            </NavLink>
-            <NavLink href="#about" onClick={() => setIsOpen(false)}>
-              About
-            </NavLink>
-            <NavLink href="#contact" onClick={() => setIsOpen(false)}>
-              Contact
-            </NavLink>
+          </a>
+
+          <nav className="hidden md:flex items-center space-x-8">
+            <NavLink href="#EcoPulse">EcoPulse</NavLink>
+            <NavLink href="#features">Features</NavLink>
+            <NavLink href="#about">About</NavLink>
+            <NavLink href="#contact">Contact</NavLink>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-green-500 transition-colors duration-200">
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              aria-label="Toggle theme">
               {theme === "dark" ? (
-                <Sun className="w-5 h-5" />
+                <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
               ) : (
-                <Moon className="w-5 h-5" />
+                <Moon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
               )}
             </button>
-          </div>
-        </motion.nav>
-      )}
+          </nav>
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            aria-label="Toggle menu">
+            <svg
+              className="w-6 h-6 text-gray-800 dark:text-gray-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-t border-gray-200 dark:border-gray-800">
+            <div className="container mx-auto px-6 py-4 space-y-4">
+              <NavLink href="#features" onClick={() => setIsOpen(false)}>
+                Features
+              </NavLink>
+              <NavLink href="#about" onClick={() => setIsOpen(false)}>
+                About
+              </NavLink>
+              <NavLink href="#contact" onClick={() => setIsOpen(false)}>
+                Contact
+              </NavLink>
+              <button
+                onClick={toggleTheme}
+                className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
+                <span className="mr-2">Toggle theme</span>
+                {theme === "dark" ? (
+                  <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                ) : (
+                  <Moon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                )}
+              </button>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
@@ -88,7 +103,7 @@ const NavLink = ({
 }) => (
   <a
     href={href}
-    className="hover:text-green-200 transition-colors duration-200"
+    className="block text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 transition-colors duration-200 text-sm font-medium"
     onClick={onClick}>
     {children}
   </a>
