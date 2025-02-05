@@ -7,8 +7,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import getStarfield from "./getStarfield";
 import { getFresnelMat } from "./getFresnelMat";
 
-const ROTATION_SPEED = 0.002;
-const CLOUDS_ROTATION_SPEED = 0.0023;
+const ROTATION_SPEED = 0.0001;
+const CLOUDS_ROTATION_SPEED = 0.0002;
 const STARS_ROTATION_SPEED = 0.0002;
 
 const Hero = () => {
@@ -18,12 +18,12 @@ const Hero = () => {
 
   const initScene = useCallback(() => {
     // Calculate dimensions for the right half of the screen
-    const width = window.innerWidth * 0.6; // 60% of screen width to allow overlap
+    const width = window.innerWidth * 0.9;
     const height = window.innerHeight;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 1.3;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -44,7 +44,9 @@ const Hero = () => {
 
   const createEarthGroup = useCallback(() => {
     const earthGroup = new THREE.Group();
-    earthGroup.rotation.z = (-23.4 * Math.PI) / 180;
+    earthGroup.rotation.z = (23.4 * Math.PI) / 180;
+    earthGroup.rotation.x = (16.4 * Math.PI) / 180;
+    earthGroup.rotation.y = (4.4 * Math.PI) / 180;
 
     const geometry = new THREE.IcosahedronGeometry(1, 12);
     const loader = new THREE.TextureLoader();
@@ -67,7 +69,6 @@ const Hero = () => {
       new THREE.MeshBasicMaterial({
         map: loader.load("./textures/03_earthlights1k.jpg"),
         blending: THREE.AdditiveBlending,
-        opacity: 1,
       })
     );
     earthGroup.add(lightsMesh);
@@ -78,7 +79,7 @@ const Hero = () => {
       new THREE.MeshStandardMaterial({
         map: loader.load("./textures/04_earthcloudmap.jpg"),
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.5,
         blending: THREE.AdditiveBlending,
         alphaMap: loader.load("./textures/05_earthcloudmaptrans.jpg"),
       })
@@ -109,7 +110,7 @@ const Hero = () => {
     scene.add(stars);
 
     // Add lighting
-    const sunLight = new THREE.DirectionalLight(0xffffff, 4.0);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
     sunLight.position.set(-2, 0.5, 1.5);
     scene.add(sunLight);
 
