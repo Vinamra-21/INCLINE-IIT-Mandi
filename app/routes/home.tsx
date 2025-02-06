@@ -1,7 +1,7 @@
 import type { Route } from "./+types/home";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-// import Features from "../components/Features";
+import Features from "../components/Features";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
 import QuickPulse from "../components/QuickPulse";
@@ -43,7 +43,7 @@ export default function Home() {
       <main className="flex-grow">
         <Hero />
         <QuickPulse />
-        {/* <Features /> */}
+        <Features />
       </main>
       <Footer />
     </div>
