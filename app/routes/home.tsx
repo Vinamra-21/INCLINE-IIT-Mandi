@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import Features from "../components/Features";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
+import QuickPulse from "../components/QuickPulse";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -41,6 +42,7 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
+        <QuickPulse />
         <Features />
       </main>
       <Footer />
