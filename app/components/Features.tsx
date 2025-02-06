@@ -10,42 +10,36 @@ import {
 
 const features = [
   {
-    icon: (
-      <BarChart3 className="w-12 h-12 text-green-600 dark:text-green-400" />
-    ),
+    icon: BarChart3,
     title: "Climate Data Visualization",
     description:
       "Interactive charts and maps to visualize complex climate data.",
   },
   {
-    icon: <CloudSun className="w-12 h-12 text-green-600 dark:text-green-400" />,
+    icon: CloudSun,
     title: "Historical Weather Patterns",
     description: "Analyze past climate trends and weather events across India.",
   },
   {
-    icon: (
-      <TrendingUp className="w-12 h-12 text-green-600 dark:text-green-400" />
-    ),
+    icon: TrendingUp,
     title: "Future Projections & Modeling",
     description:
       "Explore climate scenarios and predictions for different regions.",
   },
   {
-    icon: <Zap className="w-12 h-12 text-green-600 dark:text-green-400" />,
+    icon: Zap,
     title: "Climate Impact Analysis",
     description:
       "Assess potential impacts on agriculture, water resources, and more.",
   },
   {
-    icon: <Shield className="w-12 h-12 text-green-600 dark:text-green-400" />,
+    icon: Shield,
     title: "Community Resilience Planning",
     description:
       "Tools for communities to plan and prepare for climate changes.",
   },
   {
-    icon: (
-      <Lightbulb className="w-12 h-12 text-green-600 dark:text-green-400" />
-    ),
+    icon: Lightbulb,
     title: "Adaptive Strategies and Solutions",
     description:
       "Discover and share innovative approaches to climate adaptation.",
@@ -64,23 +58,28 @@ const Features = () => {
           Our Features
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
+                <div className="mb-4">
+                  <Icon className="w-12 h-12 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {feature.description}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
