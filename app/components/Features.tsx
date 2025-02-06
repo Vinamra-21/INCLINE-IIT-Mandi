@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
-import {
-  BarChart3,
-  CloudSun,
-  TrendingUp,
-  Zap,
-  Shield,
-  Lightbulb,
-} from "lucide-react";
+import { BarChart3 } from "lucide-react";
+import { CloudSun } from "lucide-react";
+import { TrendingUp } from "lucide-react";
+import { Zap } from "lucide-react";
+import { Shield } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 
 const features = [
   {
