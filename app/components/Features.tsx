@@ -1,43 +1,45 @@
 import { motion } from "framer-motion";
-import { BarChart3 } from "lucide-react";
-import { CloudSun } from "lucide-react";
-import { TrendingUp } from "lucide-react";
-import { Zap } from "lucide-react";
-import { Shield } from "lucide-react";
-import { Lightbulb } from "lucide-react";
+// import {
+//   BarChart3,
+//   CloudSun,
+//   TrendingUp,
+//   Zap,
+//   Shield,
+//   Lightbulb,
+// } from "lucide-react";
 
 const features = [
   {
-    icon: BarChart3,
+    // icon: BarChart3,
     title: "Climate Data Visualization",
     description:
       "Interactive charts and maps to visualize complex climate data.",
   },
   {
-    icon: CloudSun,
+    // icon: CloudSun,
     title: "Historical Weather Patterns",
     description: "Analyze past climate trends and weather events across India.",
   },
   {
-    icon: TrendingUp,
+    // icon: TrendingUp,
     title: "Future Projections & Modeling",
     description:
       "Explore climate scenarios and predictions for different regions.",
   },
   {
-    icon: Zap,
+    // icon: Zap,
     title: "Climate Impact Analysis",
     description:
       "Assess potential impacts on agriculture, water resources, and more.",
   },
   {
-    icon: Shield,
+    // icon: Shield,
     title: "Community Resilience Planning",
     description:
       "Tools for communities to plan and prepare for climate changes.",
   },
   {
-    icon: Lightbulb,
+    // icon: Lightbulb,
     title: "Adaptive Strategies and Solutions",
     description:
       "Discover and share innovative approaches to climate adaptation.",
@@ -57,7 +59,7 @@ const Features = () => {
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => {
-            const Icon = feature.icon;
+            // const Icon = feature.icon;
             return (
               <motion.div
                 key={index}
@@ -67,7 +69,7 @@ const Features = () => {
                 whileHover={{ scale: 1.05 }}
                 className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
                 <div className="mb-4">
-                  <Icon className="w-12 h-12 text-green-600 dark:text-green-400" />
+                  {/* <Icon className="w-12 h-12 text-green-600 dark:text-green-400" /> */}
                 </div>
                 <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">
                   {feature.title}
