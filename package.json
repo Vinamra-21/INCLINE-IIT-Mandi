@@ -6,8 +6,7 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "vercel-build": "ulimit -n 65536 && your-build-command"
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@react-router/node": "^7.1.5",
