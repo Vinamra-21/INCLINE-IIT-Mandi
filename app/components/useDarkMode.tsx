@@ -1,16 +1,26 @@
 import { useState, useEffect } from "react";
 
-const useDarkMode = () => {
-  const [theme, setTheme] = useState(() => {
+const useDarkMode = (): [string, () => void] => {
+  const getInitialTheme = (): string => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") || "light";
+      return (
+        localStorage.getItem("theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light")
+      );
     }
     return "light";
-  });
+  };
+
+  const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    if (typeof window !== "undefined") {
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(theme);
+      localStorage.setItem("theme", theme);
+    }
   }, [theme]);
 
   const toggleTheme = () => {

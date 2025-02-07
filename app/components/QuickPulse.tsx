@@ -19,11 +19,6 @@ const TimelineData = [
     title: "The Progress",
     content: "Duis aute irure dolor in reprehu fugiat nulla.",
   },
-  {
-    year: 2022,
-    title: "The Progress",
-    content: "Duis aute irure dolor in reprehu fugiat nulla.",
-  },
 ];
 
 const QuickPulse = () => {
@@ -77,7 +72,7 @@ const QuickPulse = () => {
     return path;
   };
 
-  const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
 
   return (
     <div ref={containerRef} className="relative w-full py-25">
@@ -105,14 +100,17 @@ const QuickPulse = () => {
             className="drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
           />
         </svg>
+
         <div className="flex justify-end ">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-6 py-3 text-lg font-semibold text-white bg-green-600 rounded-full shadow-lg transition-all duration-300 ease-in-out 
-          hover:bg-green-700 hover:shadow-[0_0_12px_rgba(34,197,94,0.7)] focus:outline-none focus:ring-4 focus:ring-green-400">
-            EcoPulse
-          </motion.button>
+          <a href="/ecoPulse">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 text-lg font-semibold text-white bg-green-500 rounded-full shadow-lg transition-all duration-300 ease-in-out 
+          hover:bg-green-300 hover:shadow-[0_0_12px_rgba(34,197,94,0.7)] focus:outline-none focus:ring-4 focus:ring-green-400">
+              EcoPulse
+            </motion.button>
+          </a>
         </div>
       </div>
 

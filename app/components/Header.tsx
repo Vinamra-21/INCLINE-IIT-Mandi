@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
 
 const Header = () => {
-  const [theme, toggleTheme] = useDarkMode();
+  const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -20,12 +20,12 @@ const Header = () => {
           </a>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <NavLink href="#EcoPulse">EcoPulse</NavLink>
-            <NavLink href="#features">Features</NavLink>
-            <NavLink href="#about">About</NavLink>
-            <NavLink href="#contact">Contact</NavLink>
+            <NavLink href="/ecoPulse">EcoPulse</NavLink>
+            <NavLink href="/#features">Features</NavLink>
+            <NavLink href="/about">About</NavLink>
+            <NavLink href="/#contact">Contact</NavLink>
             <button
-              onClick={() => toggleTheme}
+              onClick={toggleTheme}
               className="p-2 rounded-full  hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               aria-label="Toggle theme">
               {theme === "dark" ? (
@@ -65,17 +65,20 @@ const Header = () => {
             transition={{ duration: 0.2 }}
             className="md:hidden border-t border-gray-200 dark:border-gray-800">
             <div className="container mx-auto px-6 py-4 space-y-4">
-              <NavLink href="#features" onClick={() => setIsOpen(false)}>
+              <NavLink href="/ecoPulse" onClick={() => setIsOpen(false)}>
+                EcoPulse
+              </NavLink>
+              <NavLink href="/#features" onClick={() => setIsOpen(false)}>
                 Features
               </NavLink>
-              <NavLink href="#about" onClick={() => setIsOpen(false)}>
+              <NavLink href="about" onClick={() => setIsOpen(false)}>
                 About
               </NavLink>
-              <NavLink href="#contact" onClick={() => setIsOpen(false)}>
+              <NavLink href="/#contact" onClick={() => setIsOpen(false)}>
                 Contact
               </NavLink>
               <button
-                onClick={() => toggleTheme}
+                onClick={toggleTheme}
                 className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
                 <span className="mr-2">Toggle theme</span>
                 {theme === "dark" ? (
