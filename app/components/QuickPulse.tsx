@@ -19,6 +19,11 @@ const TimelineData = [
     title: "The Progress",
     content: "Duis aute irure dolor in reprehu fugiat nulla.",
   },
+  {
+    year: 2022,
+    title: "The Progress",
+    content: "Duis aute irure dolor in reprehu fugiat nulla.",
+  },
 ];
 
 const QuickPulse = () => {
@@ -30,12 +35,12 @@ const QuickPulse = () => {
 
   // Generate Zigzag Path
   const createZigzagPath = () => {
-    const segmentHeight = 100; // Height of each zigzag segment
+    const segmentHeight = 30; // Height of each zigzag segment
     const zigzagWidth = 450; // Width of the zigzag pattern
     const curveRadius = 20; // Curve smoothness
-    const totalSegments = TimelineData.length;
+    const totalSegments = TimelineData.length * 2;
 
-    let path = `M 50 0`; // Start at the top
+    let path = `M 100 0`; // Start at the top
 
     path += ` v ${
       segmentHeight - curveRadius
@@ -60,13 +65,22 @@ const QuickPulse = () => {
         } q 0 ${curveRadius} ${curveRadius} ${curveRadius}`;
       }
     }
+
+    path += ` v ${
+      segmentHeight - curveRadius
+    } q 0 ${curveRadius} ${curveRadius} ${curveRadius}`;
+    path += ` h ${
+      zigzagWidth - curveRadius
+    } q ${curveRadius} 0 ${curveRadius} ${curveRadius}`;
+    path += ` v ${segmentHeight * 2 - curveRadius}`;
+
     return path;
   };
 
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <div ref={containerRef} className="relative w-full py-20">
+    <div ref={containerRef} className="relative w-full py-25">
       {/* Zigzag SVG Line */}
 
       <div className="absolute left-0 top-0 bottom-0">
@@ -91,7 +105,7 @@ const QuickPulse = () => {
             className="drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
           />
         </svg>
-        <div className="flex justify-end mt-6 pr-6">
+        <div className="flex justify-end ">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -113,7 +127,7 @@ const QuickPulse = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: index * 0.2 }}>
             {/* Text Container */}
-            <div className="w-9/12 pl-12 text-left">
+            <div className="w-11/12 pl-12 text-left">
               <h3 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-200">
                 {item.title}
               </h3>

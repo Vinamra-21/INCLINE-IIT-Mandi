@@ -5,10 +5,12 @@ import Features from "../components/Features";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
 import QuickPulse from "../components/QuickPulse";
+import WeatherDashboard from "~/components/WeatherDash";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "INCLINE" },
+    { author: "Vinamra Garg" },
     {
       name: "Indian Climate Information and Explorer",
       content:
@@ -43,6 +45,7 @@ export default function Home() {
       <main className="flex-grow">
         <Hero />
         <QuickPulse />
+        <WeatherDashboard />
         <Features />
       </main>
       <Footer />

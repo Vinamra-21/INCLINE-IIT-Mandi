@@ -18,7 +18,7 @@ const Hero = () => {
 
   const initScene = useCallback(() => {
     // Calculate dimensions for the right half of the screen
-    const width = window.innerWidth * 0.9;
+    const width = window.innerWidth * 1.2;
     const height = window.innerHeight;
 
     const scene = new THREE.Scene();
@@ -153,9 +153,9 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="relative h-screen flex overflow-hidden pt-16">
+    <section className="relative h-screen flex overflow-hidden pt-16 ">
       {/* Left content section */}
-      <div className="w-1/2 pl-8 flex items-center relative z-10">
+      <div className="w-3/5 pl-8 flex items-center relative z-10">
         <div className="pr-16">
           {" "}
           {/* Add padding to prevent text from going too far right */}
@@ -187,7 +187,7 @@ const Hero = () => {
       </div>
 
       {/* Right Earth visualization section */}
-      <div className="absolute right-0 top-0 w-3/5 h-full">
+      <div className="absolute right-0 top-0 w-4/5 h-full">
         <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>
