@@ -5,4 +5,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  ssr: {
+    noExternal: ["react-leaflet", "leaflet"],
+  },
+  optimizeDeps: {
+    include: ["leaflet", "react-leaflet"],
+  },
 });
