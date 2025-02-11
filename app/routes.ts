@@ -4,4 +4,5 @@ export default [
   index("routes/home.tsx"),
   route("ecoPulse", "routes/ecoPulse.tsx"),
   route("about", "routes/about.tsx"),
+  route("climateDataVisi", "routes/climateDataVisi.tsx"),
 ] satisfies RouteConfig;

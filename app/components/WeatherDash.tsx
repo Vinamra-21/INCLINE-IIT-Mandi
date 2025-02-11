@@ -100,18 +100,18 @@ export default function WeatherDashboard() {
 
           {/* Buttons above the graph */}
           <div className="flex justify-end gap-3 ">
-            <Cloud className="w-6 h-6 text-gray-400" />
+            {/* <Cloud className="w-6 h-6 text-gray-400" />
             <CloudRain className="w-6 h-6 text-gray-400" />
             <Wind className="w-6 h-6 text-gray-400" />
             <Sun className="w-6 h-6 text-gray-400" />
-            <Droplets className="w-6 h-6 text-gray-400" />
-            {/* {["Day", "Week", "Month", "Year"].map((label) => (
+            <Droplets className="w-6 h-6 text-gray-400" /> */}
+            {["Day", "Week", "Month", "Year"].map((label) => (
               <button
                 key={label}
                 className="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded-md">
                 {label}
               </button>
-            ))} */}
+            ))}
           </div>
 
           {/* Weather Graph */}
