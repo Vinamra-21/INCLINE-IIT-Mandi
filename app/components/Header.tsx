@@ -26,7 +26,7 @@ const Header = () => {
             <NavLink href="/#contact">Contact</NavLink>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full  hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               aria-label="Toggle theme">
               {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
@@ -106,9 +106,10 @@ const NavLink = ({
 }) => (
   <a
     href={href}
-    className="block text-gray-800 dark:text-gray-200 hover:text-green-800 dark:hover:text-green-300  transition-colors duration-200 text-sm font-medium"
+    className="relative block text-gray-800 dark:text-gray-200 hover:text-green-800 dark:hover:text-green-300 transition-colors duration-200 text-sm font-medium group"
     onClick={onClick}>
     {children}
+    <motion.div className="absolute left-0 bottom-0 h-0.5 bg-green-500 dark:bg-green-400 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
   </a>
 );
 

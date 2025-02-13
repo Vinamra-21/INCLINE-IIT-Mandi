@@ -32,27 +32,29 @@ export default function WeatherDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 transition-colors">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
         {/* Sidebar */}
-        <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 space-y-4 transition-colors">
           <div className="space-y-2">
             <input
               type="search"
               placeholder="Search location..."
-              className="w-full bg-gray-700/50 rounded-lg px-4 py-2 text-sm"
+              className="w-full bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Current Location Section */}
-          <div className="bg-gray-700/30 rounded-lg p-3">
+          <div className="bg-gray-200/50 dark:bg-gray-700/30 rounded-lg p-3 transition-colors">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-500/20 p-2 rounded-lg">
-                <MapPin className="h-5 w-5 text-green-300" />
+              <div className="bg-blue-100 dark:bg-blue-500/20 p-2 rounded-lg transition-colors">
+                <MapPin className="h-5 w-5 text-green-600 dark:text-green-300" />
               </div>
               <div>
                 <h3 className="text-sm font-medium">Current Location</h3>
-                <p className="text-xs text-gray-400">New York, USA</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  New York, USA
+                </p>
               </div>
             </div>
           </div>
@@ -63,7 +65,7 @@ export default function WeatherDashboard() {
               {mapLoaded && (
                 <Suspense
                   fallback={
-                    <div className="h-full w-full bg-gray-100">
+                    <div className="h-full w-full bg-gray-100 dark:bg-gray-800">
                       Loading map...
                     </div>
                   }>
@@ -73,42 +75,41 @@ export default function WeatherDashboard() {
             </div>
             <div className="flex items-center justify-between px-1">
               <h3 className="font-medium text-md">Global Weather</h3>
-              <p className="text-xs text-gray-400">Real-time updates</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Real-time updates
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Rest of the component remains the same */}
-        <div className="bg-gray-800/50 rounded-xl p-6 space-y-2">
+        {/* Main Content */}
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 space-y-2 transition-colors">
           {/* Header */}
           <div className="flex items-start justify-between">
             <div>
               <div className="text-6xl font-light">13°</div>
               <h1 className="text-2xl mt-2">Stormy</h1>
-              <p className="text-gray-400">with partly cloudy</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                with partly cloudy
+              </p>
             </div>
             <div className="flex gap-3">
               {["Button 1", "Button 2", "Button 3", "Button 4"].map((label) => (
                 <button
                   key={label}
-                  className="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded-md">
+                  className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
                   {label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Buttons above the graph */}
-          <div className="flex justify-end gap-3 ">
-            {/* <Cloud className="w-6 h-6 text-gray-400" />
-            <CloudRain className="w-6 h-6 text-gray-400" />
-            <Wind className="w-6 h-6 text-gray-400" />
-            <Sun className="w-6 h-6 text-gray-400" />
-            <Droplets className="w-6 h-6 text-gray-400" /> */}
+          {/* Time Range Buttons */}
+          <div className="flex justify-end gap-3">
             {["Day", "Week", "Month", "Year"].map((label) => (
               <button
                 key={label}
-                className="px-3 py-1 text-sm bg-gray-700 hover:bg-gray-600 rounded-md">
+                className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
                 {label}
               </button>
             ))}
@@ -129,29 +130,34 @@ export default function WeatherDashboard() {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#374151"
+                  stroke="currentColor"
+                  className="text-gray-200 dark:text-gray-700"
                 />
                 <XAxis
                   dataKey="day"
-                  stroke="#4B5563"
+                  stroke="currentColor"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "#9CA3AF" }}
+                  tick={{ fill: "currentColor" }}
+                  className="text-gray-600 dark:text-gray-400"
                 />
                 <YAxis
-                  stroke="#4B5563"
+                  stroke="currentColor"
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => `${value}°`}
-                  tick={{ fill: "#9CA3AF" }}
+                  tick={{ fill: "currentColor" }}
+                  className="text-gray-600 dark:text-gray-400"
                 />
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="bg-gray-800 border border-gray-700 rounded-lg p-2 shadow-lg">
-                          <p className="text-gray-400">{label}</p>
-                          <p className="text-white font-medium">{`${payload[0].value}°`}</p>
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg">
+                          <p className="text-gray-600 dark:text-gray-400">
+                            {label}
+                          </p>
+                          <p className="text-gray-900 dark:text-white font-medium">{`${payload[0].value}°`}</p>
                         </div>
                       );
                     }
@@ -161,13 +167,13 @@ export default function WeatherDashboard() {
                 <Area
                   type="monotone"
                   dataKey="temp"
-                  stroke="#86EFAC"
+                  stroke="#16a34a"
                   strokeWidth={2}
                   fill="url(#colorTemp)"
                   dot={false}
                   activeDot={{
                     r: 6,
-                    fill: "#86EFAC",
+                    fill: "#16a34a",
                     stroke: "#fff",
                     strokeWidth: 2,
                   }}
@@ -175,18 +181,21 @@ export default function WeatherDashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-
-          {/* Daily Forecast */}
-          {/* <div className="grid grid-cols-5 gap-4 pt-4">
+        </div>
+      </div>
+    </div>
+  );
+}
+{
+  /* Daily Forecast */
+}
+{
+  /* <div className="grid grid-cols-5 gap-4 pt-4">
             {weatherData.map((day) => (
               <div key={day.day} className="text-center">
                 <p className="text-gray-400 text-sm">{day.day}</p>
                 <p className="text-lg my-2">{day.temp}°</p>
               </div>
             ))}
-          </div> */}
-        </div>
-      </div>
-    </div>
-  );
+          </div> */
 }

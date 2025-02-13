@@ -30,30 +30,26 @@ const QuickPulse = () => {
 
   // Generate Zigzag Path
   const createZigzagPath = () => {
-    const segmentHeight = 30; // Height of each zigzag segment
-    const zigzagWidth = 450; // Width of the zigzag pattern
-    const curveRadius = 20; // Curve smoothness
+    const segmentHeight = 30;
+    const zigzagWidth = 450;
+    const curveRadius = 20;
     const totalSegments = TimelineData.length * 2;
 
-    let path = `M 100 0`; // Start at the top
+    let path = `M 100 0`;
 
     path += ` v ${
       segmentHeight - curveRadius
     } q 0 ${curveRadius} ${curveRadius} ${curveRadius}`;
     for (let i = 0; i < totalSegments; i++) {
-      // Right movement with a curve
       path += ` h ${
         zigzagWidth - curveRadius
       } q ${curveRadius} 0 ${curveRadius} ${curveRadius}`;
-      // Down movement
       path += ` v ${
         segmentHeight - curveRadius
       } q 0 ${curveRadius} -${curveRadius} ${curveRadius}`;
-      // Left movement
       path += ` h -${
         zigzagWidth - curveRadius
       } q -${curveRadius} 0 -${curveRadius} ${curveRadius}`;
-      // Down movement (if not last segment)
       if (i < totalSegments - 1) {
         path += ` v ${
           segmentHeight - curveRadius
@@ -75,9 +71,10 @@ const QuickPulse = () => {
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
 
   return (
-    <div ref={containerRef} className="relative w-full py-25">
+    <div
+      ref={containerRef}
+      className="relative w-full py-25 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Zigzag SVG Line */}
-
       <div className="absolute left-0 top-0 bottom-0">
         <svg
           width="600"
@@ -85,29 +82,35 @@ const QuickPulse = () => {
           viewBox={`0 0 600 ${TimelineData.length * 220}`}
           fill="none"
           xmlns="http://www.w3.org/2000/svg">
-          {/* Background Line */}
-          <path d={createZigzagPath()} stroke="#166534" strokeWidth="3" />
+          {/* Background Line (Adapts to Dark Mode) */}
+          <path
+            d={createZigzagPath()}
+            stroke="currentColor"
+            className="text-green-800 dark:text-green-400"
+            strokeWidth="3"
+          />
 
           {/* Animated Glowing Line */}
           <motion.path
             d={createZigzagPath()}
-            stroke="#86EFAC"
+            stroke="currentColor"
+            className="text-green-500 dark:text-green-300 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] dark:drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]"
             strokeWidth="4"
             style={{
               pathLength,
               strokeLinecap: "round",
             }}
-            className="drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
           />
         </svg>
 
-        <div className="flex justify-end ">
+        {/* CTA Button */}
+        <div className="flex justify-end mt-6">
           <a href="/ecoPulse">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 text-lg font-semibold text-white bg-green-500 rounded-full shadow-lg transition-all duration-300 ease-in-out 
-          hover:bg-green-300 hover:shadow-[0_0_12px_rgba(34,197,94,0.7)] focus:outline-none focus:ring-4 focus:ring-green-400">
+              className="px-6 py-3 text-lg font-semibold text-white bg-green-600 dark:bg-green-500 rounded-full shadow-lg transition-all duration-300 
+          hover:bg-green-700 dark:hover:bg-green-400 hover:shadow-[0_0_12px_rgba(34,197,94,0.7)] focus:outline-none focus:ring-4 focus:ring-green-400">
               EcoPulse
             </motion.button>
           </a>

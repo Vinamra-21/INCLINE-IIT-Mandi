@@ -48,13 +48,15 @@ const features = [
 
 const Features = () => {
   return (
-    <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section
+      id="features"
+      className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="container mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl font-bold text-center text-green-800 dark:text-green-300 mb-12">
+          className="text-3xl font-bold text-center text-green-700 dark:text-green-300 mb-12">
           Our Features
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -67,11 +69,11 @@ const Features = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">
-                <div className="mb-4">
-                  <Icon className="w-12 h-12 text-green-600 dark:text-green-400" />
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg dark:shadow-md hover:shadow-xl dark:hover:shadow-green-500/30 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-4">
+                  <Icon className="w-10 h-10 text-green-600 dark:text-green-300" />
                 </div>
-                <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
