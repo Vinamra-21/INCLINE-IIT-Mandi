@@ -1,6 +1,9 @@
 import * as THREE from "three";
 
-function getFresnelMat({rimHex = 0x0088ff, facingHex = 0x000000} = {}) {
+export default function getFresnelMat({
+  rimHex = 0x0088ff,
+  facingHex = 0x000000,
+} = {}) {
   const uniforms = {
     color1: { value: new THREE.Color(rimHex) },
     color2: { value: new THREE.Color(facingHex) },
@@ -49,4 +52,3 @@ function getFresnelMat({rimHex = 0x0088ff, facingHex = 0x000000} = {}) {
   });
   return fresnelMat;
 }
-export { getFresnelMat };

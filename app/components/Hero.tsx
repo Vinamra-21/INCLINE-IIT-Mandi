@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import getStarfield from "./GetStarfield";
-import { getFresnelMat } from "./GetFresnelMat";
+import getFresnelMat from "./GetFresnelMat";
 
 const ROTATION_SPEED = 0.0001;
 const CLOUDS_ROTATION_SPEED = 0.0002;
