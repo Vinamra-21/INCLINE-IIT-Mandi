@@ -9,6 +9,15 @@ export default defineConfig({
     noExternal: ["react-leaflet", "leaflet"],
   },
   optimizeDeps: {
-    include: ["leaflet", "react-leaflet"],
+    include: ["leaflet", "react-leaflet", "lucide-react"],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes("lucide-react")) return "lucide";
+        },
+      },
+    },
   },
 });
