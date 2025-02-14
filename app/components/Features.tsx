@@ -14,35 +14,41 @@ const features = [
     title: "Climate Data Visualization",
     description:
       "Interactive charts and maps to visualize complex climate data.",
+    link: "/climateDataVisi",
   },
   {
     icon: CloudSun,
     title: "Historical Weather Patterns",
     description: "Analyze past climate trends and weather events across India.",
+    link: "#",
   },
   {
     icon: TrendingUp,
     title: "Future Projections & Modeling",
     description:
       "Explore climate scenarios and predictions for different regions.",
+    link: "#",
   },
   {
     icon: Zap,
     title: "Climate Impact Analysis",
     description:
       "Assess potential impacts on agriculture, water resources, and more.",
+    link: "#",
   },
   {
     icon: Shield,
     title: "Community Resilience Planning",
     description:
       "Tools for communities to plan and prepare for climate changes.",
+    link: "#",
   },
   {
     icon: Lightbulb,
     title: "Adaptive Strategies and Solutions",
     description:
       "Discover and share innovative approaches to climate adaptation.",
+    link: "#",
   },
 ];
 
@@ -63,13 +69,14 @@ const Features = () => {
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <motion.div
+              <motion.a
                 key={index}
+                href={feature.link}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg dark:shadow-md hover:shadow-xl dark:hover:shadow-green-500/30 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg dark:shadow-md hover:shadow-xl dark:hover:shadow-green-500/30 transition-all duration-300 border border-gray-200 dark:border-gray-700 block">
                 <div className="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-4">
                   <Icon className="w-10 h-10 text-green-600 dark:text-green-300" />
                 </div>
@@ -79,7 +86,7 @@ const Features = () => {
                 <p className="text-gray-600 dark:text-gray-300">
                   {feature.description}
                 </p>
-              </motion.div>
+              </motion.a>
             );
           })}
         </div>
