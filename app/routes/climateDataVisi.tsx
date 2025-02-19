@@ -38,27 +38,21 @@ export default function Dashboard() {
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${
-          isPanelOpen ? "w-1/4" : "w-0"
+          isPanelOpen ? "w-1/4" : "w-1/30"
         }`}>
         <div
-          className={`absolute top-4 left-4 bottom-4 bg-gray-700 rounded-2xl shadow-lg 
+          className={`absolute top-2 left-2 bottom-2 bg-gray-700 rounded-2xl shadow-lg 
                      transition-all duration-300 ease-in-out overflow-hidden
-                     ${isPanelOpen ? "w-[calc(100%-32px)]" : "w-0"}`}>
-          <LeftPanel />
+                     `}>
+          <LeftPanel
+            isPanelOpen={isPanelOpen}
+            setIsPanelOpen={setIsPanelOpen}
+          />
         </div>
-        <button
-          onClick={() => setIsPanelOpen(!isPanelOpen)}
-          className="absolute top-1/2 -translate-y-1/2 -right-4 z-10">
-          {isPanelOpen ? (
-            <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-gray-50" />
-          ) : (
-            <ChevronRight className="h-5 w-5 text-gray-700 dark:text-gray-50" />
-          )}
-        </button>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col flex-1 p-4 transition-all duration-300">
+      <div className="flex flex-col flex-1 p-2 transition-all duration-300">
         {/* Map Container */}
         <div
           className="border border-gray-200 rounded-2xl overflow-hidden resize-y 
