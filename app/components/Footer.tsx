@@ -9,7 +9,9 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gradient-to-r dark:from-gray-900 dark:to-black text-gray-800 dark:text-gray-300 py-12 transition-colors duration-300">
+    <footer
+      id="contact"
+      className="bg-gray-100 dark:bg-gradient-to-r dark:from-gray-900 dark:to-black text-gray-800 dark:text-gray-300 py-12 transition-colors duration-300">
       <div className="container mx-auto px-4">
         {/* Logos Section */}
         <div className="flex justify-center items-center space-x-8 mb-12">

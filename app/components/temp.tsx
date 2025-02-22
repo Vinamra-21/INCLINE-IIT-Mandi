@@ -17,15 +17,12 @@ const Hero = () => {
   const rendererRef = useRef(null);
 
   const initScene = useCallback(() => {
-    // Adjust width based on screen size
-    const width = window.innerWidth;
+    const width = window.innerWidth * 1.2;
     const height = window.innerHeight;
-    const isMobile = width < 768;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    // Adjust camera position based on screen size
-    camera.position.z = isMobile ? 2 : 1.3;
+    camera.position.z = 1.3;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -52,6 +49,7 @@ const Hero = () => {
     const geometry = new THREE.IcosahedronGeometry(1, 12);
     const loader = new THREE.TextureLoader();
 
+    // Earth base with adjusted material for better visibility in both modes
     const earthMesh = new THREE.Mesh(
       geometry,
       new THREE.MeshPhongMaterial({
@@ -64,6 +62,7 @@ const Hero = () => {
     );
     earthGroup.add(earthMesh);
 
+    // Night lights with adjusted intensity
     const lightsMesh = new THREE.Mesh(
       geometry,
       new THREE.MeshBasicMaterial({
@@ -74,6 +73,7 @@ const Hero = () => {
     );
     earthGroup.add(lightsMesh);
 
+    // Clouds with adjusted opacity
     const cloudsMesh = new THREE.Mesh(
       geometry,
       new THREE.MeshStandardMaterial({
@@ -87,6 +87,7 @@ const Hero = () => {
     cloudsMesh.scale.setScalar(1.003);
     earthGroup.add(cloudsMesh);
 
+    // Atmosphere glow with adjusted intensity
     const glowMesh = new THREE.Mesh(geometry, getFresnelMat());
     glowMesh.scale.setScalar(1.01);
     earthGroup.add(glowMesh);
@@ -107,9 +108,11 @@ const Hero = () => {
     controls.dampingFactor = 0.05;
     controls.enableZoom = false;
 
+    // Add stars with adjusted brightness
     const stars = getStarfield({ numStars: 5000 });
     scene.add(stars);
 
+    // Adjusted lighting for better visibility in both modes
     const sunLight = new THREE.DirectionalLight(0xffffff, 2);
     sunLight.position.set(-2, 0.5, 1.5);
     scene.add(sunLight);
@@ -117,6 +120,7 @@ const Hero = () => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
 
+    // Handle color scheme changes
     const handleColorSchemeChange = (e) => {
       const darkMode = e.matches;
       renderer.setClearColor(darkMode ? 0x111827 : 0xffffff, 0.1);
@@ -140,13 +144,9 @@ const Hero = () => {
     animate();
 
     const handleResize = () => {
-      const width = window.innerWidth;
+      const width = window.innerWidth * 0.6;
       const height = window.innerHeight;
-      const isMobile = width < 768;
-
       camera.aspect = width / height;
-      // Adjust camera position on resize
-      camera.position.z = isMobile ? 2 : 1.3;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
     };
@@ -167,22 +167,22 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden pt-16 bg-white dark:bg-gray-900 transition-colors duration-300 ">
-      {/* Content section */}
-      <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
-        <div className="max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-16 text-center lg:text-left">
+    <section className="relative h-screen flex overflow-hidden pt-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+      {/* Left content section */}
+      <div className="w-3/5 pl-8 flex items-center relative z-10">
+        <div className="pr-16">
           <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
+            className="text-5xl md:text-7xl font-bold text-green-800 dark:text-green-300 mb-8 leading-tight transition-colors duration-300">
             Indian Climate Information Explorer
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 sm:mb-8 transition-colors duration-300 font-bold">
+            className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-8 transition-colors duration-300">
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
           </motion.p>
@@ -192,14 +192,14 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="lg:w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
+            className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
             Start Exploring
           </motion.button>
         </div>
       </div>
 
-      {/* Earth visualization section */}
-      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 lg:opacity-100">
+      {/* Right Earth visualization section */}
+      <div className="absolute right-0 top-0 w-4/5 h-full">
         <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>

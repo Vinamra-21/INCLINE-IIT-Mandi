@@ -32,23 +32,23 @@ export default function WeatherDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 transition-colors">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
+    <div className="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-2 sm:p-4 md:p-6 min-h-screen transition-colors">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(250px,300px)_1fr] gap-4 md:gap-6">
         {/* Sidebar */}
-        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 space-y-4 transition-colors">
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-3 md:p-4 space-y-3 md:space-y-4 transition-colors">
           <div className="space-y-2">
             <input
               type="search"
               placeholder="Search location..."
-              className="w-full bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           {/* Current Location Section */}
-          <div className="bg-gray-200/50 dark:bg-gray-700/30 rounded-lg p-3 transition-colors">
+          <div className="bg-gray-200/50 dark:bg-gray-700/30 rounded-lg p-2 md:p-3 transition-colors">
             <div className="flex items-center space-x-3">
               <div className="bg-blue-100 dark:bg-blue-500/20 p-2 rounded-lg transition-colors">
-                <MapPin className="h-5 w-5 text-green-600 dark:text-green-300" />
+                <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-600 dark:text-green-300" />
               </div>
               <div>
                 <h3 className="text-sm font-medium">Current Location</h3>
@@ -61,11 +61,11 @@ export default function WeatherDashboard() {
 
           {/* Map Section with Title */}
           <div className="space-y-2">
-            <div className="relative h-[300px] rounded-lg overflow-hidden">
+            <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden">
               {mapLoaded && (
                 <Suspense
                   fallback={
-                    <div className="h-full w-full bg-gray-100 dark:bg-gray-800">
+                    <div className="h-full w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm">
                       Loading map...
                     </div>
                   }>
@@ -74,7 +74,7 @@ export default function WeatherDashboard() {
               )}
             </div>
             <div className="flex items-center justify-between px-1">
-              <h3 className="font-medium text-md">Global Weather</h3>
+              <h3 className="font-medium text-sm md:text-md">Global Weather</h3>
               <p className="text-xs text-gray-600 dark:text-gray-400">
                 Real-time updates
               </p>
@@ -83,21 +83,23 @@ export default function WeatherDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-6 space-y-2 transition-colors">
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 md:p-6 space-y-4 transition-colors">
           {/* Header */}
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
-              <div className="text-6xl font-light">13°</div>
-              <h1 className="text-2xl mt-2">Stormy</h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <div className="text-4xl sm:text-5xl md:text-6xl font-light">
+                13°
+              </div>
+              <h1 className="text-xl sm:text-2xl mt-2">Stormy</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 with partly cloudy
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {["Button 1", "Button 2", "Button 3", "Button 4"].map((label) => (
                 <button
                   key={label}
-                  className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
+                  className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
                   {label}
                 </button>
               ))}
@@ -105,7 +107,7 @@ export default function WeatherDashboard() {
           </div>
 
           {/* Time Range Buttons */}
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-wrap justify-end gap-2">
             {["Day", "Week", "Month", "Year"].map((label) => (
               <button
                 key={label}
@@ -116,7 +118,7 @@ export default function WeatherDashboard() {
           </div>
 
           {/* Weather Graph */}
-          <div className="h-[200px]">
+          <div className="h-[200px] sm:h-[250px] md:h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={weatherData}
@@ -138,7 +140,7 @@ export default function WeatherDashboard() {
                   stroke="currentColor"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "currentColor" }}
+                  tick={{ fill: "currentColor", fontSize: 12 }}
                   className="text-gray-600 dark:text-gray-400"
                 />
                 <YAxis
@@ -146,7 +148,7 @@ export default function WeatherDashboard() {
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => `${value}°`}
-                  tick={{ fill: "currentColor" }}
+                  tick={{ fill: "currentColor", fontSize: 12 }}
                   className="text-gray-600 dark:text-gray-400"
                 />
                 <Tooltip
@@ -154,7 +156,7 @@ export default function WeatherDashboard() {
                     if (active && payload && payload.length) {
                       return (
                         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg">
-                          <p className="text-gray-600 dark:text-gray-400">
+                          <p className="text-gray-600 dark:text-gray-400 text-sm">
                             {label}
                           </p>
                           <p className="text-gray-900 dark:text-white font-medium">{`${payload[0].value}°`}</p>
@@ -185,17 +187,4 @@ export default function WeatherDashboard() {
       </div>
     </div>
   );
-}
-{
-  /* Daily Forecast */
-}
-{
-  /* <div className="grid grid-cols-5 gap-4 pt-4">
-            {weatherData.map((day) => (
-              <div key={day.day} className="text-center">
-                <p className="text-gray-400 text-sm">{day.day}</p>
-                <p className="text-lg my-2">{day.temp}°</p>
-              </div>
-            ))}
-          </div> */
 }
