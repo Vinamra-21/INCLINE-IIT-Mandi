@@ -1,5 +1,4 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import GraphComponent from "~/featureComponents/graph";
 import { LeftPanel } from "~/featureComponents/ctrlPanel";
 
@@ -15,19 +14,18 @@ export default function Dashboard() {
   }, []);
 
   // Handle mouse movement for resizing
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent) => {
     const newHeight = (e.clientY / window.innerHeight) * 100;
     if (newHeight > 10 && newHeight < 90) {
       setMapHeight(newHeight);
     }
   };
-
   const handleMouseUp = () => {
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);

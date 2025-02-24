@@ -11,43 +11,44 @@ import {
 const features = [
   {
     icon: BarChart3,
-    title: "Climate Data Visualization",
+    title: "Climate Impact Snapshot",
     description:
-      "Interactive charts and maps to visualize complex climate data.",
-    link: "/climateDataVisi",
+      "Get a quick overview of climate impacts in your region with projections for temperature and precipitation using CMIP6. Designed for accessibility, this app helps users explore climate trends across India.",
+    link: "/climateImpact",
   },
   {
     icon: CloudSun,
-    title: "Historical Weather Patterns",
-    description: "Analyze past climate trends and weather events across India.",
-    link: "#",
+    title: "Drought Monitor App",
+    description:
+      "Track and analyze drought conditions using SPI, SPEI, and NDVI indices. This tool provides insights into precipitation trends, drought severity, and vegetation health, offering a comprehensive view of climate-driven changes.",
+    link: "/droughtMonitor",
   },
   {
     icon: TrendingUp,
-    title: "Future Projections & Modeling",
+    title: "Incline Watershed Delineation",
     description:
-      "Explore climate scenarios and predictions for different regions.",
-    link: "#",
+      "Easily delineate watersheds across India using high-quality datasets like MERIT-Hydro and MERIT-Basins. Visualize watershed boundaries and export data in multiple formats for further analysis.",
+    link: "/watershedDelineation",
   },
   {
     icon: Zap,
-    title: "Climate Impact Analysis",
+    title: "Extreme Indices",
     description:
-      "Assess potential impacts on agriculture, water resources, and more.",
-    link: "#",
+      "Analyze extreme climate indices, including temperature and precipitation trends. This tool offers time series visualization and allows users to compute indices using their own datasets.",
+    link: "/extremeIndices",
   },
   {
     icon: Shield,
-    title: "Community Resilience Planning",
+    title: "Data Portal",
     description:
-      "Tools for communities to plan and prepare for climate changes.",
-    link: "#",
+      "Access tools to help communities plan and prepare for climate change by leveraging scientific data and insights.",
+    link: "/dataPortal",
   },
   {
     icon: Lightbulb,
     title: "Adaptive Strategies and Solutions",
     description:
-      "Discover and share innovative approaches to climate adaptation.",
+      "Explore and share innovative approaches to climate adaptation, fostering resilience against environmental changes.",
     link: "#",
   },
 ];
