@@ -119,7 +119,7 @@ const Hero = () => {
 
     const handleColorSchemeChange = (e) => {
       const darkMode = e.matches;
-      renderer.setClearColor(darkMode ? 0x111827 : 0xffffff, 0.1);
+      renderer.setClearColor(darkMode ? 0x111827 : 0xfffaed, 0.1);
     };
 
     const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -167,7 +167,7 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden pt-16 bg-white dark:bg-gray-900 transition-colors duration-300 ">
+    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden pt-11 bg-white dark:bg-gray-900 transition-colors duration-300 ">
       {/* Content section */}
       <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
         <div className="max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-16 text-center lg:text-left">
@@ -175,7 +175,7 @@ const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-600 dark:text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
             Indian Climate Information Explorer
           </motion.h1>
           <motion.p

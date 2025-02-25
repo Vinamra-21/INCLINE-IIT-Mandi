@@ -91,7 +91,7 @@ const QuickPulse = () => {
       ref={containerRef}
       className="relative w-full py-8 md:py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Zigzag SVG Line Container */}
-      <div className="absolute left-0 top-0 bottom-0 w-full md:w-auto">
+      <div className="absolute h-full left-0 top-0 bottom-0 w-full md:w-auto">
         <div className="relative">
           <svg
             className="w-[200px] md:w-[400px] lg:w-[600px]"
@@ -120,10 +120,10 @@ const QuickPulse = () => {
 
           {/* CTA Button positioned at the end of vertical line */}
           <div
-            className="absolute"
+            className="absolute z-10"
             style={{
               left: endX,
-              top: svgHeight - (isMobile ? 10 : 20),
+              top: svgHeight - (isMobile ? 10 : 30),
               transform: "translate(-50%, 0)",
             }}>
             <a href="/ecoPulse">
@@ -144,7 +144,7 @@ const QuickPulse = () => {
         {TimelineData.map((item, index) => (
           <motion.div
             key={item.year}
-            className="relative flex items-center mb-14 md:mb-28"
+            className="relative flex items-center mb-14 md:mb-36"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}

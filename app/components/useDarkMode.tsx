@@ -4,12 +4,14 @@ const useDarkMode = (): [string, () => void] => {
   const [theme, setTheme] = useState<string>("light");
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    setTheme(storedTheme || systemTheme);
+    const storedTheme = "dark";
+    // const storedTheme = localStorage.getItem("theme");
+    // const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+    //   .matches
+    //   ? "dark"
+    //   : "light";
+    // setTheme(storedTheme || systemTheme);
+    setTheme(storedTheme);
   }, []);
 
   useEffect(() => {
