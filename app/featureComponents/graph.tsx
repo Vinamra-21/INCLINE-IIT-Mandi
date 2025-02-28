@@ -1,4 +1,3 @@
-import React from "react";
 import {
   LineChart,
   Line,
@@ -9,27 +8,39 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import type { DroughtData } from "./types";
 
-const data = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 600 },
-  { name: "Apr", value: 800 },
-  { name: "May", value: 500 },
-  { name: "Jun", value: 700 },
-];
+interface GraphComponentProps {
+  data?: DroughtData;
+}
+//@ts-expect-error
+const GraphComponent = ({ data = [] }: GraphComponentProps) => {
+  const displayData =
+    Object.keys(data).length > 0
+      ? Object.entries(data).map(([date, value]) => ({ date, value }))
+      : [
+          { date: "Jan", value: 400 },
+          { date: "Feb", value: 300 },
+          { date: "Mar", value: 600 },
+          { date: "Apr", value: 800 },
+          { date: "May", value: 500 },
+          { date: "Jun", value: 700 },
+        ];
 
-const GraphComponent = () => {
   return (
     <div className="w-full h-full bg-white rounded-lg shadow-lg p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Sample Graph</h2>
-        <p className="text-gray-600 mt-1">Monthly values over time</p>
+        <h2 className="text-2xl font-bold text-gray-800">
+          Drought Index Values
+        </h2>
+        <p className="text-gray-600 mt-1">
+          Time series of drought index values
+        </p>
       </div>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={displayData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid
               strokeDasharray="3 3"
@@ -37,7 +48,7 @@ const GraphComponent = () => {
               vertical={false}
             />
             <XAxis
-              dataKey="name"
+              dataKey="date"
               tick={{ fill: "#4B5563" }}
               axisLine={{ stroke: "#E5E7EB" }}
               tickLine={{ stroke: "#E5E7EB" }}
@@ -77,9 +88,9 @@ const GraphComponent = () => {
               type="monotone"
               dataKey="value"
               stroke="#3B82F6"
-              strokeWidth={3}
-              dot={{ fill: "#3B82F6", strokeWidth: 2, r: 6 }}
-              activeDot={{ r: 8, fill: "#2563EB" }}
+              strokeWidth={2}
+              dot={{ fill: "#3B82F6", strokeWidth: 1, r: 1 }}
+              activeDot={{ r: 3, fill: "#2563EB" }}
               name="Value"
             />
           </LineChart>
