@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GraphComponent from "~/featureComponents/graph";
-import { LeftPanel } from "~/featureComponents/ctrlPanel";
+import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelClimate";
 import axios from "axios";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";

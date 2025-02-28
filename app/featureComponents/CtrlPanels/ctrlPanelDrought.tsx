@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Download, ChevronDown, Loader2 } from "lucide-react";
 import { ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
-import { fetchDroughtData, fetchGeoJson } from "./api";
+import { fetchDroughtData, fetchGeoJson } from "../api";
 import { toast } from "react-hot-toast";
 
 type DroughtIndex = "spi" | "pdsi" | "spei";

@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GraphComponent from "~/featureComponents/graph";
-import { LeftPanel } from "~/featureComponents/ctrlPanel";
+import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelClimate";
 
 const MapContent = lazy(() => import("../components/HomeMap"));
 

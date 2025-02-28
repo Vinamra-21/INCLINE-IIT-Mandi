@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useEffect, useState, lazy, Suspense } from "react";
 import GraphComponent from "../featureComponents/graph";
-import { LeftPanelDrought } from "../featureComponents/ctrlPanelDrought";
+import { LeftPanelDrought } from "../featureComponents/CtrlPanels/ctrlPanelDrought";
 import type { DroughtData, GeoJsonData } from "../featureComponents/types";
 import { Toaster } from "react-hot-toast";
 import dr from "../graphData/drought.json";
