@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GraphComponent from "~/featureComponents/graph";
-import { LeftPanel } from "~/featureComponents/ctrlPanel";
+import { LeftPanelDrought } from "~/featureComponents/ctrlPanelDrought";
 
 const MapContent = lazy(() => import("../components/HomeMap"));
 
@@ -44,7 +44,7 @@ export default function Dashboard() {
           className={`absolute top-2 left-2 bottom-2 bg-gray-700 rounded-2xl shadow-lg 
                      transition-all duration-300 ease-in-out overflow-hidden
                      `}>
-          <LeftPanel
+          <LeftPanelDrought
             isPanelOpen={isPanelOpen}
             setIsPanelOpen={setIsPanelOpen}
           />

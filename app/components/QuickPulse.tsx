@@ -130,7 +130,7 @@ const QuickPulse = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-2 md:px-6 py-1 md:py-3 text-xs md:text-lg font-semibold text-white bg-green-600 dark:bg-green-500 rounded-full shadow-lg transition-all duration-300 
+                className="px-2 mr-36 mt-2 md:mr-96 md:mt-0 lg:m-0 md:px-6 py-1 md:py-3 text-xs md:text-lg font-semibold text-white bg-green-600 dark:bg-green-500 rounded-full shadow-lg transition-all duration-300 
                 hover:bg-green-700 dark:hover:bg-green-400 hover:shadow-[0_0_12px_rgba(34,197,94,0.7)] focus:outline-none focus:ring-4 focus:ring-green-400">
                 EcoPulse
               </motion.button>
