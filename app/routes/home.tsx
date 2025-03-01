@@ -49,7 +49,7 @@ export default function Home() {
         <WeatherDashboard />
         <Features />
       </main>
-      <Footer isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
+      <Footer isLoggedIn={isLoginOpen} setIsLoggedIn={setIsLoginOpen} />
     </div>
   );
 }

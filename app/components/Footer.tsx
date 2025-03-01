@@ -14,11 +14,21 @@ import {
 import { useState } from "react";
 
 type FooterProps = {
-  isLoginOpen: boolean;
-  setIsLoginOpen: (open: boolean) => void;
+  isLoggedIn: boolean;
+  setIsLoggedIn: (loggedIn: boolean) => void;
 };
 
-const Footer: React.FC<FooterProps> = ({ isLoginOpen, setIsLoginOpen }) => {
+const Footer: React.FC<FooterProps> = ({ isLoggedIn, setIsLoggedIn }) => {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  const handleOpenLogin = () => {
+    setIsLoginOpen(true);
+  };
+
+  const handleCloseLogin = () => {
+    setIsLoginOpen(false);
+  };
+
   return (
     <footer
       id="contact"
@@ -129,17 +139,26 @@ const Footer: React.FC<FooterProps> = ({ isLoginOpen, setIsLoginOpen }) => {
                 className="hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
                 Terms of Use
               </a>
-              <button
-                onClick={() => setIsLoginOpen(true)}
-                className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
-                Log in
-              </button>
+              {isLoggedIn ? (
+                <button
+                  onClick={() => setIsLoggedIn(false)}
+                  className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
+                  Log out
+                </button>
+              ) : (
+                <button
+                  onClick={handleOpenLogin}
+                  className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
+                  Log in
+                </button>
+              )}
             </div>
           </div>
         </div>
         <LoginModal
           isOpen={isLoginOpen}
-          onClose={() => setIsLoginOpen(false)}
+          onClose={handleCloseLogin}
+          onLogin={setIsLoggedIn}
         />
       </div>
     </footer>
@@ -164,7 +183,8 @@ const FooterLink = ({ href, text }) => (
     </a>
   </li>
 );
-function LoginModal({ isOpen, onClose }) {
+
+function LoginModal({ isOpen, onClose, onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -180,8 +200,13 @@ function LoginModal({ isOpen, onClose }) {
     // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // Handle successful login here
+      // Set logged in state to true on successful login
+      onLogin(true);
+      // Close the modal
       onClose();
+      // Reset form
+      setEmail("");
+      setPassword("");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
@@ -398,4 +423,5 @@ function LoginModal({ isOpen, onClose }) {
     </div>
   );
 }
+
 export default Footer;
