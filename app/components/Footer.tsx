@@ -12,8 +12,13 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-const Footer = () => {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+type FooterProps = {
+  isLoginOpen: boolean;
+  setIsLoginOpen: (open: boolean) => void;
+};
+
+const Footer: React.FC<FooterProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   return (
     <footer
       id="contact"

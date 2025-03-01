@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
+type HeaderProps = {
+  isLoginOpen: boolean;
+  setIsLoginOpen: (open: boolean) => void;
+};
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
 
@@ -24,6 +28,7 @@ const Header = () => {
             <NavLink href="/#features">Features</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/#contact">Contact</NavLink>
+            {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
@@ -77,6 +82,7 @@ const Header = () => {
               <NavLink href="/#contact" onClick={() => setIsOpen(false)}>
                 Contact
               </NavLink>
+              {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
               <button
                 onClick={toggleTheme}
                 className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">

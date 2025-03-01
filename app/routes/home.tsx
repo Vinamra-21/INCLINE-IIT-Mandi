@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import Footer from "../components/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import QuickPulse from "../components/QuickPulse";
 import WeatherDashboard from "~/components/WeatherDash";
 
@@ -39,16 +39,17 @@ export default function Home() {
       document.body.removeChild(scriptJsm);
     };
   }, []);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
       <main className="flex-grow">
         <Hero />
         <QuickPulse />
         <WeatherDashboard />
         <Features />
       </main>
-      <Footer />
+      <Footer isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
     </div>
   );
 }
