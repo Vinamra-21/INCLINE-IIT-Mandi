@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
+
 type HeaderProps = {
   isLoginOpen: boolean;
   setIsLoginOpen: (open: boolean) => void;
@@ -10,18 +11,38 @@ type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY) {
+        setShowNavbar(false); // Hide navbar when scrolling down
+      } else {
+        setShowNavbar(true); // Show navbar when scrolling up
+      }
+      setLastScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <header className="fixed w-full top-0 z-50 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800">
+    <header
+      className={`fixed w-full top-0 z-50 backdrop-blur-sm bg-white/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}>
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="relative flex items-center space-x-3">
+          <div className="flex items-center">
             <img
-              src="./INCLINE.png"
+              src="/INCLINE.png"
               alt="INCLINE Logo"
-              className="h-8 w-auto"
+              className="h-10 w-10 mr-3"
             />
-          </a>
+            <span className="text-xl font-bold">INCLINE</span>
+          </div>
 
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink href="/ecoPulse">EcoPulse</NavLink>
@@ -31,12 +52,16 @@ const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
             {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              aria-label="Toggle theme">
+              className={`p-2 rounded-full transition-all ${
+                theme === "dark"
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+              aria-label="Toggle dark mode">
               {theme === "dark" ? (
-                <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                <Sun size={20} className="text-yellow-300" />
               ) : (
-                <Moon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                <Moon size={20} className="text-gray-700" />
               )}
             </button>
           </nav>
@@ -85,12 +110,16 @@ const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
               {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
               <button
                 onClick={toggleTheme}
-                className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-                <span className="mr-2">Toggle theme</span>
+                className={`p-2 rounded-full transition-all ${
+                  theme === "dark"
+                    ? "bg-gray-700 hover:bg-gray-600"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+                aria-label="Toggle dark mode">
                 {theme === "dark" ? (
-                  <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                  <Sun size={20} className="text-yellow-300" />
                 ) : (
-                  <Moon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                  <Moon size={20} className="text-gray-700" />
                 )}
               </button>
             </div>

@@ -8,7 +8,9 @@ import {
 } from "react-router";
 import type { Route } from "./+types/root";
 import "./app.css";
-
+import { useState } from "react";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -23,6 +25,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   return (
     <html lang="en" className="dark">
       <head>
@@ -31,10 +34,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
+
       <body>
+        <Header isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
         {children}
         <ScrollRestoration />
         <Scripts />
+        <Footer isLoggedIn={isLoginOpen} setIsLoggedIn={setIsLoginOpen} />
       </body>
     </html>
   );
