@@ -20,10 +20,14 @@ import {
   Users,
   Globe,
   ArrowRight,
+  Menu,
+  X,
 } from "lucide-react";
 
 const AboutUs: React.FC = () => {
   // Ensure theme is only set after mounting
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme");
@@ -138,24 +142,6 @@ const AboutUs: React.FC = () => {
         },
       ],
     },
-    {
-      name: "Saurav Kumar",
-      role: "Team",
-      description:
-        "2nd year student at IIT Mandi, Developer in the Incline program.",
-      image: "/himpact.png",
-      socialLinks: [
-        { icon: <Github size={20} />, url: "https://github.com/estside" },
-        {
-          icon: <Instagram size={20} />,
-          url: "https://www.instagram.com/sauravk_singhh",
-        },
-        {
-          icon: <Linkedin size={20} />,
-          url: "https://www.linkedin.com/in/saurav-kumar-0bb364284/",
-        },
-      ],
-    },
   ];
 
   // Navigation for quick access to sections
@@ -175,52 +161,62 @@ const AboutUs: React.FC = () => {
   return (
     <div
       className={`min-h-screen w-full transition-colors duration-300 
-                    ${
-                      theme === "dark"
-                        ? "bg-gradient-to-b from-gray-900 to-gray-800 text-white"
-                        : "bg-gradient-to-b from-gray-50 to-white text-gray-800"
-                    }`}>
+        ${
+          theme === "dark"
+            ? "bg-gradient-to-b from-gray-900 to-gray-800 text-white"
+            : "bg-gradient-to-b from-gray-50 to-white text-gray-800"
+        }`}>
       {/* Navigation Bar */}
       <div
-        className={`sticky top-0 z-50 backdrop-blur-md ${
-          theme === "dark" ? "bg-gray-900/80" : "bg-white/80"
-        } shadow-md`}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-          <a href="/">
-            <div className="flex items-center">
-              <img
-                src="/INCLINE.png"
-                alt="INCLINE Logo"
-                className="h-10 w-10 mr-3"
-              />
-              <span className="text-xl font-bold">INCLINE</span>
-            </div>
+        className={`sticky top-0 z-50 backdrop-blur-md 
+          ${theme === "dark" ? "bg-gray-900/80" : "bg-white/80"} shadow-md`}>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+          {/* Logo */}
+          <a href="/" className="flex items-center">
+            <img
+              src="/INCLINE.png"
+              alt="INCLINE Logo"
+              className="h-10 w-10 mr-3"
+            />
+            <span className="text-xl font-bold">INCLINE</span>
           </a>
 
-          <div className="flex items-center space-x-2 md:space-x-6 overflow-x-auto hide-scrollbar py-2">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className={`flex items-center px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all 
-                          ${
-                            theme === "dark"
-                              ? "hover:bg-teal-800/50 hover:text-teal-300"
-                              : "hover:bg-teal-50 hover:text-teal-700"
-                          }`}>
+                className={`flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-all 
+                  ${
+                    theme === "dark"
+                      ? "hover:bg-teal-800/50 hover:text-teal-300"
+                      : "hover:bg-teal-50 hover:text-teal-700"
+                  }`}>
                 <span className="mr-1.5">{item.icon}</span>
                 {item.name}
               </a>
             ))}
           </div>
 
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="md:hidden p-2 rounded-full transition-all "
+            aria-label="Open menu">
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* Dark Mode Toggle */}
           <button
             onClick={toggleTheme}
-            className={`p-2 rounded-full transition-all ${
-              theme === "dark"
-                ? "bg-gray-700 hover:bg-gray-600"
-                : "bg-gray-200 hover:bg-gray-300"
-            }`}
+            className={`hidden md:block p-2 rounded-full transition-all 
+              ${
+                theme === "dark"
+                  ? "bg-gray-700 hover:bg-gray-600"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }
+            `}
             aria-label="Toggle dark mode">
             {theme === "dark" ? (
               <Sun size={20} className="text-yellow-300" />
@@ -229,6 +225,34 @@ const AboutUs: React.FC = () => {
             )}
           </button>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isMenuOpen && (
+          <div
+            className={`md:hidden bg-gray-800 text-white p-4 space-y-2 absolute w-full left-0 top-14 shadow-lg z-50`}>
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className="block px-4 py-2 rounded-md hover:bg-gray-700 flex items-center">
+                <span className="mr-2">{item.icon}</span>
+                {item.name}
+              </a>
+            ))}
+
+            {/* Dark Mode Toggle (Mobile) */}
+            <button
+              onClick={toggleTheme}
+              className="w-full text-left px-4 py-2 rounded-md hover:bg-gray-700 flex items-center">
+              {theme === "dark" ? (
+                <Sun size={20} className="mr-2 text-yellow-300" />
+              ) : (
+                <Moon size={20} className="mr-2 text-gray-300" />
+              )}
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
