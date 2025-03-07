@@ -89,10 +89,10 @@ const AboutUs: React.FC = () => {
       ],
     },
     {
-      name: "Piyush Panpaliya",
-      role: "Developer",
+      name: "Kishan Kumar",
+      role: "Team",
       description:
-        "2nd year student at IIT Mandi, Lead Developer in the Incline program.",
+        "Final year BTech student at IIT Mandi, Lead Developer in the Incline program.",
       image: "/himpact.png",
       socialLinks: [
         { icon: <Github size={20} />, url: "https://github.com/Kishankp9990" },
@@ -106,6 +106,7 @@ const AboutUs: React.FC = () => {
         },
       ],
     },
+
     {
       name: "Vinamra Garg",
       role: "Developer",
@@ -125,10 +126,10 @@ const AboutUs: React.FC = () => {
       ],
     },
     {
-      name: "Kishan Kumar",
-      role: "Team",
+      name: "Piyush Panpaliya",
+      role: "Developer",
       description:
-        "Final year BTech student at IIT Mandi, Lead Developer in the Incline program.",
+        "2nd year student at IIT Mandi, Lead Developer in the Incline program.",
       image: "/himpact.png",
       socialLinks: [
         { icon: <Github size={20} />, url: "https://github.com/Kishankp9990" },
