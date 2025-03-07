@@ -184,16 +184,16 @@ const AboutUs: React.FC = () => {
           theme === "dark" ? "bg-gray-900/80" : "bg-white/80"
         } shadow-md`}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-          <div className="flex items-center">
-            <a href="/">
+          <a href="/">
+            <div className="flex items-center">
               <img
                 src="/INCLINE.png"
                 alt="INCLINE Logo"
                 className="h-10 w-10 mr-3"
               />
               <span className="text-xl font-bold">INCLINE</span>
-            </a>
-          </div>
+            </div>
+          </a>
 
           <div className="flex items-center space-x-2 md:space-x-6 overflow-x-auto hide-scrollbar py-2">
             {navItems.map((item) => (
