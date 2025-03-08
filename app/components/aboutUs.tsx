@@ -238,7 +238,7 @@ const AboutUs: React.FC = () => {
           {/* Vision */}
           <div
             id="vision"
-            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-gray-800
+            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-whie dark:bg-gray-800
                        `}>
             <div className={`h-2 w-full bg-green-600 dark:bg-green-500 `}></div>
             <div className="p-8">
@@ -258,7 +258,7 @@ const AboutUs: React.FC = () => {
 
               <div
                 className={`mt-8 p-4 rounded-lg dark :bg-gray-700/50  bg-gray-100 `}>
-                <p className="italic text-lg">
+                <p className="italic text-lg text-black">
                   "Empowering communities with the knowledge and tools they need
                   to face climate challenges and build a sustainable future for
                   generations to come."
