@@ -244,7 +244,7 @@ const AboutUs: React.FC = () => {
             <div className="p-8">
               <div className="flex items-center mb-6">
                 <div
-                  className={`p-3 rounded-full mr-4  dark:bg-green-900/50 dark:text-green-400  bg-green-100 text-green-600 `}>
+                  className={`p-3 rounded-full mr-4 bg-green-100 text-green-600   dark:bg-green-900/50 dark:text-green-400  `}>
                   <Lightbulb size={28} />
                 </div>
                 <h2 className="text-3xl font-bold">Our Vision</h2>
