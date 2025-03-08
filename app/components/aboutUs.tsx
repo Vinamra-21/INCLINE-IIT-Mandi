@@ -238,7 +238,7 @@ const AboutUs: React.FC = () => {
           {/* Vision */}
           <div
             id="vision"
-            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white dark:bg-gray-800
+            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-gray-800
                        `}>
             <div className={`h-2 w-full bg-green-600 dark:bg-green-500 `}></div>
             <div className="p-8">
