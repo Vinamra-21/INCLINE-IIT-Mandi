@@ -86,25 +86,24 @@ const AboutUs: React.FC = () => {
       name: "Vinamra Garg",
       role: "Developer",
       description:
-        "2nd year student at IIT Mandi, Developer in the Incline program.",
+        "Sophomore at IIT Mandi,UI designer and Developer in the Incline program.",
       image: "/vinamra.jpg",
       socialLinks: [
-        { icon: <Github size={20} />, url: "https://github.com/estside" },
+        { icon: <Github size={20} />, url: "https://github.com/vinamra-21" },
         {
           icon: <Instagram size={20} />,
-          url: "https://www.instagram.com/sauravk_singhh",
+          url: "https://www.instagram.com/_immess__",
         },
         {
           icon: <Linkedin size={20} />,
-          url: "https://www.linkedin.com/in/saurav-kumar-0bb364284/",
+          url: "https://www.linkedin.com/in/vinamra-garg/",
         },
       ],
     },
     {
       name: "Piyush Panpaliya",
       role: "Developer",
-      description:
-        "2nd year student at IIT Mandi, Lead Developer in the Incline program.",
+      description: "Sophomore at IIT Mandi, Developer in the Incline program.",
       image: "/himpact.png",
       socialLinks: [
         { icon: <Github size={20} />, url: "https://github.com/Kishankp9990" },
