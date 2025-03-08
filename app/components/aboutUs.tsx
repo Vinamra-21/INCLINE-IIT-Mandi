@@ -25,31 +25,6 @@ import {
 } from "lucide-react";
 
 const AboutUs: React.FC = () => {
-  // Ensure theme is only set after mounting
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("theme");
-      if (savedTheme) return savedTheme as "light" | "dark";
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    }
-    return "light"; // Default theme for SSR
-  });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      document.documentElement.classList.remove("light", "dark");
-      document.documentElement.classList.add(theme);
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme]);
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   // Team members data
   const teamMembers = [
     {
@@ -57,7 +32,7 @@ const AboutUs: React.FC = () => {
       role: "Mentor and Team Leader",
       description:
         "An Assistant Professor at IIT Mandi, leading the HIMPACT group and the Incline program.",
-      image: "/himpact.png",
+      image: "/vivek.jpg",
       socialLinks: [
         {
           icon: <GraduationCap size={20} />,
@@ -74,8 +49,8 @@ const AboutUs: React.FC = () => {
       name: "Siddik Barbhuiya",
       role: "Mentor",
       description:
-        "A PhD scholar in the HIMPACT Lab, overseeing the backend and data preparation, with support from other Himpact lab members.",
-      image: "/himpact.png",
+        "A PhD scholar in the HIMPACT Lab, overseeing the backend and data preparation.",
+      image: "/siddik.jpeg",
       socialLinks: [
         {
           icon: <GraduationCap size={20} />,
@@ -93,7 +68,7 @@ const AboutUs: React.FC = () => {
       role: "Team",
       description:
         "Final year BTech student at IIT Mandi, Lead Developer in the Incline program.",
-      image: "/himpact.png",
+      image: "/kishan.jpg",
       socialLinks: [
         { icon: <Github size={20} />, url: "https://github.com/Kishankp9990" },
         {
@@ -112,7 +87,7 @@ const AboutUs: React.FC = () => {
       role: "Developer",
       description:
         "2nd year student at IIT Mandi, Developer in the Incline program.",
-      image: "/himpact.png",
+      image: "/vinamra.jpg",
       socialLinks: [
         { icon: <Github size={20} />, url: "https://github.com/estside" },
         {
@@ -161,126 +136,53 @@ const AboutUs: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen w-full transition-colors duration-300 
-        ${
-          theme === "dark"
-            ? "bg-gradient-to-b from-gray-900 to-gray-800 text-white"
-            : "bg-gradient-to-b from-gray-50 to-white text-gray-800"
-        }`}>
-      {/* Navigation Bar */}
-      <div
-        className={`sticky top-0 z-50 backdrop-blur-md 
-          ${theme === "dark" ? "bg-gray-900/80" : "bg-white/80"} shadow-md`}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo */}
-          <a href="/" className="flex items-center">
-            <img
-              src="/INCLINE.png"
-              alt="INCLINE Logo"
-              className="h-10 w-10 mr-3"
-            />
-            <span className="text-xl font-bold">INCLINE</span>
-          </a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-all 
-                  ${
-                    theme === "dark"
-                      ? "hover:bg-teal-800/50 hover:text-teal-300"
-                      : "hover:bg-teal-50 hover:text-teal-700"
-                  }`}>
-                <span className="mr-1.5">{item.icon}</span>
+      className={`mt-20 w-full transition-colors duration-300 
+  bg-gradient-to-b from-gray-50 to-white text-gray-800 
+  dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 dark:text-white`}>
+      <div className="relative flex justify-center mt-5">
+        <div
+          className={`hidden md:flex px-14 py-2 rounded-full bg-white text-gray-800 border border-gray-300 shadow-lg text-sm font-medium transition-all
+        dark:bg-gray-800 dark:text-white dark:border-gray-700
+          `}>
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className={`mx-2 px-3 py-1 rounded-full transition-all
+    dark:hover:bg-teal-800/50 dark:hover:text-teal-300"
+                hover:bg-teal-50 hover:text-teal-700"
+            `}>
+              <span className="mr-1 flex gap-1">
+                {item.icon}
                 {item.name}
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden p-2 rounded-full transition-all "
-            aria-label="Open menu">
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={toggleTheme}
-            className={`hidden md:block p-2 rounded-full transition-all 
-              ${
-                theme === "dark"
-                  ? "bg-gray-700 hover:bg-gray-600"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }
-            `}
-            aria-label="Toggle dark mode">
-            {theme === "dark" ? (
-              <Sun size={20} className="text-yellow-300" />
-            ) : (
-              <Moon size={20} className="text-gray-700" />
-            )}
-          </button>
+              </span>
+            </a>
+          ))}
         </div>
-
-        {/* Mobile Dropdown Menu */}
-        {isMenuOpen && (
-          <div
-            className={`md:hidden bg-gray-800 text-white p-4 space-y-2 absolute w-full left-0 top-14 shadow-lg z-50`}>
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="block px-4 py-2 rounded-md hover:bg-gray-700 flex items-center">
-                <span className="mr-2">{item.icon}</span>
-                {item.name}
-              </a>
-            ))}
-
-            {/* Dark Mode Toggle (Mobile) */}
-            <button
-              onClick={toggleTheme}
-              className="w-full text-left px-4 py-2 rounded-md hover:bg-gray-700 flex items-center">
-              {theme === "dark" ? (
-                <Sun size={20} className="mr-2 text-yellow-300" />
-              ) : (
-                <Moon size={20} className="mr-2 text-gray-300" />
-              )}
-              {theme === "dark" ? "Light Mode" : "Dark Mode"}
-            </button>
-          </div>
-        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Hero Section */}
         <section id="introduction" className="mb-20">
           <div
-            className={`relative overflow-hidden rounded-2xl shadow-xl ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}>
+            className={`relative overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-gray-800 
+             `}>
             <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-teal-500 via-blue-500 to-green-600"></div>
             <div className="relative p-8 md:p-16">
               <div className="max-w-3xl mx-auto text-center">
                 <h1
-                  className={`text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r ${
-                    theme === "dark"
-                      ? "from-teal-400 via-blue-400 to-teal-500"
-                      : "from-teal-600 via-blue-600 to-teal-700"
-                  } inline-block text-transparent bg-clip-text`}>
+                  className={`text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r dark:from-teal-400 dark:via-blue-400 dark:to-teal-500
+                      from-teal-600 via-blue-600 to-teal-700
+                inline-block text-transparent bg-clip-text`}>
                   INCLINE
                 </h1>
                 <p className="text-lg md:text-xl mb-4 font-medium">
                   Indian Climate Information Explorer
                 </p>
                 <div
-                  className={`w-24 h-1 mx-auto mb-8 ${
-                    theme === "dark" ? "bg-teal-500" : "bg-teal-600"
-                  }`}></div>
+                  className={`w-24 h-1 mx-auto mb-8 
+                     dark:bg-teal-500" bg-teal-600
+                  `}></div>
                 <p className="text-lg md:text-xl mb-6 leading-relaxed">
                   A comprehensive decision support platform designed to enhance
                   climate resilience across India. This state-of-the-art system
@@ -305,20 +207,13 @@ const AboutUs: React.FC = () => {
           {/* Mission */}
           <div
             id="mission"
-            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1
-                       ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <div
-              className={`h-2 w-full ${
-                theme === "dark" ? "bg-teal-500" : "bg-teal-600"
-              }`}></div>
+            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 dark:bg-gray-800 bg-white
+                     `}>
+            <div className={`h-2 w-full bg-teal-600 dark:bg-teal-500`}></div>
             <div className="p-8">
               <div className="flex items-center mb-6">
                 <div
-                  className={`p-3 rounded-full mr-4 ${
-                    theme === "dark"
-                      ? "bg-teal-900/50 text-teal-400"
-                      : "bg-teal-100 text-teal-600"
-                  }`}>
+                  className={`p-3 rounded-full mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600`}>
                   <Target size={28} />
                 </div>
                 <h2 className="text-3xl font-bold">Our Mission</h2>
@@ -344,20 +239,13 @@ const AboutUs: React.FC = () => {
           {/* Vision */}
           <div
             id="vision"
-            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1
-                       ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <div
-              className={`h-2 w-full ${
-                theme === "dark" ? "bg-green-500" : "bg-green-600"
-              }`}></div>
+            className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white dark:bg-gray-800
+                       `}>
+            <div className={`h-2 w-full bg-green-600 dark:bg-green-500 `}></div>
             <div className="p-8">
               <div className="flex items-center mb-6">
                 <div
-                  className={`p-3 rounded-full mr-4 ${
-                    theme === "dark"
-                      ? "bg-green-900/50 text-green-400"
-                      : "bg-green-100 text-green-600"
-                  }`}>
+                  className={`p-3 rounded-full mr-4  dark:bg-green-900/50 dark:text-green-400  bg-green-100 text-green-600 `}>
                   <Lightbulb size={28} />
                 </div>
                 <h2 className="text-3xl font-bold">Our Vision</h2>
@@ -370,9 +258,7 @@ const AboutUs: React.FC = () => {
               </p>
 
               <div
-                className={`mt-8 p-4 rounded-lg ${
-                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
-                }`}>
+                className={`mt-8 p-4 rounded-lg dark :bg-gray-700/50  bg-gray-100 `}>
                 <p className="italic text-lg">
                   "Empowering communities with the knowledge and tools they need
                   to face climate challenges and build a sustainable future for
@@ -386,12 +272,9 @@ const AboutUs: React.FC = () => {
         {/* Key Objectives Section */}
         <section id="key-objectives" className="mb-20">
           <div
-            className={`rounded-2xl shadow-xl overflow-hidden transform transition-all duration-500
-                       ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <div
-              className={`h-2 w-full ${
-                theme === "dark" ? "bg-green-500" : "bg-green-600"
-              }`}></div>
+            className={`rounded-2xl shadow-xl overflow-hidden transform transition-all duration-500 bg-white
+                dark:bg-gray-800     `}>
+            <div className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
             <div className="p-8 md:p-12">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -438,18 +321,10 @@ const AboutUs: React.FC = () => {
                 ].map((objective, index) => (
                   <div
                     key={index}
-                    className={`p-6 rounded-xl transform transition-all duration-300 hover:-translate-y-1
-                              ${
-                                theme === "dark"
-                                  ? "bg-gray-700/50 hover:bg-gray-700"
-                                  : "bg-gray-100 hover:bg-gray-200"
-                              }`}>
+                    className={`p-6 rounded-xl transform transition-all duration-300 hover:-translate-y-1 dark:bg-gray-700/50 dark:hover:bg-gray-700 bg-gray-100 hover:bg-gray-200
+                             `}>
                     <div
-                      className={`p-3 rounded-full inline-flex mb-4 ${
-                        theme === "dark"
-                          ? "bg-green-900/50 text-green-400"
-                          : "bg-green-100 text-green-600"
-                      }`}>
+                      className={`p-3 rounded-full inline-flex mb-4 dark:bg-green-900/50 dark:text-green-400 bg-green-100 text-green-600`}>
                       {objective.icon}
                     </div>
                     <h3 className="text-xl font-bold mb-3">
@@ -460,12 +335,8 @@ const AboutUs: React.FC = () => {
                 ))}
 
                 <div
-                  className={`p-6 rounded-xl flex items-center justify-center transform transition-all duration-300 hover:-translate-y-1
-                            ${
-                              theme === "dark"
-                                ? "bg-gradient-to-br from-green-900/50 to-teal-900/50 hover:from-green-900/70 hover:to-teal-900/70"
-                                : "bg-gradient-to-br from-green-100 to-teal-100 hover:from-green-200 hover:to-teal-200"
-                            }`}>
+                  className={`p-6 rounded-xl flex items-center justify-center transform transition-all duration-300 hover:-translate-y-1 dark:bg-gradient-to-br dark:from-green-900/50 dark:to-teal-900/50 dark:hover:from-green-900/70 dark:hover:to-teal-900/70 bg-gradient-to-br from-green-100 to-teal-100 hover:from-green-200 hover:to-teal-200
+                            `}>
                   <div className="text-center">
                     <p className="text-lg font-bold mb-2">Working toward</p>
                     <p className="text-2xl font-bold">
@@ -481,12 +352,11 @@ const AboutUs: React.FC = () => {
         {/* Technology & Innovation Section */}
         <section id="technology" className="mb-20">
           <div
-            className={`rounded-2xl shadow-xl overflow-hidden
-                       ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+            className={`rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-gray-800
+                      `}>
             <div
-              className={`h-2 w-full ${
-                theme === "dark" ? "bg-teal-500" : "bg-teal-600"
-              }`}></div>
+              className={`h-2 w-full bg-teal-600  dark:bg-teal-500
+               `}></div>
             <div className="p-8 md:p-12">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -500,13 +370,11 @@ const AboutUs: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
                 <div
-                  className={`p-8 rounded-xl ${
-                    theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                  }`}>
+                  className={`p-8 rounded-xl bg-gray-100 dark:bg-gray-700
+                   `}>
                   <h3
-                    className={`text-2xl font-bold mb-6 ${
-                      theme === "dark" ? "text-teal-400" : "text-teal-600"
-                    }`}>
+                    className={`text-2xl font-bold mb-6 dark:text-teal-400  text-teal-600 
+                      `}>
                     Key Features
                   </h3>
 
@@ -545,11 +413,7 @@ const AboutUs: React.FC = () => {
                     ].map((feature, index) => (
                       <li key={index} className="flex">
                         <div
-                          className={`p-2 rounded-lg mr-4 ${
-                            theme === "dark"
-                              ? "bg-teal-900/50 text-teal-400"
-                              : "bg-teal-100 text-teal-600"
-                          }`}>
+                          className={`p-2 rounded-lg mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600 `}>
                           {feature.icon}
                         </div>
                         <div>
@@ -566,17 +430,11 @@ const AboutUs: React.FC = () => {
                 <div>
                   <div className="relative">
                     <div
-                      className={`absolute inset-0 blur-xl opacity-20 rounded-xl ${
-                        theme === "dark" ? "bg-green-500" : "bg-green-300"
-                      }`}></div>
+                      className={`absolute inset-0 blur-xl opacity-20 rounded-xl bg-green-300 dark:bg-green-500`}></div>
                     <div
-                      className={`relative p-8 rounded-xl mb-8 ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                      }`}>
+                      className={`relative p-8 rounded-xl mb-8 bg-gray-100 dark:bg-gray-700 `}>
                       <h3
-                        className={`text-2xl font-bold mb-6 ${
-                          theme === "dark" ? "text-green-400" : "text-green-600"
-                        }`}>
+                        className={`text-2xl font-bold mb-6 dark:text-green-400 text-green-600`}>
                         Data Sources
                       </h3>
                       <p className="mb-4">
@@ -587,44 +445,29 @@ const AboutUs: React.FC = () => {
                         <li className="flex items-center">
                           <CheckCircle
                             size={16}
-                            className={`mr-2 ${
-                              theme === "dark"
-                                ? "text-green-400"
-                                : "text-green-600"
-                            }`}
+                            className={`mr-2  text-green-600 dark:text-green-400`}
                           />
                           Global climate models (CMIP6)
                         </li>
                         <li className="flex items-center">
                           <CheckCircle
                             size={16}
-                            className={`mr-2 ${
-                              theme === "dark"
-                                ? "text-green-400"
-                                : "text-green-600"
-                            }`}
+                            className={`mr-2 dark:text-green-400 text-green-600`}
                           />
                           Regional climate modeling outputs
                         </li>
                         <li className="flex items-center">
                           <CheckCircle
                             size={16}
-                            className={`mr-2 ${
-                              theme === "dark"
-                                ? "text-green-400"
-                                : "text-green-600"
-                            }`}
+                            className={`mr-2 text-green-600 dark:text-green-400`}
                           />
                           Historical observed climate records
                         </li>
                         <li className="flex items-center">
                           <CheckCircle
                             size={16}
-                            className={`mr-2 ${
-                              theme === "dark"
-                                ? "text-green-400"
-                                : "text-green-600"
-                            }`}
+                            className={`mr-2 text-green-600 dark:text-green-400
+                          `}
                           />
                           Satellite-derived environmental datasets
                         </li>
@@ -632,13 +475,9 @@ const AboutUs: React.FC = () => {
                     </div>
 
                     <div
-                      className={`relative p-8 rounded-xl ${
-                        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                      }`}>
+                      className={`relative p-8 rounded-xl bg-gray-100 dark:bg-gray-700`}>
                       <h3
-                        className={`text-2xl font-bold mb-6 ${
-                          theme === "dark" ? "text-green-400" : "text-green-600"
-                        }`}>
+                        className={`text-2xl font-bold mb-6 text-green-600 dark:text-green-400`}>
                         Future Developments
                       </h3>
 
@@ -650,18 +489,10 @@ const AboutUs: React.FC = () => {
                         ].map((development, index) => (
                           <div
                             key={index}
-                            className={`p-4 rounded-lg flex items-center transform transition-all duration-300 hover:-translate-y-1 ${
-                              theme === "dark"
-                                ? "bg-gray-600 hover:bg-gray-600/80"
-                                : "bg-white hover:bg-gray-50 shadow-sm"
-                            }`}>
+                            className={`p-4 rounded-lg flex items-center transform transition-all duration-300 hover:-translate-y-1 bg-white hover:bg-gray-50 shadow-sm dark:bg-gray-600 dark:hover:bg-gray-600/80`}>
                             <ArrowRight
                               size={18}
-                              className={`mr-3 ${
-                                theme === "dark"
-                                  ? "text-green-400"
-                                  : "text-green-600"
-                              }`}
+                              className={`mr-3 text-green-600 dark:text-green-400`}
                             />
                             <span>{development}</span>
                           </div>
@@ -678,12 +509,9 @@ const AboutUs: React.FC = () => {
         {/* Team Section */}
         <section id="team" className="mb-12">
           <div
-            className={`rounded-2xl shadow-xl overflow-hidden
-                       ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <div
-              className={`h-2 w-full ${
-                theme === "dark" ? "bg-green-500" : "bg-green-600"
-              }`}></div>
+            className={`rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-gray-800
+                 `}>
+            <div className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
             <div className="p-8 md:p-12">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -699,29 +527,15 @@ const AboutUs: React.FC = () => {
                 {teamMembers.map((member, index) => (
                   <div
                     key={index}
-                    className={`rounded-xl overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-2
-                              ${
-                                theme === "dark"
-                                  ? "bg-gray-700"
-                                  : "bg-white shadow"
-                              }`}>
+                    className={`rounded-xl overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-2 bg-white shadow dark:bg-gray-700
+                             `}>
                     <div
-                      className={`h-2 w-full ${
-                        index % 2 === 0
-                          ? theme === "dark"
-                            ? "bg-teal-500"
-                            : "bg-teal-600"
-                          : theme === "dark"
-                          ? "bg-green-500"
-                          : "bg-green-600"
-                      }`}></div>
+                      className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
                     <div className="p-6">
                       <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
                         <div className="relative">
                           <div
-                            className={`absolute inset-0 rounded-full blur-md opacity-20 ${
-                              theme === "dark" ? "bg-green-400" : "bg-green-300"
-                            }`}></div>
+                            className={`absolute inset-0 rounded-full blur-md opacity-20bg-green-300 dark:bg-green-400`}></div>
                           <img
                             src={member.image}
                             alt={member.name}
@@ -731,15 +545,7 @@ const AboutUs: React.FC = () => {
                         <div>
                           <h3 className="text-2xl font-bold">{member.name}</h3>
                           <p
-                            className={`mb-3 font-medium ${
-                              index % 2 === 0
-                                ? theme === "dark"
-                                  ? "text-teal-400"
-                                  : "text-teal-600"
-                                : theme === "dark"
-                                ? "text-green-400"
-                                : "text-green-600"
-                            }`}>
+                            className={`mb-3 font-medium dark:text-green-400 text-green-600`}>
                             {member.role}
                           </p>
                           <p className="mb-4 text-sm md:text-base">
@@ -752,11 +558,7 @@ const AboutUs: React.FC = () => {
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`p-2 rounded-full transition-colors ${
-                                  theme === "dark"
-                                    ? "bg-gray-600 hover:bg-gray-500 text-white"
-                                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                                }`}>
+                                className={`p-2 rounded-full transition-colors dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white bg-gray-200 hover:bg-gray-300 text-gray-700`}>
                                 {link.icon}
                               </a>
                             ))}

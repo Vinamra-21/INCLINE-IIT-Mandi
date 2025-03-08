@@ -34,20 +34,6 @@ const Footer: React.FC<FooterProps> = ({ isLoggedIn, setIsLoggedIn }) => {
       id="contact"
       className="bg-gray-100 dark:bg-gradient-to-r dark:from-gray-900 dark:to-black text-gray-800 dark:text-gray-300 py-12 transition-colors duration-300">
       <div className="container mx-auto px-4">
-        {/* Logos Section */}
-        <div className="flex justify-center items-center space-x-8 mb-12">
-          <img
-            src="/iit_mandi.png"
-            alt="IIT Mandi Logo"
-            className="h-16 object-contain"
-          />
-          <img
-            src="/himpact.png"
-            alt="HimPACT Logo"
-            className="h-16 object-contain"
-          />
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About Section */}
           <div>
@@ -128,7 +114,21 @@ const Footer: React.FC<FooterProps> = ({ isLoggedIn, setIsLoggedIn }) => {
               &copy; {new Date().getFullYear()} Indian Climate Explorer. All
               rights reserved.
             </p>
-            <div className="flex space-x-6">
+            <div className="flex space-x-6 align-middle">
+              <a href="https://iitmandi.ac.in">
+                <img
+                  src="/iit_mandi.png"
+                  alt="IIT Mandi Logo"
+                  className="h-8 object-contain"
+                />
+              </a>
+              <a href="https://iitmandi.ac.in">
+                <img
+                  src="/himpact.png"
+                  alt="HimPACT Logo"
+                  className="h-8 object-contain"
+                />
+              </a>
               <a
                 href="/privacy"
                 className="hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
