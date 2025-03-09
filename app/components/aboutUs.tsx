@@ -529,7 +529,7 @@ const AboutUs: React.FC = () => {
                     className={`rounded-xl overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-2 bg-white shadow dark:bg-gray-700
                              `}>
                     <div
-                      className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
+                      className={`h-2 w-full dark:bg-blue-500 bg-blue-600`}></div>
                     <div className="p-6">
                       <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
                         <div className="relative">

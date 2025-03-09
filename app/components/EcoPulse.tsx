@@ -9,11 +9,12 @@ import {
   addDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
 import { imageToBase64 } from "./encode";
 import { signInWithGoogle, logout } from "./authservice";
+import { onAuthStateChanged } from "firebase/auth";
+import { Moon, Sun } from "lucide-react";
 
-const handleSignOut = async (
+export const handleSignOut = async (
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
@@ -23,6 +24,7 @@ const handleSignOut = async (
     console.error("Error signing out:", error);
   }
 };
+
 export const handleSignIn = async (
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
@@ -35,17 +37,16 @@ export const handleSignIn = async (
   }
 };
 
-interface NewsItem {
+interface EcoPulseItem {
   id: string;
   Headline: string;
   Content: string;
   Image: string;
-  News: boolean;
   Date: string;
 }
 
 const EcoPulse: React.FC = () => {
-  const [items, setItems] = useState<NewsItem[]>([]);
+  const [items, setItems] = useState<EcoPulseItem[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [editContent, setEditContent] = useState<string>("");
@@ -55,12 +56,11 @@ const EcoPulse: React.FC = () => {
   const [newHeadline, setNewHeadline] = useState<string>("");
   const [newContent, setNewContent] = useState<string>("");
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
-  const [newNews, setNewNews] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "News"));
+        const querySnapshot = await getDocs(collection(db, "EcoPulse"));
         const data = querySnapshot.docs.map((doc) => {
           const docData = doc.data();
           return {
@@ -72,11 +72,10 @@ const EcoPulse: React.FC = () => {
           };
         });
 
-        // Sort by descending date
         data.sort((a, b) => b.Date.getTime() - a.Date.getTime());
-        setItems(data as NewsItem[]);
+        setItems(data as EcoPulseItem[]);
       } catch (error) {
-        console.error("Error fetching news items:", error);
+        console.error("Error fetching pulse items:", error);
       }
     };
 
@@ -96,11 +95,10 @@ const EcoPulse: React.FC = () => {
     try {
       const imageUrl = await imageToBase64(newImageFile);
 
-      const docRef = await addDoc(collection(db, "News"), {
+      const docRef = await addDoc(collection(db, "EcoPulse"), {
         Headline: newHeadline,
         Content: newContent,
         Image: imageUrl,
-        News: newNews,
         Date: new Date().toISOString(),
       });
 
@@ -110,7 +108,6 @@ const EcoPulse: React.FC = () => {
           Headline: newHeadline,
           Content: newContent,
           Image: imageUrl,
-          News: newNews,
           Date: new Date().toISOString(),
         },
         ...prevItems,
@@ -119,7 +116,6 @@ const EcoPulse: React.FC = () => {
       setNewHeadline("");
       setNewContent("");
       setNewImageFile(null);
-      setNewNews(true);
     } catch (error: any) {
       console.error("Error adding item:", error);
     }
@@ -146,7 +142,7 @@ const EcoPulse: React.FC = () => {
         imageUrl = await imageToBase64(editImageFile);
       }
 
-      const itemRef = doc(db, "News", id);
+      const itemRef = doc(db, "EcoPulse", id);
       await updateDoc(itemRef, {
         Headline: editHeadline,
         Content: editContent,
@@ -173,7 +169,7 @@ const EcoPulse: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "News", id));
+      await deleteDoc(doc(db, "EcoPulse", id));
       setItems((prevItems) => prevItems.filter((item) => item.id !== id));
     } catch (error: any) {
       console.error("Error deleting document:", error);
@@ -181,50 +177,46 @@ const EcoPulse: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-green-50 to-blue-50 min-h-screen p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* EcoPulse Header */}
-        <h2 className="text-4xl font-bold text-center mb-10">
-          <span className="text-green-600">Eco</span>
-          <span className="text-blue-600">Pulse</span>
-        </h2>
+    <div className="transition-colors duration-300 min-h-screen p-6 bg-gradient-to-b from-green-50 to-blue-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
+      <div className="mt-20 max-w-6xl mx-auto">
+        {/* Header with Theme Toggle */}
+        <div className="flex justify-center items-center mb-10">
+          <h2 className="text-4xl font-bold ">
+            <span className="text-green-500 dark:text-green-400">Eco</span>
+            <span className="text-blue-500 dark:text-blue-400">Pulse</span>
+          </h2>
+        </div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 gap-8">
-          {/* News & Events Items */}
-          <section className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h3 className="text-3xl mb-6 font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent inline-block">
-              Latest Updates
-            </h3>
+          <div className="grid grid-cols-2 gap-8">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg p-6 shadow-md border-l-4 border-green-500 hover:shadow-xl transition-all duration-300 bg-gray-50 dark:bg-gray-700">
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="md:w-1/2">
+                    <img
+                      src={item.Image}
+                      alt={item.Headline}
+                      className="w-full h-48 object-cover rounded-lg shadow-md"
+                    />
+                  </div>
 
-            <div className="grid gap-8">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-gray-50 rounded-lg p-6 shadow-md border-l-4 border-green-500 hover:shadow-xl transition-all duration-300">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="md:w-1/3">
-                      <img
-                        src={item.Image}
-                        alt={item.Headline}
-                        className="w-full h-48 object-cover rounded-lg shadow-md"
-                      />
-                    </div>
-
-                    <div className="md:w-2/3">
-                      {editing === item.id ? (
-                        <div className="space-y-4">
-                          <input
-                            type="text"
-                            value={editHeadline}
-                            onChange={(e) => setEditHeadline(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-                          />
-                          <textarea
-                            value={editContent}
-                            onChange={(e) => setEditContent(e.target.value)}
-                            className="w-full min-h-[100px] resize-y p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-                          />
+                  <div className="md:w-2/3">
+                    {editing === item.id ? (
+                      <div className="space-y-4">
+                        <input
+                          type="text"
+                          value={editHeadline}
+                          onChange={(e) => setEditHeadline(e.target.value)}
+                          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                        />
+                        <textarea
+                          value={editContent}
+                          onChange={(e) => setEditContent(e.target.value)}
+                          className="w-full min-h-[100px] resize-y p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                        />
+                        <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                           <input
                             type="file"
                             onChange={(e) =>
@@ -232,116 +224,108 @@ const EcoPulse: React.FC = () => {
                                 e.target.files ? e.target.files[0] : null
                               )
                             }
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full"
                           />
-                          <div className="flex gap-4 mt-4">
+                        </div>
+                        <div className="flex gap-4 mt-4">
+                          <button
+                            onClick={() => saveEdit(item.id)}
+                            className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:opacity-90">
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditing(null)}
+                            className="px-6 py-2 rounded-full transition duration-300 ease-in-out bg-gray-300 hover:bg-gray-400 text-gray-900 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <h4 className="text-xl font-bold mb-3 text-blue-700 dark:text-blue-400">
+                          {item.Headline}
+                        </h4>
+                        <p className="mb-4 text-gray-700 dark:text-gray-300">
+                          {item.Content}
+                        </p>
+                        <p className="text-sm mb-4 text-gray-500 dark:text-gray-400">
+                          {new Date(item.Date).toLocaleDateString()}
+                        </p>
+
+                        {isAuthenticated && (
+                          <div className="flex gap-3 mt-2">
                             <button
-                              onClick={() => saveEdit(item.id)}
-                              className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:opacity-90">
-                              Save
+                              onClick={() =>
+                                handleEdit(
+                                  item.id,
+                                  item.Content,
+                                  item.Headline,
+                                  item.Image
+                                )
+                              }
+                              className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:opacity-90">
+                              Edit
                             </button>
                             <button
-                              onClick={() => setEditing(null)}
-                              className="bg-gray-300 text-gray-900 px-6 py-2 rounded-full transition duration-300 ease-in-out hover:bg-gray-400">
-                              Cancel
+                              onClick={() => handleDelete(item.id)}
+                              className="bg-red-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-red-700">
+                              Delete
                             </button>
                           </div>
-                        </div>
-                      ) : (
-                        <>
-                          <h4 className="text-xl font-bold mb-3 text-blue-700">
-                            {item.Headline}
-                          </h4>
-                          <p className="text-gray-700 mb-4">{item.Content}</p>
-                          <p className="text-sm text-gray-500 mb-4">
-                            {new Date(item.Date).toLocaleDateString()}
-                          </p>
-
-                          {isAuthenticated && (
-                            <div className="flex gap-3 mt-2">
-                              <button
-                                onClick={() =>
-                                  handleEdit(
-                                    item.id,
-                                    item.Content,
-                                    item.Headline,
-                                    item.Image
-                                  )
-                                }
-                                className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:opacity-90">
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(item.id)}
-                                className="bg-red-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:bg-red-700">
-                                Delete
-                              </button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              </div>
+            ))}
+          </div>
+        </div>
+        {isAuthenticated && (
+          <section className="mt-4 rounded-xl shadow-lg p-6 transition-colors bg-white dark:bg-gray-800 dark:border dark:border-gray-700">
+            <h3 className="text-2xl mb-6 font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent dark:text-gradient-dark inline-block">
+              Add New Update
+            </h3>
 
-          {/* Admin Section */}
-          {isAuthenticated && (
-            <section className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-2xl mb-6 font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent inline-block">
-                Add New Update
-              </h3>
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Headline"
+                value={newHeadline}
+                onChange={(e) => setNewHeadline(e.target.value)}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+              />
+              <textarea
+                placeholder="Content"
+                value={newContent}
+                onChange={(e) => setNewContent(e.target.value)}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[100px] bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+              />
 
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Headline"
-                  value={newHeadline}
-                  onChange={(e) => setNewHeadline(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                <textarea
-                  placeholder="Content"
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[100px]"
-                />
-                <div>
-                  <label className="flex items-center space-x-2 mb-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={newNews}
-                      onChange={(e) => setNewNews(e.target.checked)}
-                      className="form-checkbox h-5 w-5 text-green-600 rounded focus:ring-green-500"
-                    />
-                    <span className="text-gray-700">Mark as News</span>
-                  </label>
-                </div>
+              <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 dark:border dark:border-gray-600">
                 <input
                   type="file"
                   onChange={(e) =>
                     setNewImageFile(e.target.files ? e.target.files[0] : null)
                   }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full"
                 />
-                <div className="flex gap-4">
-                  <button
-                    onClick={handleAddItem}
-                    className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:opacity-90">
-                    Add Update
-                  </button>
-                  <button
-                    onClick={() => handleSignOut(setIsAuthenticated)}
-                    className="bg-red-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:bg-red-700">
-                    Sign Out
-                  </button>
-                </div>
               </div>
-            </section>
-          )}
-        </div>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleAddItem}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:opacity-90">
+                  Add Pulse
+                </button>
+                <button
+                  onClick={() => handleSignOut(setIsAuthenticated)}
+                  className="bg-red-600 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out hover:bg-red-700">
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -11,9 +11,19 @@ import {
   ArrowRight,
   X,
 } from "lucide-react";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { handleSignIn, handleSignOut } from "./EcoPulse";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 const Footer: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
   return (
     <footer
       id="contact"
@@ -44,9 +54,23 @@ const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2">
               <FooterLink href="/about" text="About Us" />
-              <FooterLink href="/services" text="Our Services" />
-              <FooterLink href="/research" text="Research" />
-              <FooterLink href="/contact" text="Contact" />
+              <FooterLink href="/features" text="Our Services" />
+              <div className="flex">
+                <a href="https://iitmandi.ac.in">
+                  <img
+                    src="/iit_mandi.png"
+                    alt="IIT Mandi Logo"
+                    className="h-12 object-contain p-1"
+                  />
+                </a>
+                <a href="https://iitmandi.ac.in">
+                  <img
+                    src="/himpact.png"
+                    alt="HimPACT Logo"
+                    className="h-12 object-contain p-1"
+                  />
+                </a>
+              </div>
             </ul>
           </div>
 
@@ -68,7 +92,15 @@ const Footer: React.FC = () => {
                 <a
                   href="mailto:contact@indianclimate.org"
                   className="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
-                  contact@indianclimate.org
+                  vivekgupta@iitmandi.ac.in
+                </a>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Mail className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0" />
+                <a
+                  href="mailto:contact@indianclimate.org"
+                  className="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
+                  himpactlab@gmail.com@iitmandi.ac.in
                 </a>
               </div>
             </address>
@@ -93,27 +125,13 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-300 dark:border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+        <div className="pt-8 border-t border-gray-300 dark:border-gray-800 align-middle">
+          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400 align-middle">
             <p className="mb-4 md:mb-0">
               &copy; {new Date().getFullYear()} Indian Climate Explorer. All
               rights reserved.
             </p>
             <div className="flex space-x-6 align-middle">
-              <a href="https://iitmandi.ac.in">
-                <img
-                  src="/iit_mandi.png"
-                  alt="IIT Mandi Logo"
-                  className="h-8 object-contain"
-                />
-              </a>
-              <a href="https://iitmandi.ac.in">
-                <img
-                  src="/himpact.png"
-                  alt="HimPACT Logo"
-                  className="h-8 object-contain"
-                />
-              </a>
               <a
                 href="/privacy"
                 className="hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
@@ -124,19 +142,20 @@ const Footer: React.FC = () => {
                 className="hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
                 Terms of Use
               </a>
-              {/* {isLoggedIn ? (
+
+              {isAuthenticated ? (
                 <button
-                  onClick={() => setIsLoggedIn(false)}
-                  className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
-                  Log out
+                  onClick={() => handleSignOut(setIsAuthenticated)}
+                  className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700">
+                  Log Out
                 </button>
               ) : (
                 <button
-                  onClick={handleOpenLogin}
-                  className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors font-medium">
-                  Log in
+                  onClick={() => handleSignIn(setIsAuthenticated)}
+                  className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+                  Log In
                 </button>
-              )} */}
+              )}
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div className="flex full-h-screen bg-gray-800">
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${

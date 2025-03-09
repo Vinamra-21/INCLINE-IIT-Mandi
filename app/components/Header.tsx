@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
-
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 const Header: React.FC = () => {
   const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
@@ -30,23 +38,24 @@ const Header: React.FC = () => {
       }`}>
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              src="/INCLINE.png"
-              alt="INCLINE Logo"
-              className="h-10 w-10 mr-3"
-            />
-            <span className="text-xl font-bold text-black dark:text-white">
-              INCLINE
-            </span>
-          </div>
-
+          <a href="/">
+            <div className="flex items-center">
+              <img
+                src="/INCLINE.png"
+                alt="INCLINE Logo"
+                className="h-10 w-10 mr-3"
+              />
+              <span className="text-xl font-bold text-black dark:text-white">
+                INCLINE
+              </span>
+            </div>
+          </a>
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink href="/ecoPulse">EcoPulse</NavLink>
             <NavLink href="/#features">Features</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/#contact">Contact</NavLink>
-            {/* {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>} */}
+            {isAuthenticated && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
             <button
               onClick={toggleTheme}
               className={`p-2 rounded-full transition-all ${
@@ -62,7 +71,6 @@ const Header: React.FC = () => {
               )}
             </button>
           </nav>
-
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
@@ -104,7 +112,9 @@ const Header: React.FC = () => {
               <NavLink href="/#contact" onClick={() => setIsOpen(false)}>
                 Contact
               </NavLink>
-              {/* {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>} */}
+              {isAuthenticated && (
+                <NavLink href="/jalShakti">Jal Shakti</NavLink>
+              )}
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-all ${
