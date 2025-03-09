@@ -3,12 +3,7 @@ import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
 
-type HeaderProps = {
-  isLoginOpen: boolean;
-  setIsLoginOpen: (open: boolean) => void;
-};
-
-const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
+const Header: React.FC = () => {
   const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
@@ -41,7 +36,9 @@ const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
               alt="INCLINE Logo"
               className="h-10 w-10 mr-3"
             />
-            <span className="text-xl font-bold">INCLINE</span>
+            <span className="text-xl font-bold text-black dark:text-white">
+              INCLINE
+            </span>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
@@ -49,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
             <NavLink href="/#features">Features</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/#contact">Contact</NavLink>
-            {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
+            {/* {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>} */}
             <button
               onClick={toggleTheme}
               className={`p-2 rounded-full transition-all ${
@@ -107,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({ isLoginOpen, setIsLoginOpen }) => {
               <NavLink href="/#contact" onClick={() => setIsOpen(false)}>
                 Contact
               </NavLink>
-              {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
+              {/* {isLoginOpen && <NavLink href="/jalShakti">Jal Shakti</NavLink>} */}
               <button
                 onClick={toggleTheme}
                 className={`p-2 rounded-full transition-all ${

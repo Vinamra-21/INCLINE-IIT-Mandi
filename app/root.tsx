@@ -25,7 +25,6 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
   return (
     <html lang="en" className="dark">
       <head>
@@ -36,11 +35,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body>
-        <Header isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
+        <Header />
         {children}
         <ScrollRestoration />
         <Scripts />
-        <Footer isLoggedIn={isLoginOpen} setIsLoggedIn={setIsLoginOpen} />
+        <Footer />
       </body>
     </html>
   );

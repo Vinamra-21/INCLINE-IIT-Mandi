@@ -1,12 +1,11 @@
-import Footer from "~/components/Footer";
-import Header from "~/components/Header";
+import EcoPulse from "~/components/EcoPulse";
 
 export default function home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow"></main>
-      <Footer />
+      <main className="flex-grow">
+        <EcoPulse />
+      </main>
     </div>
   );
 }
