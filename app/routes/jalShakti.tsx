@@ -9,8 +9,12 @@ import type { DroughtData, GeoJsonData } from "../featureComponents/types";
 import { Toaster } from "react-hot-toast";
 import dr from "../graphData/drought.json";
 const MapContent = lazy(() => import("../components/HomeMap"));
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../components/authContext";
 
 export default function JalShakti() {
+  const { currentUser, loading } = useAuth();
+  if (loading) return <div>Loading...</div>;
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [mapHeight, setMapHeight] = useState(50);
@@ -51,7 +55,7 @@ export default function JalShakti() {
     setGeoJsonData(data);
   };
 
-  return (
+  return currentUser ? (
     <div className="flex h-screen bg-gray-800">
       {/* Left Panel */}
       <div
@@ -110,5 +114,7 @@ export default function JalShakti() {
 
       <Toaster />
     </div>
+  ) : (
+    <Navigate to="/#footer" replace />
   );
 }

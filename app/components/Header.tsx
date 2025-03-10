@@ -54,7 +54,7 @@ const Header: React.FC = () => {
             <NavLink href="/ecoPulse">EcoPulse</NavLink>
             <NavLink href="/#features">Features</NavLink>
             <NavLink href="/about">About</NavLink>
-            <NavLink href="/#contact">Contact</NavLink>
+            <NavLink href="/#footer">Contact</NavLink>
             {isAuthenticated && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
             <button
               onClick={toggleTheme}
@@ -109,7 +109,7 @@ const Header: React.FC = () => {
               <NavLink href="about" onClick={() => setIsOpen(false)}>
                 About
               </NavLink>
-              <NavLink href="/#contact" onClick={() => setIsOpen(false)}>
+              <NavLink href="/#footer" onClick={() => setIsOpen(false)}>
                 Contact
               </NavLink>
               {isAuthenticated && (
