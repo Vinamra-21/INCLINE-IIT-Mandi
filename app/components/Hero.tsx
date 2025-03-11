@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -15,23 +15,49 @@ const Hero = () => {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
   const initScene = useCallback(() => {
     // Adjust width based on screen size
     const width = window.innerWidth;
     const height = window.innerHeight;
     const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    // Adjust camera position based on screen size
-    camera.position.z = isMobile ? 2 : 1.3;
+
+    // Adjust camera position based on screen size more precisely
+    if (isMobile) {
+      camera.position.z = 2.5;
+    } else if (isTablet) {
+      camera.position.z = 1.8;
+    } else {
+      camera.position.z = 1.3;
+    }
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
+      powerPreference: "high-performance",
     });
+
     renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 
@@ -49,7 +75,9 @@ const Hero = () => {
     earthGroup.rotation.x = (16.4 * Math.PI) / 180;
     earthGroup.rotation.y = (4.4 * Math.PI) / 180;
 
-    const geometry = new THREE.IcosahedronGeometry(1, 12);
+    // Use appropriate geometry detail based on device capability
+    const geometryDetail = window.innerWidth < 768 ? 8 : 12;
+    const geometry = new THREE.IcosahedronGeometry(1, geometryDetail);
     const loader = new THREE.TextureLoader();
 
     const earthMesh = new THREE.Mesh(
@@ -106,8 +134,11 @@ const Hero = () => {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enableZoom = false;
+    controls.autoRotate = window.innerWidth < 1024; // Auto-rotate on mobile and tablet
 
-    const stars = getStarfield({ numStars: 5000 });
+    // Reduce star count on mobile for performance
+    const starCount = window.innerWidth < 768 ? 2000 : 5000;
+    const stars = getStarfield({ numStars: starCount });
     scene.add(stars);
 
     const sunLight = new THREE.DirectionalLight(0xffffff, 2);
@@ -123,7 +154,8 @@ const Hero = () => {
     };
 
     const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-    colorSchemeMedia.addListener(handleColorSchemeChange);
+    colorSchemeMedia.addEventListener("change", handleColorSchemeChange);
+    handleColorSchemeChange(colorSchemeMedia);
 
     const animate = () => {
       earthMesh.rotation.y += ROTATION_SPEED;
@@ -143,19 +175,31 @@ const Hero = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
 
       camera.aspect = width / height;
-      // Adjust camera position on resize
-      camera.position.z = isMobile ? 2 : 1.3;
+
+      // More responsive camera positioning
+      if (isMobile) {
+        camera.position.z = 2.5;
+      } else if (isTablet) {
+        camera.position.z = 1.8;
+      } else {
+        camera.position.z = 1.3;
+      }
+
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+
+      // Update controls based on screen size
+      controls.autoRotate = width < 1024;
     };
 
     window.addEventListener("resize", handleResize);
     rendererRef.current = renderer;
 
     return () => {
-      colorSchemeMedia.removeListener(handleColorSchemeChange);
+      colorSchemeMedia.removeEventListener("change", handleColorSchemeChange);
       window.removeEventListener("resize", handleResize);
       if (sceneRef.current) {
         cancelAnimationFrame(sceneRef.current);
@@ -167,39 +211,45 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden  bg-white dark:bg-gray-900 transition-colors duration-300 ">
+    <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Content section */}
       <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
-        <div className="max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-16 text-center lg:text-left">
+        <div className="w-full max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-8 text-center lg:text-left">
           <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-600 dark:text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-green-600 dark:text-green-300 mb-4 leading-tight transition-colors duration-300">
             Indian Climate Information Explorer
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 sm:mb-8 transition-colors duration-300 font-bold">
+            className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-300 font-bold">
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
           </motion.p>
-          <motion.button
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="lg:w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
-            Start Exploring
-          </motion.button>
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="flex justify-center lg:justify-start">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl max-w-xs">
+              Start Exploring
+            </motion.button>
+          </motion.div>
         </div>
       </div>
 
-      {/* Earth visualization section */}
-      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 lg:opacity-100">
+      {/* Earth visualization section - adjust opacity based on screen size */}
+      <div
+        className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full ${
+          isMobile ? "opacity-40" : "opacity-70 sm:opacity-80 lg:opacity-100"
+        }`}>
         <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>

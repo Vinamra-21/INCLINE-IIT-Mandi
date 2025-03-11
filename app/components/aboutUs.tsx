@@ -135,7 +135,7 @@ const AboutUs: React.FC = () => {
 
   return (
     <div
-      className={`mt-20 w-full transition-colors duration-300 
+      className={`mt-16 sm:mt-20 w-full transition-colors duration-300 
   bg-gradient-to-b from-gray-50 to-white text-gray-800 
   dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 dark:text-white`}>
       <div className="relative flex justify-center mt-5">
@@ -160,36 +160,36 @@ const AboutUs: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-12">
         {/* Hero Section */}
-        <section id="introduction" className="mb-20">
+        <section id="introduction" className="mb-12 sm:mb-20">
           <div
             className={`relative overflow-hidden rounded-2xl shadow-xl bg-white dark:bg-gray-800 
              `}>
             <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-teal-500 via-blue-500 to-green-600"></div>
-            <div className="relative p-8 md:p-16">
+            <div className="relative p-4 sm:p-8 md:p-16">
               <div className="max-w-3xl mx-auto text-center">
                 <h1
-                  className={`text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r dark:from-teal-400 dark:via-blue-400 dark:to-teal-500
+                  className={`text-4xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r dark:from-teal-400 dark:via-blue-400 dark:to-teal-500
                       from-teal-600 via-blue-600 to-teal-700
                 inline-block text-transparent bg-clip-text`}>
                   INCLINE
                 </h1>
-                <p className="text-lg md:text-xl mb-4 font-medium">
+                <p className="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-medium">
                   Indian Climate Information Explorer
                 </p>
                 <div
-                  className={`w-24 h-1 mx-auto mb-8 
+                  className={`w-20 sm:w-24 h-1 mx-auto mb-4 sm:mb-8 
                      dark:bg-teal-500" bg-teal-600
                   `}></div>
-                <p className="text-lg md:text-xl mb-6 leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 leading-relaxed">
                   A comprehensive decision support platform designed to enhance
                   climate resilience across India. This state-of-the-art system
                   integrates climate data, advanced analytics, and user-friendly
                   tools to help both decision-makers and local communities
                   understand and respond to climate challenges effectively.
                 </p>
-                <p className="text-lg md:text-xl leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl leading-relaxed">
                   Developed by the HIMPACT Lab at IIT Mandi, the platform serves
                   diverse users from local community members to government
                   officials, urban planners, disaster management authorities,
@@ -202,23 +202,23 @@ const AboutUs: React.FC = () => {
         </section>
 
         {/* Mission & Vision Section - Side by Side */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-20">
           {/* Mission */}
           <div
             id="mission"
             className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 dark:bg-gray-800 bg-white
                      `}>
             <div className={`h-2 w-full bg-teal-600 dark:bg-teal-500`}></div>
-            <div className="p-8">
-              <div className="flex items-center mb-6">
+            <div className="p-4 sm:p-8">
+              <div className="flex items-center mb-4 sm:mb-6">
                 <div
-                  className={`p-3 rounded-full mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600`}>
-                  <Target size={28} />
+                  className={`p-2 sm:p-3 rounded-full mr-3 sm:mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600`}>
+                  <Target size={24} />
                 </div>
-                <h2 className="text-3xl font-bold">Our Mission</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold">Our Mission</h2>
               </div>
 
-              <p className="text-lg mb-6 leading-relaxed">
+              <p className="text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed">
                 INCLINE's mission is to democratize climate information and
                 empower informed decision-making at all levels of Indian
                 society. We strive to bridge the gap between complex climate
@@ -226,7 +226,7 @@ const AboutUs: React.FC = () => {
                 user-friendly tools and information.
               </p>
 
-              <p className="text-lg leading-relaxed">
+              <p className="text-base sm:text-lg leading-relaxed">
                 Our goal is to enable both local communities and decision-makers
                 to better understand, prepare for, and respond to climate
                 challenges, ultimately contributing to a climate-resilient
@@ -241,24 +241,24 @@ const AboutUs: React.FC = () => {
             className={`rounded-2xl shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-whie dark:bg-gray-800
                        `}>
             <div className={`h-2 w-full bg-green-600 dark:bg-green-500 `}></div>
-            <div className="p-8">
-              <div className="flex items-center mb-6">
+            <div className="p-4 sm:p-8">
+              <div className="flex items-center mb-4 sm:mb-6">
                 <div
-                  className={`p-3 rounded-full mr-4 bg-green-100 text-green-600   dark:bg-green-900/50 dark:text-green-400  `}>
-                  <Lightbulb size={28} />
+                  className={`p-2 sm:p-3 rounded-full mr-3 sm:mr-4 bg-green-100 text-green-600   dark:bg-green-900/50 dark:text-green-400  `}>
+                  <Lightbulb size={24} />
                 </div>
-                <h2 className="text-3xl font-bold">Our Vision</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold">Our Vision</h2>
               </div>
 
-              <p className="text-lg mb-6 leading-relaxed">
+              <p className="text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed">
                 To be India's leading platform for accessible climate
                 information and decision support, fostering climate-resilient
                 communities through knowledge-driven action.
               </p>
 
               <div
-                className={`mt-8 p-4 rounded-lg dark :bg-gray-700/50  bg-gray-100 `}>
-                <p className="italic text-lg text-black">
+                className={`mt-4 sm:mt-8 p-3 sm:p-4 rounded-lg dark:bg-gray-700/50 bg-gray-100 `}>
+                <p className="italic text-base sm:text-lg text-black dark:text-white">
                   "Empowering communities with the knowledge and tools they need
                   to face climate challenges and build a sustainable future for
                   generations to come."
@@ -269,23 +269,23 @@ const AboutUs: React.FC = () => {
         </section>
 
         {/* Key Objectives Section */}
-        <section id="key-objectives" className="mb-20">
+        <section id="key-objectives" className="mb-12 sm:mb-20">
           <div
             className={`rounded-2xl shadow-xl overflow-hidden transform transition-all duration-500 bg-white
                 dark:bg-gray-800     `}>
             <div className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
-            <div className="p-8 md:p-12">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <div className="p-4 sm:p-8 md:p-12">
+              <div className="text-center mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
                   Key Objectives
                 </h2>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto">
                   Our key objectives focus on enhancing climate resilience and
                   supporting sustainable practices across India.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {[
                   {
                     title: "Accessible Information",
@@ -320,25 +320,29 @@ const AboutUs: React.FC = () => {
                 ].map((objective, index) => (
                   <div
                     key={index}
-                    className={`p-6 rounded-xl transform transition-all duration-300 hover:-translate-y-1 dark:bg-gray-700/50 dark:hover:bg-gray-700 bg-gray-100 hover:bg-gray-200
+                    className={`p-4 sm:p-6 rounded-xl transform transition-all duration-300 hover:-translate-y-1 dark:bg-gray-700/50 dark:hover:bg-gray-700 bg-gray-100 hover:bg-gray-200
                              `}>
                     <div
-                      className={`p-3 rounded-full inline-flex mb-4 dark:bg-green-900/50 dark:text-green-400 bg-green-100 text-green-600`}>
+                      className={`p-2 sm:p-3 rounded-full inline-flex mb-3 sm:mb-4 dark:bg-green-900/50 dark:text-green-400 bg-green-100 text-green-600`}>
                       {objective.icon}
                     </div>
-                    <h3 className="text-xl font-bold mb-3">
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">
                       {objective.title}
                     </h3>
-                    <p>{objective.description}</p>
+                    <p className="text-sm sm:text-base">
+                      {objective.description}
+                    </p>
                   </div>
                 ))}
 
                 <div
-                  className={`p-6 rounded-xl flex items-center justify-center transform transition-all duration-300 hover:-translate-y-1 dark:bg-gradient-to-br dark:from-green-900/50 dark:to-teal-900/50 dark:hover:from-green-900/70 dark:hover:to-teal-900/70 bg-gradient-to-br from-green-100 to-teal-100 hover:from-green-200 hover:to-teal-200
+                  className={`p-4 sm:p-6 rounded-xl flex items-center justify-center transform transition-all duration-300 hover:-translate-y-1 dark:bg-gradient-to-br dark:from-green-900/50 dark:to-teal-900/50 dark:hover:from-green-900/70 dark:hover:to-teal-900/70 bg-gradient-to-br from-green-100 to-teal-100 hover:from-green-200 hover:to-teal-200
                             `}>
                   <div className="text-center">
-                    <p className="text-lg font-bold mb-2">Working toward</p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-base sm:text-lg font-bold mb-1 sm:mb-2">
+                      Working toward
+                    </p>
+                    <p className="text-xl sm:text-2xl font-bold">
                       A Climate-Resilient India
                     </p>
                   </div>
@@ -349,75 +353,77 @@ const AboutUs: React.FC = () => {
         </section>
 
         {/* Technology & Innovation Section */}
-        <section id="technology" className="mb-20">
+        <section id="technology" className="mb-12 sm:mb-20">
           <div
             className={`rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-gray-800
                       `}>
             <div
               className={`h-2 w-full bg-teal-600  dark:bg-teal-500
                `}></div>
-            <div className="p-8 md:p-12">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <div className="p-4 sm:p-8 md:p-12">
+              <div className="text-center mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
                   Technology & Innovation
                 </h2>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto">
                   INCLINE leverages cutting-edge technologies to process and
                   visualize complex climate data for informed decision-making.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-16">
                 <div
-                  className={`p-8 rounded-xl bg-gray-100 dark:bg-gray-700
+                  className={`p-4 sm:p-8 rounded-xl bg-gray-100 dark:bg-gray-700
                    `}>
                   <h3
-                    className={`text-2xl font-bold mb-6 dark:text-teal-400  text-teal-600 
+                    className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 dark:text-teal-400  text-teal-600 
                       `}>
                     Key Features
                   </h3>
 
-                  <ul className="space-y-6">
+                  <ul className="space-y-4 sm:space-y-6">
                     {[
                       {
                         title: "Location-specific Projections",
                         description:
                           "Generate climate projections for any location in India",
-                        icon: <Map size={22} />,
+                        icon: <Map size={20} />,
                       },
                       {
                         title: "Intuitive Visualizations",
                         description:
                           "View easy-to-understand maps and graphs of climate data",
-                        icon: <BarChart size={22} />,
+                        icon: <BarChart size={20} />,
                       },
                       {
                         title: "Temporal Comparison",
                         description:
                           "Compare climate conditions across different time periods",
-                        icon: <Clock size={22} />,
+                        icon: <Clock size={20} />,
                       },
                       {
                         title: "Watershed Analysis",
                         description:
                           "Get detailed watershed information for your region",
-                        icon: <Droplet size={22} />,
+                        icon: <Droplet size={20} />,
                       },
                       {
                         title: "Comprehensive Reports",
                         description:
                           "Access detailed climate reports (coming soon)",
-                        icon: <FileText size={22} />,
+                        icon: <FileText size={20} />,
                       },
                     ].map((feature, index) => (
                       <li key={index} className="flex">
                         <div
-                          className={`p-2 rounded-lg mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600 `}>
+                          className={`p-2 rounded-lg mr-3 sm:mr-4 dark:bg-teal-900/50 dark:text-teal-400 bg-teal-100 text-teal-600 flex-shrink-0`}>
                           {feature.icon}
                         </div>
                         <div>
-                          <h4 className="text-lg font-bold">{feature.title}</h4>
-                          <p className="text-sm md:text-base">
+                          <h4 className="text-base sm:text-lg font-bold">
+                            {feature.title}
+                          </h4>
+                          <p className="text-xs sm:text-sm md:text-base">
                             {feature.description}
                           </p>
                         </div>
@@ -431,16 +437,16 @@ const AboutUs: React.FC = () => {
                     <div
                       className={`absolute inset-0 blur-xl opacity-20 rounded-xl bg-green-300 dark:bg-green-500`}></div>
                     <div
-                      className={`relative p-8 rounded-xl mb-8 bg-gray-100 dark:bg-gray-700 `}>
+                      className={`relative p-4 sm:p-8 rounded-xl mb-6 sm:mb-8 bg-gray-100 dark:bg-gray-700 `}>
                       <h3
-                        className={`text-2xl font-bold mb-6 dark:text-green-400 text-green-600`}>
+                        className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 dark:text-green-400 text-green-600`}>
                         Data Sources
                       </h3>
-                      <p className="mb-4">
+                      <p className="mb-3 sm:mb-4 text-sm sm:text-base">
                         Our platform integrates high-quality climate data from
                         multiple sources:
                       </p>
-                      <ul className="space-y-2">
+                      <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base">
                         <li className="flex items-center">
                           <CheckCircle
                             size={16}
@@ -474,13 +480,13 @@ const AboutUs: React.FC = () => {
                     </div>
 
                     <div
-                      className={`relative p-8 rounded-xl bg-gray-100 dark:bg-gray-700`}>
+                      className={`relative p-4 sm:p-8 rounded-xl bg-gray-100 dark:bg-gray-700`}>
                       <h3
-                        className={`text-2xl font-bold mb-6 text-green-600 dark:text-green-400`}>
+                        className={`text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-green-600 dark:text-green-400`}>
                         Future Developments
                       </h3>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         {[
                           "Drought early warning system",
                           "Additional climate variables and indicators",
@@ -488,12 +494,14 @@ const AboutUs: React.FC = () => {
                         ].map((development, index) => (
                           <div
                             key={index}
-                            className={`p-4 rounded-lg flex items-center transform transition-all duration-300 hover:-translate-y-1 bg-white hover:bg-gray-50 shadow-sm dark:bg-gray-600 dark:hover:bg-gray-600/80`}>
+                            className={`p-3 sm:p-4 rounded-lg flex items-center transform transition-all duration-300 hover:-translate-y-1 bg-white hover:bg-gray-50 shadow-sm dark:bg-gray-600 dark:hover:bg-gray-600/80`}>
                             <ArrowRight
-                              size={18}
-                              className={`mr-3 text-green-600 dark:text-green-400`}
+                              size={16}
+                              className={`mr-2 sm:mr-3 text-green-600 dark:text-green-400`}
                             />
-                            <span>{development}</span>
+                            <span className="text-sm sm:text-base">
+                              {development}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -506,23 +514,23 @@ const AboutUs: React.FC = () => {
         </section>
 
         {/* Team Section */}
-        <section id="team" className="mb-12">
+        <section id="team" className="mb-8 sm:mb-12">
           <div
             className={`rounded-2xl shadow-xl overflow-hidden bg-white dark:bg-gray-800
                  `}>
             <div className={`h-2 w-full dark:bg-green-500 bg-green-600`}></div>
-            <div className="p-8 md:p-12">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <div className="p-4 sm:p-8 md:p-12">
+              <div className="text-center mb-8 sm:mb-12">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
                   INCLINE Leadership
                 </h2>
-                <p className="text-lg md:text-xl max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto">
                   Meet the dedicated team behind our climate intelligence
                   platform.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                 {teamMembers.map((member, index) => (
                   <div
                     key={index}
@@ -530,34 +538,36 @@ const AboutUs: React.FC = () => {
                              `}>
                     <div
                       className={`h-2 w-full dark:bg-blue-500 bg-blue-600`}></div>
-                    <div className="p-6">
-                      <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-6">
+                    <div className="p-4 sm:p-6">
+                      <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 sm:gap-6">
                         <div className="relative">
                           <div
                             className={`absolute inset-0 rounded-full blur-md opacity-20bg-green-300 dark:bg-green-400`}></div>
                           <img
                             src={member.image}
                             alt={member.name}
-                            className="w-28 h-28 rounded-full object-cover relative border-4 border-white dark:border-gray-800"
+                            className="w-20 h-20 sm:w-28 sm:h-28 rounded-full object-cover relative border-4 border-white dark:border-gray-800"
                           />
                         </div>
                         <div>
-                          <h3 className="text-2xl font-bold">{member.name}</h3>
+                          <h3 className="text-xl sm:text-2xl font-bold">
+                            {member.name}
+                          </h3>
                           <p
-                            className={`mb-3 font-medium dark:text-green-400 text-green-600`}>
+                            className={`mb-2 sm:mb-3 font-medium dark:text-green-400 text-green-600`}>
                             {member.role}
                           </p>
-                          <p className="mb-4 text-sm md:text-base">
+                          <p className="mb-3 sm:mb-4 text-xs sm:text-sm md:text-base">
                             {member.description}
                           </p>
-                          <div className="flex justify-center md:justify-start gap-3">
+                          <div className="flex justify-center md:justify-start gap-2 sm:gap-3">
                             {member.socialLinks.map((link, linkIndex) => (
                               <a
                                 key={linkIndex}
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`p-2 rounded-full transition-colors dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white bg-gray-200 hover:bg-gray-300 text-gray-700`}>
+                                className={`p-1 sm:p-2 rounded-full transition-colors dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white bg-gray-200 hover:bg-gray-300 text-gray-700`}>
                                 {link.icon}
                               </a>
                             ))}
