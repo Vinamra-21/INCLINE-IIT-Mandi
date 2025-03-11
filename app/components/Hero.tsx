@@ -46,9 +46,6 @@ const Hero = () => {
   const isXLargeScreen = screenSize === "xlarge";
 
   const initScene = useCallback(() => {
-    // Only initialize scene for medium screens and larger
-    if (isSmallScreen) return null;
-
     // Adjust width based on screen size
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -60,7 +57,7 @@ const Hero = () => {
 
     // Adjust camera position based on screen size more precisely
     if (isMobile) {
-      camera.position.z = 2.5;
+      camera.position.z = 3.0; // Increased for better visibility on small screens
     } else if (isTablet) {
       camera.position.z = 1.8;
     } else {
@@ -68,13 +65,16 @@ const Hero = () => {
     }
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: isMobile ? false : true, // Disable antialiasing on mobile for performance
       alpha: true,
       powerPreference: "high-performance",
     });
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
+    // Lower pixel ratio for small screens to improve performance
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2)
+    );
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 
@@ -84,19 +84,18 @@ const Hero = () => {
     }
 
     return { scene, camera, renderer };
-  }, [isSmallScreen]);
+  }, []);
 
   const createEarthGroup = useCallback(() => {
-    // Skip for small screens
-    if (isSmallScreen) return null;
-
     const earthGroup = new THREE.Group();
     earthGroup.rotation.z = (23.4 * Math.PI) / 180;
     earthGroup.rotation.x = (16.4 * Math.PI) / 180;
     earthGroup.rotation.y = (4.4 * Math.PI) / 180;
 
     // Use appropriate geometry detail based on device capability
-    const geometryDetail = window.innerWidth < 768 ? 8 : 12;
+    // Lower detail for small screens
+    const isMobile = window.innerWidth < 640;
+    const geometryDetail = isMobile ? 6 : window.innerWidth < 768 ? 8 : 12;
     const geometry = new THREE.IcosahedronGeometry(1, geometryDetail);
     const loader = new THREE.TextureLoader();
 
@@ -106,7 +105,7 @@ const Hero = () => {
         map: loader.load("./textures/00_earthmap1k.jpg"),
         specularMap: loader.load("./textures/02_earthspec1k.jpg"),
         bumpMap: loader.load("./textures/01_earthbump1k.jpg"),
-        bumpScale: 0.04,
+        bumpScale: isMobile ? 0.02 : 0.04, // Reduced bump scale for performance
         shininess: 15,
       })
     );
@@ -117,7 +116,7 @@ const Hero = () => {
       new THREE.MeshBasicMaterial({
         map: loader.load("./textures/03_earthlights1k.jpg"),
         blending: THREE.AdditiveBlending,
-        opacity: 0.8,
+        opacity: isMobile ? 0.6 : 0.8, // Lower opacity for mobile
       })
     );
     earthGroup.add(lightsMesh);
@@ -127,7 +126,7 @@ const Hero = () => {
       new THREE.MeshStandardMaterial({
         map: loader.load("./textures/04_earthcloudmap.jpg"),
         transparent: true,
-        opacity: 0.6,
+        opacity: isMobile ? 0.4 : 0.6, // Lower opacity for mobile
         blending: THREE.AdditiveBlending,
         alphaMap: loader.load("./textures/05_earthcloudmaptrans.jpg"),
       })
@@ -140,7 +139,7 @@ const Hero = () => {
     earthGroup.add(glowMesh);
 
     return { earthGroup, earthMesh, lightsMesh, cloudsMesh, glowMesh };
-  }, [isSmallScreen]);
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -161,10 +160,15 @@ const Hero = () => {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enableZoom = false;
-    controls.autoRotate = window.innerWidth < 1024; // Auto-rotate on mobile and tablet
+    controls.autoRotate = true; // Always auto-rotate for better user experience
+    controls.autoRotateSpeed = isSmallScreen ? 1.5 : 1.0; // Faster rotation on small screens
 
     // Reduce star count on mobile for performance
-    const starCount = window.innerWidth < 768 ? 2000 : 5000;
+    const starCount = isSmallScreen
+      ? 1000
+      : window.innerWidth < 768
+      ? 2000
+      : 5000;
     const stars = getStarfield({ numStars: starCount });
     scene.add(stars);
 
@@ -202,17 +206,14 @@ const Hero = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      // Don't update if we're on a small screen
-      if (width < 640) return;
-
-      const isMobile = width < 768;
+      const isMobile = width < 640;
       const isTablet = width >= 768 && width < 1024;
 
       camera.aspect = width / height;
 
       // More responsive camera positioning
       if (isMobile) {
-        camera.position.z = 2.5;
+        camera.position.z = 3.0;
       } else if (isTablet) {
         camera.position.z = 1.8;
       } else {
@@ -222,8 +223,9 @@ const Hero = () => {
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
 
-      // Update controls based on screen size
-      controls.autoRotate = width < 1024;
+      // Always auto-rotate, but faster on smaller screens
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = isMobile ? 1.5 : 1.0;
     };
 
     window.addEventListener("resize", handleResize);
@@ -243,18 +245,28 @@ const Hero = () => {
 
   return (
     <section
-      className={`relative ${
-        isSmallScreen ? "min-h-[80vh]" : "min-h-screen"
-      } flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300`}>
-      {/* Content section */}
+      className={`relative min-h-screen flex flex-col overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300`}>
+      {/* Earth visualization backdrop - Positioned behind content on small screens */}
       <div
-        className={`mt-10 md:mt-0 w-full ${
+        className={`absolute top-0 right-0 w-full h-full ${
+          isSmallScreen
+            ? "opacity-40"
+            : "opacity-70 sm:opacity-80 lg:opacity-100"
+        } lg:relative lg:w-1/2`}>
+        <div ref={canvasRef} className="w-full h-full" />
+      </div>
+
+      {/* Content section - Centered on small screens */}
+      <div
+        className={`w-full ${
           !isSmallScreen ? "lg:w-1/2" : ""
-        } px-4 sm:px-6 lg:px-8 flex items-center justify-center relative z-10 `}>
+        } px-4 sm:px-6 lg:px-8 flex items-center justify-center relative z-10 ${
+          isSmallScreen ? "h-screen" : ""
+        }`}>
         <div
           className={`w-full max-w-3xl mx-auto ${
             !isSmallScreen ? "lg:mx-0 lg:pr-8" : ""
-          } py-12 lg:py-0 text-center`}>
+          } py-12 lg:py-0 ${isSmallScreen ? "text-center" : ""}`}>
           <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -269,7 +281,8 @@ const Hero = () => {
                   ? "text-5xl"
                   : "text-7xl"
               } 
-              md:text-left font-bold text-green-600 dark:text-green-300 mb-4 leading-tight transition-colors duration-300
+              ${isSmallScreen ? "text-center" : "md:text-left"} 
+              font-bold text-green-600 dark:text-green-300 mb-4 leading-tight transition-colors duration-300
             `}>
             Indian Climate Information Explorer
           </motion.h1>
@@ -287,7 +300,8 @@ const Hero = () => {
                   ? "text-2xl"
                   : "text-3xl"
               } 
-              md:text-left text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-300 font-bold
+              ${isSmallScreen ? "text-center" : "md:text-left"}
+              text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-300 font-bold
             `}>
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
@@ -296,7 +310,11 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.4 }}
-            className="flex justify-center md:justify-start">
+            className={`flex ${
+              isSmallScreen
+                ? "justify-center"
+                : "justify-center md:justify-start"
+            }`}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -320,11 +338,6 @@ const Hero = () => {
             </motion.button>
           </motion.div>
         </div>
-      </div>
-
-      <div
-        className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-70 sm:opacity-80 lg:opacity-100`}>
-        <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>
   );
