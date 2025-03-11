@@ -322,13 +322,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Earth visualization section - Only show on medium screens and larger */}
-      {!isSmallScreen && (
-        <div
-          className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-70 sm:opacity-80 lg:opacity-100`}>
-          <div ref={canvasRef} className="w-full h-full" />
-        </div>
-      )}
+      <div
+        className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-70 sm:opacity-80 lg:opacity-100`}>
+        <div ref={canvasRef} className="w-full h-full" />
+      </div>
     </section>
   );
 };
