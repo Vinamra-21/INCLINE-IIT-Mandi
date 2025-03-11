@@ -15,23 +15,40 @@ const Hero = () => {
   const canvasRef = useRef(null);
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [screenSize, setScreenSize] = useState("large");
 
-  // Check if device is mobile
+  // Check screen size
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setScreenSize("small");
+      } else if (width < 768) {
+        setScreenSize("medium");
+      } else if (width < 1024) {
+        setScreenSize("large");
+      } else {
+        setScreenSize("xlarge");
+      }
     };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
 
+  const isSmallScreen = screenSize === "small";
+  const isMediumScreen = screenSize === "medium";
+  const isLargeScreen = screenSize === "large";
+  const isXLargeScreen = screenSize === "xlarge";
+
   const initScene = useCallback(() => {
+    // Only initialize scene for medium screens and larger
+    if (isSmallScreen) return null;
+
     // Adjust width based on screen size
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -67,9 +84,12 @@ const Hero = () => {
     }
 
     return { scene, camera, renderer };
-  }, []);
+  }, [isSmallScreen]);
 
   const createEarthGroup = useCallback(() => {
+    // Skip for small screens
+    if (isSmallScreen) return null;
+
     const earthGroup = new THREE.Group();
     earthGroup.rotation.z = (23.4 * Math.PI) / 180;
     earthGroup.rotation.x = (16.4 * Math.PI) / 180;
@@ -120,14 +140,22 @@ const Hero = () => {
     earthGroup.add(glowMesh);
 
     return { earthGroup, earthMesh, lightsMesh, cloudsMesh, glowMesh };
-  }, []);
+  }, [isSmallScreen]);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    // Skip Three.js initialization for small screens
+    if (isSmallScreen || !canvasRef.current) return;
 
-    const { scene, camera, renderer } = initScene();
+    const sceneData = initScene();
+    if (!sceneData) return;
+
+    const { scene, camera, renderer } = sceneData;
+
+    const earthData = createEarthGroup();
+    if (!earthData) return;
+
     const { earthGroup, earthMesh, lightsMesh, cloudsMesh, glowMesh } =
-      createEarthGroup();
+      earthData;
 
     scene.add(earthGroup);
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -174,6 +202,10 @@ const Hero = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
+
+      // Don't update if we're on a small screen
+      if (width < 640) return;
+
       const isMobile = width < 768;
       const isTablet = width >= 768 && width < 1024;
 
@@ -208,25 +240,56 @@ const Hero = () => {
         rendererRef.current.dispose();
       }
     };
-  }, [initScene, createEarthGroup]);
+  }, [initScene, createEarthGroup, isSmallScreen]);
 
   return (
-    <section className="mt-10 md:mt-0 relative min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300">
+    <section
+      className={`relative ${
+        isSmallScreen ? "min-h-[80vh]" : "min-h-screen"
+      } flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300`}>
       {/* Content section */}
-      <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
-        <div className="w-full max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-8 text-center lg:text-left">
+      <div
+        className={`w-full ${
+          !isSmallScreen ? "lg:w-1/2" : ""
+        } px-4 sm:px-6 lg:px-8 flex items-center justify-center relative z-10`}>
+        <div
+          className={`w-full max-w-3xl mx-auto ${
+            !isSmallScreen ? "lg:mx-0 lg:pr-8" : ""
+          } py-12 lg:py-0 text-center`}>
           <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-green-600 dark:text-green-300 mb-4 leading-tight transition-colors duration-300">
+            className={`
+              ${
+                isSmallScreen
+                  ? "text-3xl"
+                  : isMediumScreen
+                  ? "text-4xl"
+                  : isLargeScreen
+                  ? "text-5xl"
+                  : "text-7xl"
+              } 
+              md:text-left font-bold text-green-600 dark:text-green-300 mb-4 leading-tight transition-colors duration-300
+            `}>
             Indian Climate Information Explorer
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-300 font-bold">
+            className={`
+              ${
+                isSmallScreen
+                  ? "text-lg"
+                  : isMediumScreen
+                  ? "text-xl"
+                  : isLargeScreen
+                  ? "text-2xl"
+                  : "text-3xl"
+              } 
+              md:text-left text-gray-700 dark:text-gray-300 mb-6 transition-colors duration-300 font-bold
+            `}>
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
           </motion.p>
@@ -234,24 +297,39 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.4 }}
-            className="flex justify-center lg:justify-start">
+            className="flex justify-center md:justify-start">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl max-w-xs">
+              className={`
+                w-full sm:w-auto 
+                bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 
+                text-white px-6 sm:px-8 py-3 
+                rounded-full 
+                ${
+                  isSmallScreen
+                    ? "text-lg"
+                    : isMediumScreen
+                    ? "text-lg"
+                    : isLargeScreen
+                    ? "text-xl"
+                    : "text-2xl"
+                } 
+                 font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl max-w-xs
+              `}>
               Start Exploring
             </motion.button>
           </motion.div>
         </div>
       </div>
 
-      {/* Earth visualization section - adjust opacity based on screen size */}
-      <div
-        className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full ${
-          isMobile ? "opacity-40" : "opacity-70 sm:opacity-80 lg:opacity-100"
-        }`}>
-        <div ref={canvasRef} className="w-full h-full" />
-      </div>
+      {/* Earth visualization section - Only show on medium screens and larger */}
+      {!isSmallScreen && (
+        <div
+          className={`absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-70 sm:opacity-80 lg:opacity-100`}>
+          <div ref={canvasRef} className="w-full h-full" />
+        </div>
+      )}
     </section>
   );
 };
