@@ -143,8 +143,7 @@ const Hero = () => {
   }, [isSmallScreen]);
 
   useEffect(() => {
-    // Skip Three.js initialization for small screens
-    if (isSmallScreen || !canvasRef.current) return;
+    if (!canvasRef.current) return;
 
     const sceneData = initScene();
     if (!sceneData) return;
@@ -249,9 +248,9 @@ const Hero = () => {
       } flex flex-col lg:flex-row overflow-hidden bg-white dark:bg-gray-900 transition-colors duration-300`}>
       {/* Content section */}
       <div
-        className={`w-full ${
+        className={`mt-10 md:mt-0 w-full ${
           !isSmallScreen ? "lg:w-1/2" : ""
-        } px-4 sm:px-6 lg:px-8 flex items-center justify-center relative z-10`}>
+        } px-4 sm:px-6 lg:px-8 flex items-center justify-center relative z-10 `}>
         <div
           className={`w-full max-w-3xl mx-auto ${
             !isSmallScreen ? "lg:mx-0 lg:pr-8" : ""
