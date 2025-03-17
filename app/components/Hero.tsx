@@ -175,14 +175,14 @@ const Hero = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-600 dark:text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-green-300 mb-4 sm:mb-6 lg:mb-8 leading-tight transition-colors duration-300 ">
             Indian Climate Information Explorer
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-lg sm:text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 sm:mb-8 transition-colors duration-300 font-bold">
+            className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-6 sm:mb-8 transition-colors duration-300 font-bold">
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
           </motion.p>
@@ -192,7 +192,7 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="lg:w-full sm:w-auto bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
+            className="lg:w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
             Start Exploring
           </motion.button>
         </div>
