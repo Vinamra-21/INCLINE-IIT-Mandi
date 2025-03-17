@@ -108,16 +108,6 @@ const Hero = () => {
     scene.add(earthGroup);
     const controls = new OrbitControls(camera, renderer.domElement);
 
-    if (isMobile) {
-      controls.enableRotate = false;
-      controls.enableZoom = false;
-      controls.enablePan = false;
-    } else {
-      controls.enableZoom = true;
-      controls.dampingFactor = 0.05;
-      controls.enablePan = true;
-      controls.enableRotate = true;
-    }
     const stars = getStarfield({ numStars: 10000 });
     scene.add(stars);
 
@@ -210,7 +200,7 @@ const Hero = () => {
       </div>
 
       {/* Earth visualization section */}
-      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 md:opacity-100">
+      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 md:opacity-100 pointer-events-none md:pointer-events-auto">
         <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>
