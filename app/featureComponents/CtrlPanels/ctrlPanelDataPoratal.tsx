@@ -1,5 +1,10 @@
-import { Download, MessageSquare, ChevronDown } from "lucide-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Download,
+  MessageSquare,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 //@ts-expect-error
 export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
