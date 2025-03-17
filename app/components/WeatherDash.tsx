@@ -12,6 +12,7 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+
 const MapContent = lazy(() => import("./HomeMap"));
 
 const weatherData = [
@@ -22,6 +23,26 @@ const weatherData = [
   { day: "2060", temp: 25 },
   { day: "2080", temp: 25 },
   { day: "2100", temp: 25 },
+];
+const heads = [
+  {
+    index: 1,
+    temperature: "13°",
+    condition: "Stormy",
+    description: "with partly cloudy",
+  },
+  {
+    index: 2,
+    temperature: "25°",
+    condition: "Sunny",
+    description: "Clear sky",
+  },
+  {
+    index: 3,
+    temperature: "18°",
+    condition: "Rainy",
+    description: "Light showers",
+  },
 ];
 
 export default function WeatherDashboard() {
@@ -86,16 +107,24 @@ export default function WeatherDashboard() {
         <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 md:p-6 space-y-4 transition-colors">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-            <div>
-              <div className="text-4xl sm:text-5xl md:text-6xl font-light">
-                13°
-              </div>
-              <h1 className="text-xl sm:text-2xl mt-2">Stormy</h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                with partly cloudy
-              </p>
+            <div className="flex justify-center gap-3 items-center w-full">
+              {heads.map((item) => (
+                <div
+                  key={item.index}
+                  className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                  <div className="text-3xl sm:text-4xl md:text-6xl font-light">
+                    {item.temperature}
+                  </div>
+                  <h1 className="text-md sm:text-xl mt-2 font-medium">
+                    {item.condition}
+                  </h1>
+                  <p className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            {/* <div className="flex flex-wrap gap-2 sm:gap-3">
               {["Button 1", "Button 2", "Button 3", "Button 4"].map((label) => (
                 <button
                   key={label}
@@ -103,7 +132,7 @@ export default function WeatherDashboard() {
                   {label}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Time Range Buttons */}
