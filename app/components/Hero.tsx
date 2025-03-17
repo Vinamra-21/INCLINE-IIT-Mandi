@@ -167,7 +167,7 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="mt-18 relative min-h-screen flex flex-col lg:flex-row overflow-hidden  bg-white dark:bg-gray-900 transition-colors duration-300 ">
+    <section className="md:mt-18 mt-24 relative min-h-screen flex flex-col lg:flex-row overflow-hidden   bg-gray-900 transition-colors duration-300 ">
       {/* Content section */}
       <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
         <div className="max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-16 text-center lg:text-left">
