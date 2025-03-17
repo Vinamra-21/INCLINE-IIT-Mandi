@@ -12,7 +12,6 @@ import {
 import { imageToBase64 } from "./encode";
 import { signInWithGoogle, logout } from "./authservice";
 import { onAuthStateChanged } from "firebase/auth";
-import { Moon, Sun } from "lucide-react";
 
 export const handleSignOut = async (
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
