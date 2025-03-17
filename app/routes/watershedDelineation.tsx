@@ -1,6 +1,6 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import GraphComponent from "~/featureComponents/graph";
-import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelClimate";
+import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelWatershed";
 
 const MapContent = lazy(() => import("../components/HomeMap"));
 
@@ -30,9 +30,17 @@ export default function Dashboard() {
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
-
+  useEffect(() => {
+    const mainSection = document.getElementById("main-section");
+    if (mainSection) {
+      window.scrollTo({
+        top: mainSection.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, []);
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div className="mt-18 flex h-screen bg-gray-800" id="main-section">
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${

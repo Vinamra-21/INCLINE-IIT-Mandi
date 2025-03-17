@@ -1,10 +1,9 @@
 import {
   Mail,
   MapPin,
-  Facebook,
+  Link,
   Twitter,
   Linkedin,
-  Instagram,
   Eye,
   EyeOff,
   Lock,
@@ -40,10 +39,21 @@ const Footer: React.FC = () => {
               strategies for a sustainable future.
             </p>
             <div className="flex space-x-4">
-              <SocialLink href="#" Icon={Facebook} label="Facebook" />
-              <SocialLink href="#" Icon={Twitter} label="Twitter" />
-              <SocialLink href="#" Icon={Linkedin} label="LinkedIn" />
-              <SocialLink href="#" Icon={Instagram} label="Instagram" />
+              <SocialLink
+                href="https://x.com/HIMPACTLAB_IITM"
+                Icon={Twitter}
+                label="Twitter"
+              />
+              <SocialLink
+                href="https://www.linkedin.com/company/himalayan-hydroclimatology-impact-research-lab/?viewAsMember=true"
+                Icon={Linkedin}
+                label="LinkedIn"
+              />
+              <SocialLink
+                href="https://sites.google.com/view/himpactlab/"
+                Icon={Link}
+                label="Site"
+              />
             </div>
           </div>
 
@@ -56,14 +66,16 @@ const Footer: React.FC = () => {
               <FooterLink href="/about" text="About Us" />
               <FooterLink href="/features" text="Our Services" />
               <div className="flex">
-                <a href="https://iitmandi.ac.in">
+                <a href="https://iitmandi.ac.in" target="_blank">
                   <img
                     src="/iit_mandi.png"
                     alt="IIT Mandi Logo"
                     className="h-12 object-contain p-1"
                   />
                 </a>
-                <a href="https://iitmandi.ac.in">
+                <a
+                  href="https://sites.google.com/view/himpactlab/"
+                  target="_blank">
                   <img
                     src="/himpact.png"
                     alt="HimPACT Logo"
@@ -81,7 +93,11 @@ const Footer: React.FC = () => {
             </h4>
             <address className="not-italic">
               <div className="flex items-start space-x-3 mb-2">
-                <MapPin className="w-5 h-5 text-green-500 dark:text-green-400 mt-1 flex-shrink-0" />
+                <a
+                  href="https://www.google.com/maps?q=31.780222,76.996624"
+                  target="_blank">
+                  <MapPin className="w-5 h-5 text-green-500 dark:text-green-400 mt-1 flex-shrink-0" />
+                </a>
                 <span className="text-sm text-gray-700 dark:text-gray-300">
                   A11-Building, 3rd floor, SCENE, IIT MANDI (North Campus),
                   Mandi-175005, Himachal Pradesh, India
@@ -100,7 +116,7 @@ const Footer: React.FC = () => {
                 <a
                   href="mailto:contact@indianclimate.org"
                   className="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
-                  himpactlab@gmail.com@iitmandi.ac.in
+                  himpactlab@gmail.com
                 </a>
               </div>
             </address>

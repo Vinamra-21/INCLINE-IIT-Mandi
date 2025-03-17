@@ -1,23 +1,13 @@
-"use client";
-
-import type React from "react";
-
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "../featureComponents/graph";
-import { LeftPanelDrought } from "../featureComponents/CtrlPanels/ctrlPanelDrought";
-import type { DroughtData, GeoJsonData } from "../featureComponents/types";
-import { Toaster } from "react-hot-toast";
-import dr from "../graphData/drought.json";
+import GraphComponent from "~/featureComponents/graph";
+import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelDrought";
+
 const MapContent = lazy(() => import("../components/HomeMap"));
 
-export default function DroughtMonitor() {
+export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [mapHeight, setMapHeight] = useState(50);
-  const [droughtData, setDroughtData] = useState<DroughtData>(
-    dr.datasets[0]["24.0"]
-  );
-  const [geoJsonData, setGeoJsonData] = useState<GeoJsonData | null>(null);
+  const [mapHeight, setMapHeight] = useState(50); // Height in percentage
 
   useEffect(() => {
     setMapLoaded(true);
@@ -41,31 +31,30 @@ export default function DroughtMonitor() {
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
-
-  // Handle data updates from the control panel
-  const handleDataUpdate = (data: DroughtData[]) => {
-    setDroughtData(data);
-  };
-
-  const handleGeoJsonUpdate = (data: GeoJsonData) => {
-    setGeoJsonData(data);
-  };
+  useEffect(() => {
+    const mainSection = document.getElementById("main-section");
+    if (mainSection) {
+      window.scrollTo({
+        top: mainSection.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, []);
 
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div className="mt-18 flex h-screen bg-gray-800" id="main-section">
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${
           isPanelOpen ? "w-1/4" : "w-1/30"
         }`}>
         <div
-          className="absolute top-2 left-2 bottom-2 bg-gray-700 rounded-2xl shadow-lg 
-                     transition-all duration-300 ease-in-out overflow-hidden">
-          <LeftPanelDrought
+          className={`absolute top-2 left-2 bottom-2 bg-gray-700 rounded-2xl shadow-lg 
+                     transition-all duration-300 ease-in-out overflow-hidden
+                     `}>
+          <LeftPanel
             isPanelOpen={isPanelOpen}
             setIsPanelOpen={setIsPanelOpen}
-            onDataUpdate={handleDataUpdate}
-            onGeoJsonUpdate={handleGeoJsonUpdate}
           />
         </div>
       </div>
@@ -87,7 +76,6 @@ export default function DroughtMonitor() {
                 </div>
               }>
               <MapContent />
-              {/* geoJsonData={geoJsonData}*/}
             </Suspense>
           )}
         </div>
@@ -104,11 +92,9 @@ export default function DroughtMonitor() {
           className="border border-gray-200 rounded-2xl overflow-hidden resize-y 
                      bg-white shadow-lg"
           style={{ height: `${100 - mapHeight}vh` }}>
-          <GraphComponent data={droughtData} />
+          <GraphComponent />
         </div>
       </div>
-
-      <Toaster />
     </div>
   );
 }

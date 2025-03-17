@@ -32,8 +32,18 @@ export default function Dashboard() {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  useEffect(() => {
+    const mainSection = document.getElementById("main-section");
+    if (mainSection) {
+      window.scrollTo({
+        top: mainSection.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
   return (
-    <div className="flex full-h-screen bg-gray-800">
+    <div className="mt-18 flex full-h-screen bg-gray-800" id="main-section">
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${

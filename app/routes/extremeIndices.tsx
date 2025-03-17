@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import GraphComponent from "~/featureComponents/graph";
-import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelClimate";
+import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelIndices";
 
 const MapContent = lazy(() => import("../components/HomeMap"));
 
@@ -32,9 +32,17 @@ export default function Dashboard() {
     document.removeEventListener("mousemove", handleMouseMove);
     document.removeEventListener("mouseup", handleMouseUp);
   };
-
+  useEffect(() => {
+    const mainSection = document.getElementById("main-section");
+    if (mainSection) {
+      window.scrollTo({
+        top: mainSection.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, []);
   return (
-    <div className="flex h-screen bg-gray-800">
+    <div id="main-section" className="flex h-screen bg-gray-800">
       {/* Left Panel */}
       <div
         className={`relative transition-all duration-300 ease-in-out ${
