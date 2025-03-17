@@ -48,7 +48,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
   return (
     <>
       {isPanelOpen ? (
-        <div className="relative h-full p-4 space-y-2 bg-white dark:bg-gray-900">
+        <div className="relative h-full p-4 space-y-2 bg-white dark:bg-gray-900 overflow-y-scroll overflow-x-hidden">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
             className="absolute top-1/2 right-2 transform -translate-y-1/2 translate-x-1/2 z-10">
