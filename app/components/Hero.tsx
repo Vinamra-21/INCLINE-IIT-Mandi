@@ -16,12 +16,15 @@ const Hero = () => {
   const sceneRef = useRef(null);
   const rendererRef = useRef(null);
 
-  const initScene = useCallback(() => {
-    // Adjust width based on screen size
+  const dims = useCallback(() => {
     const width = window.innerWidth;
     const height = window.innerHeight;
     const isMobile = width < 768;
+    return { width, height, isMobile };
+  }, []);
 
+  const initScene = useCallback(() => {
+    const { width, height, isMobile } = dims();
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     // Adjust camera position based on screen size
@@ -98,14 +101,15 @@ const Hero = () => {
     if (!canvasRef.current) return;
 
     const { scene, camera, renderer } = initScene();
+    const { width, height, isMobile } = dims();
     const { earthGroup, earthMesh, lightsMesh, cloudsMesh, glowMesh } =
       createEarthGroup();
 
     scene.add(earthGroup);
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+    controls.enableDamping = !isMobile;
     controls.dampingFactor = 0.05;
-    controls.enableZoom = false;
+    controls.enableZoom = !isMobile;
 
     const stars = getStarfield({ numStars: 10000 });
     scene.add(stars);
@@ -167,7 +171,7 @@ const Hero = () => {
   }, [initScene, createEarthGroup]);
 
   return (
-    <section className="md:mt-18 mt-24 relative min-h-screen flex flex-col lg:flex-row overflow-hidden   bg-gray-900 transition-colors duration-300 ">
+    <section className="md:mt-14 mt-20 relative min-h-screen flex flex-col lg:flex-row overflow-hidden   bg-gray-900 transition-colors duration-300 ">
       {/* Content section */}
       <div className="w-full lg:w-1/2 px-4 sm:px-6 lg:px-8 flex items-center relative z-10">
         <div className="max-w-3xl mx-auto lg:mx-0 py-12 lg:py-0 lg:pr-16 text-center lg:text-left">
