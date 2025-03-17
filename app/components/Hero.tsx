@@ -107,7 +107,7 @@ const Hero = () => {
     controls.dampingFactor = 0.05;
     controls.enableZoom = false;
 
-    const stars = getStarfield({ numStars: 5000 });
+    const stars = getStarfield({ numStars: 10000 });
     scene.add(stars);
 
     const sunLight = new THREE.DirectionalLight(0xffffff, 2);
@@ -117,13 +117,13 @@ const Hero = () => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
 
-    const handleColorSchemeChange = (e) => {
-      const darkMode = e.matches;
-      renderer.setClearColor(darkMode ? 0x111827 : 0xfffaed, 0.1);
-    };
+    // const handleColorSchemeChange = (e) => {
+    //   const darkMode = e.matches;
+    //   renderer.setClearColor(darkMode ? 0x111827 : 0xfffaed, 0.1);
+    // };
 
-    const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
-    colorSchemeMedia.addListener(handleColorSchemeChange);
+    // const colorSchemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+    // colorSchemeMedia.addListener(handleColorSchemeChange);
 
     const animate = () => {
       earthMesh.rotation.y += ROTATION_SPEED;
@@ -155,7 +155,7 @@ const Hero = () => {
     rendererRef.current = renderer;
 
     return () => {
-      colorSchemeMedia.removeListener(handleColorSchemeChange);
+      // colorSchemeMedia.removeListener(handleColorSchemeChange);
       window.removeEventListener("resize", handleResize);
       if (sceneRef.current) {
         cancelAnimationFrame(sceneRef.current);
@@ -199,7 +199,7 @@ const Hero = () => {
       </div>
 
       {/* Earth visualization section */}
-      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 lg:opacity-100">
+      <div className="absolute lg:relative right-0 top-0 w-full lg:w-1/2 h-full opacity-80 md:opacity-100">
         <div ref={canvasRef} className="w-full h-full" />
       </div>
     </section>

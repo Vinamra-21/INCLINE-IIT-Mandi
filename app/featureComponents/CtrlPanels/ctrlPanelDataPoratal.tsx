@@ -11,7 +11,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
   return (
     <>
       {isPanelOpen ? (
-        <div className="relative h-full p-4 space-y-2">
+        <div className="relative h-full p-4 space-y-2 bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
             className="absolute top-1/2 right-2 transform -translate-y-1/2 translate-x-1/2 z-10">
@@ -51,9 +51,21 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                   <option value="" disabled selected>
                     Select option 1
                   </option>
-                  <option value="option1">Analytics View</option>
-                  <option value="option2">Performance Metrics</option>
-                  <option value="option3">Custom Dashboard</option>
+                  <option
+                    value="option1"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Analytics View
+                  </option>
+                  <option
+                    value="option2"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Performance Metrics
+                  </option>
+                  <option
+                    value="option3"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Custom Dashboard
+                  </option>
                 </select>
                 <ChevronDown
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 
@@ -76,9 +88,21 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                   <option value="" disabled selected>
                     Select option 2
                   </option>
-                  <option value="option1">Last 24 Hours</option>
-                  <option value="option2">Past Week</option>
-                  <option value="option3">Past Month</option>
+                  <option
+                    value="option1"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Last 24 Hours
+                  </option>
+                  <option
+                    value="option2"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Past Week
+                  </option>
+                  <option
+                    value="option3"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Past Month
+                  </option>
                 </select>
                 <ChevronDown
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 
@@ -101,9 +125,21 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                   <option value="" disabled selected>
                     Select option 3
                   </option>
-                  <option value="option1">Raw Data</option>
-                  <option value="option2">Aggregated</option>
-                  <option value="option3">Processed</option>
+                  <option
+                    value="option1"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Raw Data
+                  </option>
+                  <option
+                    value="option2"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Aggregated
+                  </option>
+                  <option
+                    value="option3"
+                    className="dark:bg-gray-800 dark:text-gray-100">
+                    Processed
+                  </option>
                 </select>
                 <ChevronDown
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 
@@ -142,7 +178,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
           </div>
         </div>
       ) : (
-        <div className="p-1 flex items-center justify-center h-full w-full">
+        <div className="p-1 flex items-center justify-center h-full w-full bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
             className="relative z-10">

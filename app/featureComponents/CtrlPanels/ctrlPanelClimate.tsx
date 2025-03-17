@@ -48,7 +48,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
   return (
     <>
       {isPanelOpen ? (
-        <div className="relative h-full p-4 space-y-2">
+        <div className="relative h-full p-4 space-y-2 bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
             className="absolute top-1/2 right-2 transform -translate-y-1/2 translate-x-1/2 z-10">
@@ -89,7 +89,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     Select variable
                   </option>
                   {avail_variables.map((variable) => (
-                    <option key={variable} value={variable}>
+                    <option
+                      key={variable}
+                      value={variable}
+                      className="dark:bg-gray-800 dark:text-gray-100">
                       {variable}
                     </option>
                   ))}
@@ -117,7 +120,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     Select temporal scale
                   </option>
                   {avail_temporal_scales.map((scale) => (
-                    <option key={scale} value={scale}>
+                    <option
+                      key={scale}
+                      value={scale}
+                      className="dark:bg-gray-800 dark:text-gray-100">
                       {scale}
                     </option>
                   ))}
@@ -147,7 +153,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     Select spatial scale
                   </option>
                   {avail_spatial_scales.map((scale) => (
-                    <option key={scale} value={scale}>
+                    <option
+                      key={scale}
+                      value={scale}
+                      className="dark:bg-gray-800 dark:text-gray-100">
                       {scale}
                     </option>
                   ))}
@@ -174,7 +183,8 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                                  text-gray-900 dark:text-gray-100 rounded-lg 
                                  focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                                  transition-all duration-200
-                                 hover:border-green-300 dark:hover:border-green-300/50"
+                                 hover:border-green-300 dark:hover:border-green-300/50
+                                 placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
                 <div className="space-y-2">
@@ -189,7 +199,8 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                                  text-gray-900 dark:text-gray-100 rounded-lg 
                                  focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                                  transition-all duration-200
-                                 hover:border-green-300 dark:hover:border-green-300/50"
+                                 hover:border-green-300 dark:hover:border-green-300/50
+                                 placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
               </div>
@@ -211,7 +222,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     Select climate model
                   </option>
                   {avail_models.map((model) => (
-                    <option key={model} value={model}>
+                    <option
+                      key={model}
+                      value={model}
+                      className="dark:bg-gray-800 dark:text-gray-100">
                       {model}
                     </option>
                   ))}
@@ -253,7 +267,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
           </div>
         </div>
       ) : (
-        <div className="p-1 flex items-center justify-center h-full w-full">
+        <div className="p-1 flex items-center justify-center h-full w-full bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
             className="relative z-10">

@@ -44,7 +44,7 @@ export default function Dashboard() {
   return (
     <div
       id="main-section"
-      className="mt-18 flex h-screen bg-gray-800 text-8xl text-center">
+      className="mt-18 flex h-screen bg-white/90 dark:bg-gray-800 text-8xl text-center">
       Coming Soon
     </div>
   );

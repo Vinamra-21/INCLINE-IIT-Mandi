@@ -27,10 +27,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
   return (
     <>
       {isPanelOpen ? (
-        <div className="relative h-full p-4 space-y-2">
+        <div className="relative h-full p-4 space-y-2 bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
-            className="absolute top-1/2 right-2 transform -translate-y-1/2 translate-x-1/2 z-10">
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 translate-x-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm dark:shadow-gray-700/30">
             {isPanelOpen ? (
               <ChevronLeft className="h-5 w-5 text-gray-700 dark:text-gray-50" />
             ) : (
@@ -198,7 +198,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                                rounded-lg transition-all duration-200 font-medium
                                hover:bg-green-400 dark:hover:bg-green-300
                                focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                               shadow-sm hover:shadow-md">
+                               shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
               <div className="flex items-center justify-center">
                 <Download className="mr-2 h-4 w-4" />
                 <span>Download Drought Data</span>
@@ -212,7 +212,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                                hover:text-green-600 dark:hover:text-green-300
                                transition-all duration-200 font-medium
                                focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                               bg-white dark:bg-gray-800 shadow-sm hover:shadow-md">
+                               bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
               <div className="flex items-center justify-center">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 <span>Request Additional Data</span>
@@ -221,10 +221,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
           </div>
         </div>
       ) : (
-        <div className="p-1 flex items-center justify-center h-full w-full">
+        <div className="p-1 flex items-center justify-center h-full w-full bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
-            className="relative z-10">
+            className="relative z-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm dark:shadow-gray-700/30">
             <ChevronRight className="h-5 w-5 text-gray-700 dark:text-gray-50" />
           </button>
         </div>
