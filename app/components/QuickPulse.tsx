@@ -96,7 +96,9 @@ const QuickPulse = () => {
           <svg
             className="w-[200px] md:w-[400px] lg:w-[600px]"
             height={svgHeight}
-            viewBox={`0 0 ${isMobile ? 300 : 600} ${svgHeight}`}
+            viewBox={`0 0 ${isMobile ? 300 : 600} ${
+              isMobile ? 400 : svgHeight
+            }`}
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <path
@@ -140,7 +142,7 @@ const QuickPulse = () => {
       </div>
 
       {/* Timeline Items */}
-      <div className="relative ml-[200px] md:ml-[400px] lg:ml-[600px] md:mt-0">
+      <div className="relative ml-[200px] md:ml-[400px] lg:ml-[600px] md:mt-0 pt-0">
         {TimelineData.map((item, index) => (
           <motion.div
             key={item.year}
