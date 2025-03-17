@@ -88,15 +88,16 @@ export default function Dashboard() {
       className="mt-4 sm:mt-8 md:mt-18 flex flex-col md:flex-row w-full min-h-screen bg-white/90 dark:bg-gray-800 pb-16 md:pb-4"
       id="main-section">
       {/* Menu Toggle Button - Now on the left side */}
-      <button
-        className={`fixed z-40 top-16 left-4 bg-gray-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
-          isPanelOpen ? "transform rotate-0" : ""
-        }`}
-        onClick={() => setIsPanelOpen(!isPanelOpen)}
-        aria-label={isPanelOpen ? "Close panel" : "Open panel"}>
-        {isPanelOpen ? "✕" : "☰"}
-      </button>
-
+      {isMobile && (
+        <button
+          className={`fixed z-40 top-16 left-4 bg-gray-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+            isPanelOpen ? "transform rotate-0" : ""
+          }`}
+          onClick={() => setIsPanelOpen(!isPanelOpen)}
+          aria-label={isPanelOpen ? "Close panel" : "Open panel"}>
+          {isPanelOpen ? "✕" : "☰"}
+        </button>
+      )}
       {/* Left Panel - adjusts for mobile */}
       <div
         className={`md:relative transition-all duration-300 ease-in-out ${
@@ -106,7 +107,7 @@ export default function Dashboard() {
               : "h-0 w-0"
             : isPanelOpen
             ? "w-1/4"
-            : "w-0"
+            : "w-1/30"
         }`}>
         <div
           className={`${
@@ -132,7 +133,7 @@ export default function Dashboard() {
         }`}>
         {/* Map Container */}
         <div
-          className="border border-gray-200 rounded-2xl overflow-hidden
+          className="border border-gray-200 rounded-2xl overflow-hidden resize-y
                     bg-white shadow-lg mb-4"
           style={{ height: `${mapHeight}vh` }}>
           {mapLoaded && (
@@ -151,10 +152,10 @@ export default function Dashboard() {
 
         {/* Resize Handle - works with touch and mouse */}
         <div
-          className="w-full h-8 cursor-row-resize flex items-center justify-center touch-manipulation mb-4"
+          className="w-full h-6 md:h-2 cursor-row-resize flex items-center justify-center touch-manipulation mb-4"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}>
-          <div className="w-16 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-16 md:w-10 h-2 bg-gray-300 rounded-full"></div>
         </div>
 
         {/* Graph Container */}
