@@ -107,10 +107,17 @@ const Hero = () => {
 
     scene.add(earthGroup);
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = !isMobile;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = false;
 
+    if (isMobile) {
+      controls.enableRotate = false;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+    } else {
+      controls.enableZoom = true;
+      controls.dampingFactor = 0.05;
+      controls.enablePan = true;
+      controls.enableRotate = true;
+    }
     const stars = getStarfield({ numStars: 10000 });
     scene.add(stars);
 
