@@ -8,24 +8,24 @@ import {
 
 import React, { useState } from "react";
 
-export function LeftPanel({ isPanelOpen, setIsPanelOpen,
+export function LeftPanel({
+  isPanelOpen,
+  setIsPanelOpen,
   params,
   setParams,
-  getData
+  getData,
 }: {
-  isPanelOpen: boolean,
-  setIsPanelOpen: (value: boolean) => void,
-  params: Record<string, string>,
-  setParams: (value: Record<string, string>) => void,
-  getData: () => void
+  isPanelOpen: boolean;
+  setIsPanelOpen: (value: boolean) => void;
+  params: Record<string, string>;
+  setParams: (value: Record<string, string>) => void;
+  getData: () => void;
 }) {
   // Available variables and spatial scales
   const availVariables = ["spi", "spei", "ndvi"];
   const availSpatialScales = ["district", "state", "basin", "location"];
 
   const [showSpatialPattern, setShowSpatialPattern] = useState(false);
-
-
 
   return (
     <>
@@ -119,7 +119,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen,
               </div>
             </div>
 
-            {(params.spatial_scale || '') === "location" && (
+            {(params.spatial_scale || "") === "location" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Coordinates
@@ -196,13 +196,15 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen,
                 </label>
                 <button
                   onClick={() => setShowSpatialPattern(!showSpatialPattern)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showSpatialPattern
-                    ? "bg-green-300 dark:bg-green-300/90"
-                    : "bg-gray-300 dark:bg-gray-600"
-                    }`}>
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    showSpatialPattern
+                      ? "bg-green-300 dark:bg-green-300/90"
+                      : "bg-gray-300 dark:bg-gray-600"
+                  }`}>
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showSpatialPattern ? "translate-x-6" : "translate-x-1"
-                      }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      showSpatialPattern ? "translate-x-6" : "translate-x-1"
+                    }`}
                   />
                 </button>
               </div>
