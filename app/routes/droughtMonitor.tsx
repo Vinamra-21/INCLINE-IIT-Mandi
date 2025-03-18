@@ -90,7 +90,7 @@ export default function Dashboard() {
       {/* Menu Toggle Button - Now on the left side */}
       {isMobile && (
         <button
-          className={`fixed z-40 top-16 left-4 bg-gray-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 ${
+          className={`fixed z-40 top-16 right-4 bg-gray-700 text-white p-3 shadow-lg transition-all duration-300 ${
             isPanelOpen ? "transform rotate-0" : ""
           }`}
           onClick={() => setIsPanelOpen(!isPanelOpen)}
