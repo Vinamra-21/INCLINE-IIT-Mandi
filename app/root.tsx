@@ -5,12 +5,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useNavigate,
 } from "react-router";
 import type { Route } from "./+types/root";
 import "./app.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { AuthProvider } from "./components/authContext";
+import { AuthProvider } from "./context/AuthContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,6 +26,16 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+function AppContent() {
+  return (
+    <>
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
+  );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
@@ -34,20 +45,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-
       <body>
-        <Header />
-        <AuthProvider>{children}</AuthProvider>
+        {children}
         <ScrollRestoration />
         <Scripts />
-        <Footer />
       </body>
     </html>
   );
 }
 
 export default function App() {
-  return <Outlet />;
+  const navigate = useNavigate();
+
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

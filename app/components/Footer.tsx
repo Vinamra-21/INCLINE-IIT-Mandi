@@ -1,28 +1,7 @@
-import {
-  Mail,
-  MapPin,
-  Link,
-  Twitter,
-  Linkedin,
-  Eye,
-  EyeOff,
-  Lock,
-  ArrowRight,
-  X,
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { handleSignIn, handleSignOut } from "./EcoPulse";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { Mail, MapPin, Link, Twitter, Linkedin } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 const Footer: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
-  }, []);
+  const { isAuthenticated, logout, user } = useAuth();
   return (
     <footer
       id="footer"
@@ -159,19 +138,31 @@ const Footer: React.FC = () => {
                 Terms of Use
               </a>
 
-              {isAuthenticated ? (
-                <button
-                  onClick={() => handleSignOut(setIsAuthenticated)}
-                  className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700">
-                  Log Out
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleSignIn(setIsAuthenticated)}
-                  className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
-                  Log In
-                </button>
-              )}
+              <div>
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-4">
+                    <span>Welcome, {user?.username || "User"}</span>
+                    <button
+                      onClick={logout}
+                      className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-4">
+                    <a
+                      href="/login"
+                      className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                      Login
+                    </a>
+                    <a
+                      href="/register"
+                      className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+                      Register
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

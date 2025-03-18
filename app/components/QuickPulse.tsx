@@ -5,35 +5,27 @@ const TimelineData = [
   {
     index: 1,
     title: "Climate Data Visualization",
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipispor incididunt ut labore.",
   },
   {
     index: 2,
     title: "Historical Weather Patterns",
-    content:
-      "Ut enim ad minim veniam, quis nosboris nisi ut aliquip ex ea commodo.",
   },
   {
     index: 3,
     title: "Future Projections & Modeling",
-    content: "Duis aute irure dolor in reprehu fugiat nulla.",
   },
-  // {
-  //   index: 4,
-  //   title: "Climate Impact Analysis",
-  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
-  // },
-  // {
-  //   index: 5,
-  //   title: "Community Resilience Planning",
-  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
-  // },
-  // {
-  //   index: 6,
-  //   title: "Adaptive Strategies and Solutions",
-  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
-  // },
+  {
+    index: 4,
+    title: "Climate Impact Analysis",
+  },
+  {
+    index: 5,
+    title: "Community Resilience Planning",
+  },
+  {
+    index: 6,
+    title: "Adaptive Strategies and Solutions",
+  },
 ];
 
 const QuickPulse = () => {
@@ -56,7 +48,7 @@ const QuickPulse = () => {
   });
 
   const createZigzagPath = () => {
-    const segmentHeight = isMobile ? 20 : 30;
+    const segmentHeight = isMobile ? 15 : 20;
     const zigzagWidth = isMobile ? 150 : 450;
     const curveRadius = isMobile ? 10 : 20;
     const totalSegments = TimelineData.length * 2;
@@ -66,7 +58,7 @@ const QuickPulse = () => {
     path += ` v ${
       segmentHeight - curveRadius
     } q 0 ${curveRadius} ${curveRadius} ${curveRadius}`;
-    for (let i = 0; i < totalSegments; i++) {
+    for (let i = 0; i < totalSegments - 4; i++) {
       path += ` h ${
         zigzagWidth - curveRadius
       } q ${curveRadius} 0 ${curveRadius} ${curveRadius}`;
@@ -76,7 +68,7 @@ const QuickPulse = () => {
       path += ` h -${
         zigzagWidth - curveRadius
       } q -${curveRadius} 0 -${curveRadius} ${curveRadius}`;
-      if (i < totalSegments - 1) {
+      if (i < totalSegments - 5) {
         path += ` v ${
           segmentHeight - curveRadius
         } q 0 ${curveRadius} ${curveRadius} ${curveRadius}`;
@@ -95,16 +87,16 @@ const QuickPulse = () => {
   };
 
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1.5]);
-  const svgHeight = TimelineData.length * (isMobile ? 90 : 240);
 
-  // Calculate the final endpoint position
+  const svgHeight = TimelineData.length * (isMobile ? 60 : 140);
+
   const zigzagWidth = isMobile ? 150 : 450;
   const endX = (isMobile ? 50 : 100) + zigzagWidth + (isMobile ? 10 : 20);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full py-8 md:py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+      className="relative w-full py-4 md:py-8 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Zigzag SVG Line Container */}
       <div className="absolute h-full left-0 top-0 bottom-0 w-full md:w-auto">
         <div className="relative">
@@ -112,7 +104,7 @@ const QuickPulse = () => {
             className="w-[200px] md:w-[400px] lg:w-[600px]"
             height={svgHeight}
             viewBox={`0 0 ${isMobile ? 300 : 600} ${
-              isMobile ? 400 : svgHeight
+              isMobile ? 550 : svgHeight
             }`}
             fill="none"
             xmlns="http://www.w3.org/2000/svg">
@@ -140,7 +132,7 @@ const QuickPulse = () => {
             className="absolute z-10"
             style={{
               left: endX,
-              top: svgHeight - (isMobile ? 10 : 30),
+              top: svgHeight - (isMobile ? 80 : 150),
               transform: "translate(-50%, 0)",
             }}>
             <a href="/ecoPulse">
@@ -161,18 +153,15 @@ const QuickPulse = () => {
         {TimelineData.map((item, index) => (
           <motion.div
             key={item.index}
-            className="relative flex items-center mb-14 md:mb-36"
+            className="relative flex items-center mb-6 md:mb-20"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: index * 0.2 }}>
             <div className="w-full md:w-11/12 md:pl-10 text-left">
-              <h3 className="md:mb-2 text-sm md:text-3xl font-bold text-gray-800 dark:text-gray-200">
+              <h3 className="text-sm md:text-2xl font-bold text-gray-800 dark:text-gray-200">
                 {item.title}
               </h3>
-              <p className="text-[10px] md:text-base text-gray-600 dark:text-gray-400">
-                {item.content}
-              </p>
             </div>
           </motion.div>
         ))}

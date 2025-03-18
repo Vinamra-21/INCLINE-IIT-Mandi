@@ -2,21 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useDarkMode from "./useDarkMode";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { useAuth } from "../context/AuthContext";
 const Header: React.FC = () => {
   const [theme, toggleTheme] = useDarkMode() as [string, () => void];
   const [isOpen, setIsOpen] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
-  }, []);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > lastScrollY) {
