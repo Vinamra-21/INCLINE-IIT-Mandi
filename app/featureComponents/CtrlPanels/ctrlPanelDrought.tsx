@@ -6,23 +6,26 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-//@ts-expect-error
-export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
+export function LeftPanel({ isPanelOpen, setIsPanelOpen,
+  params,
+  setParams,
+  getData
+}: {
+  isPanelOpen: boolean,
+  setIsPanelOpen: (value: boolean) => void,
+  params: Record<string, string>,
+  setParams: (value: Record<string, string>) => void,
+  getData: () => void
+}) {
   // Available variables and spatial scales
   const availVariables = ["spi", "spei", "ndvi"];
   const availSpatialScales = ["district", "state", "basin", "location"];
 
-  // State for tracking selected spatial scale to show/hide lat/long fields
-  const [spatialScale, setSpatialScale] = useState("");
-  // State for toggle button
   const [showSpatialPattern, setShowSpatialPattern] = useState(false);
 
-  // Handler for spatial scale changes
-  const handleSpatialScaleChange = (e) => {
-    setSpatialScale(e.target.value);
-  };
+
 
   return (
     <>
@@ -59,6 +62,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
               </label>
               <div className="relative">
                 <select
+                  value={params.variable || ""}
+                  onChange={(e) => {
+                    setParams({ ...params, variable: e.target.value });
+                  }}
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                                  text-gray-900 dark:text-gray-100 rounded-lg 
                                  focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
@@ -87,8 +94,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
               </label>
               <div className="relative">
                 <select
-                  value={spatialScale}
-                  onChange={handleSpatialScaleChange}
+                  value={params.spatial_scale || ""}
+                  onChange={(e) => {
+                    setParams({ ...params, spatial_scale: e.target.value });
+                  }}
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                                  text-gray-900 dark:text-gray-100 rounded-lg 
                                  focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
@@ -110,8 +119,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
               </div>
             </div>
 
-            {/* Location Input - Only shown if spatial_scale is 'location' */}
-            {spatialScale === "location" && (
+            {(params.spatial_scale || '') === "location" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Coordinates
@@ -121,6 +129,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     <input
                       type="number"
                       placeholder="Latitude"
+                      value={params.latitude || ""}
+                      onChange={(e) => {
+                        setParams({ ...params, latitude: e.target.value });
+                      }}
                       className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                                      text-gray-900 dark:text-gray-100 rounded-lg 
                                      focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
@@ -132,6 +144,10 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     <input
                       type="number"
                       placeholder="Longitude"
+                      value={params.longitude || ""}
+                      onChange={(e) => {
+                        setParams({ ...params, longitude: e.target.value });
+                      }}
                       className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                                      text-gray-900 dark:text-gray-100 rounded-lg 
                                      focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
@@ -140,6 +156,9 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                     />
                   </div>
                 </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Click on the map to set coordinates
+                </p>
               </div>
             )}
 
@@ -177,15 +196,13 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                 </label>
                 <button
                   onClick={() => setShowSpatialPattern(!showSpatialPattern)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    showSpatialPattern
-                      ? "bg-green-300 dark:bg-green-300/90"
-                      : "bg-gray-300 dark:bg-gray-600"
-                  }`}>
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${showSpatialPattern
+                    ? "bg-green-300 dark:bg-green-300/90"
+                    : "bg-gray-300 dark:bg-gray-600"
+                    }`}>
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      showSpatialPattern ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showSpatialPattern ? "translate-x-6" : "translate-x-1"
+                      }`}
                   />
                 </button>
               </div>
@@ -194,6 +211,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
 
           <div className="space-y-3 pt-6">
             <button
+              onClick={getData}
               className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
                                rounded-lg transition-all duration-200 font-medium
                                hover:bg-green-400 dark:hover:bg-green-300

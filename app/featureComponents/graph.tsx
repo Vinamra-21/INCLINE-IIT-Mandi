@@ -11,21 +11,10 @@ import {
 import type { DroughtData } from "./types";
 
 interface GraphComponentProps {
-  data?: DroughtData;
+  data?: Record<string, number>[];
 }
-//@ts-expect-error
 const GraphComponent = ({ data = [] }: GraphComponentProps) => {
-  const displayData =
-    Object.keys(data).length > 0
-      ? Object.entries(data).map(([date, value]) => ({ date, value }))
-      : [
-          { date: "Jan", value: 400 },
-          { date: "Feb", value: 300 },
-          { date: "Mar", value: 600 },
-          { date: "Apr", value: 800 },
-          { date: "May", value: 500 },
-          { date: "Jun", value: 700 },
-        ];
+
 
   return (
     <div className="w-full h-full bg-white rounded-lg shadow-lg p-6">
@@ -40,7 +29,7 @@ const GraphComponent = ({ data = [] }: GraphComponentProps) => {
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={displayData}
+            data={data}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid
               strokeDasharray="3 3"
@@ -48,7 +37,7 @@ const GraphComponent = ({ data = [] }: GraphComponentProps) => {
               vertical={false}
             />
             <XAxis
-              dataKey="date"
+              dataKey="time"
               tick={{ fill: "#4B5563" }}
               axisLine={{ stroke: "#E5E7EB" }}
               tickLine={{ stroke: "#E5E7EB" }}
@@ -86,7 +75,7 @@ const GraphComponent = ({ data = [] }: GraphComponentProps) => {
             />
             <Line
               type="monotone"
-              dataKey="value"
+              dataKey={data[0] ? Object.keys(data[0])[1] : ""}
               stroke="#3B82F6"
               strokeWidth={2}
               dot={{ fill: "#3B82F6", strokeWidth: 1, r: 1 }}

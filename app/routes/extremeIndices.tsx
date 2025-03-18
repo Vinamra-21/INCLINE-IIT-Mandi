@@ -1,8 +1,8 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/graph";
+import GraphComponent from "~/featureComponents/Homegraph";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelIndices";
 
-const MapContent = lazy(() => import("../components/HomeMap"));
+const MapContent = lazy(() => import("../components/FeatureMap"));
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);

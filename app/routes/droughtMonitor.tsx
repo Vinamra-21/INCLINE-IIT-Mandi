@@ -1,19 +1,27 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import GraphComponent from "~/featureComponents/graph";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelDrought";
-
-const MapContent = lazy(() => import("../components/HomeMap"));
+const BASE_URL = "http://172.18.16.21:8002";
+const MapContent = lazy(() => import("~/components/FeatureMap"));
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [mapHeight, setMapHeight] = useState(50);
   const [isMobile, setIsMobile] = useState(false);
+  const [params, setParams] = useState<Record<string, string>>({
+    lat: "28.7041",
+    lng: "77.1025",
+    objectId: "24",
+    scale: "1",
+  });
+  const [geoJsonData, setGeoJsonData] =
+    useState<GeoJSON.FeatureCollection | null>(null);
+  const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
     setMapLoaded(true);
 
-    // Check if we're on mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth < 768 && isPanelOpen) {
@@ -21,18 +29,83 @@ export default function Dashboard() {
       }
     };
 
-    // Initial check
     checkMobile();
-
-    // Add resize listener
     window.addEventListener("resize", checkMobile);
-
     return () => {
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
-  // Handle mouse movement for resizing
+  useEffect(() => {
+    const fetchGeoJson = async () => {
+      if (params.spatial_scale) {
+        const location = {
+          district: "district",
+          state: "state",
+          location: "india",
+          basin: "basin",
+        };
+
+        try {
+          const response = await fetch(
+            `/geojson/${
+              location[
+                (params.spatial_scale as keyof typeof location) || "location"
+              ]
+            }.json`,
+            {
+              method: "GET",
+              headers: {
+                "Cache-Control": "max-age=86400", // Ensure the server sets this header
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data: GeoJSON.FeatureCollection = await response.json();
+            setGeoJsonData(data);
+          } else {
+            console.error("Failed to fetch GeoJSON data");
+          }
+        } catch (error) {
+          console.error("Error fetching GeoJSON data:", error);
+        }
+      }
+    };
+
+    fetchGeoJson();
+  }, [params.spatial_scale]);
+
+  const getData = async () => {
+    try {
+      const query = new URLSearchParams();
+      const p = {
+        latitude: "lat",
+        longitude: "lng",
+        variable: "variable",
+        spatial_scale: "spatial_scale",
+        objectId: "objectid",
+        scale: "scale",
+      };
+      for (const key in params) {
+        query.append(p[key as keyof typeof p], params[key]);
+      }
+      let url = "";
+      if (params.spatial_scale === "location") {
+        url = `${BASE_URL}/api/ds_drought/?${query.toString()}`;
+      } else {
+        url = `${BASE_URL}/api/df_drought/?${query.toString()}`;
+      }
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      const data = await response.json();
+      setData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     document.addEventListener("mousemove", handleMouseMove);
@@ -83,6 +156,28 @@ export default function Dashboard() {
     }
   }, []);
 
+  // Add a handler for map clicks
+  const handleMapClick = (lat: number, lng: number) => {
+    setParams({
+      ...params,
+      spatial_scale: "location",
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    });
+
+    if (!isPanelOpen) {
+      setIsPanelOpen(true);
+    }
+  };
+
+  const handleFeatureSelect = (objectId: string) => {
+    console.log("Selected feature:", objectId);
+    setParams((prevParams) => ({
+      ...prevParams,
+      objectId: objectId || "24",
+    }));
+  };
+
   return (
     <div
       className="mt-4 sm:mt-8 md:mt-18 flex flex-col md:flex-row w-full min-h-screen bg-white/90 dark:bg-gray-800 pb-16 md:pb-4"
@@ -122,6 +217,9 @@ export default function Dashboard() {
           <LeftPanel
             isPanelOpen={isPanelOpen}
             setIsPanelOpen={setIsPanelOpen}
+            params={params}
+            setParams={setParams}
+            getData={getData}
           />
         </div>
       </div>
@@ -145,12 +243,16 @@ export default function Dashboard() {
                   </div>
                 </div>
               }>
-              <MapContent />
+              <MapContent
+                onMapClick={handleMapClick}
+                params={params}
+                geoJsonData={geoJsonData || undefined}
+                onFeatureSelect={handleFeatureSelect}
+              />
             </Suspense>
           )}
         </div>
 
-        {/* Resize Handle - works with touch and mouse */}
         <div
           className="w-full h-6 md:h-2 cursor-row-resize flex items-center justify-center touch-manipulation mb-4"
           onMouseDown={handleMouseDown}
@@ -166,7 +268,7 @@ export default function Dashboard() {
             height: `${100 - mapHeight - (isMobile ? 12 : 6)}vh`,
             minHeight: isMobile ? "300px" : "200px",
           }}>
-          <GraphComponent />
+          <GraphComponent data={data} />
         </div>
       </div>
     </div>
