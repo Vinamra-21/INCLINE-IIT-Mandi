@@ -3,22 +3,37 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 const TimelineData = [
   {
-    year: 2020,
-    title: "The Beginning",
+    index: 1,
+    title: "Climate Data Visualization",
     content:
       "Lorem ipsum dolor sit amet, consectetur adipispor incididunt ut labore.",
   },
   {
-    year: 2021,
-    title: "The Journey",
+    index: 2,
+    title: "Historical Weather Patterns",
     content:
       "Ut enim ad minim veniam, quis nosboris nisi ut aliquip ex ea commodo.",
   },
   {
-    year: 2022,
-    title: "The Progress",
+    index: 3,
+    title: "Future Projections & Modeling",
     content: "Duis aute irure dolor in reprehu fugiat nulla.",
   },
+  // {
+  //   index: 4,
+  //   title: "Climate Impact Analysis",
+  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
+  // },
+  // {
+  //   index: 5,
+  //   title: "Community Resilience Planning",
+  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
+  // },
+  // {
+  //   index: 6,
+  //   title: "Adaptive Strategies and Solutions",
+  //   content: "Duis aute irure dolor in reprehu fugiat nulla.",
+  // },
 ];
 
 const QuickPulse = () => {
@@ -145,7 +160,7 @@ const QuickPulse = () => {
       <div className="relative ml-[200px] md:ml-[400px] lg:ml-[600px] md:mt-0 pt-0">
         {TimelineData.map((item, index) => (
           <motion.div
-            key={item.year}
+            key={item.index}
             className="relative flex items-center mb-14 md:mb-36"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}

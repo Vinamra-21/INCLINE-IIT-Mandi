@@ -51,7 +51,7 @@ const Header: React.FC = () => {
             </div>
           </a>
           <nav className="hidden md:flex items-center space-x-8">
-            <NavLink href="/#features">Features</NavLink>
+            <NavLink href="/features">Features</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/ecoPulse">EcoPulse</NavLink>
             {isAuthenticated && <NavLink href="/jalShakti">Jal Shakti</NavLink>}
@@ -99,7 +99,7 @@ const Header: React.FC = () => {
             transition={{ duration: 0.2 }}
             className="md:hidden border-t border-gray-200 dark:border-gray-800">
             <div className="container mx-auto px-6 py-4 space-y-4">
-              <NavLink href="/#features" onClick={() => setIsOpen(false)}>
+              <NavLink href="/features" onClick={() => setIsOpen(false)}>
                 Features
               </NavLink>
               <NavLink href="about" onClick={() => setIsOpen(false)}>

@@ -9,5 +9,6 @@ export default [
   route("dataPortal", "routes/dataPortal.tsx"),
   route("extremeIndices", "routes/extremeIndices.tsx"),
   route("watershedDelineation", "routes/watershedDelineation.tsx"),
+  route("features", "routes/features.tsx"),
   route("jalShakti", "routes/jalShakti.tsx"),
 ] satisfies RouteConfig;
