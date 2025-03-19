@@ -118,7 +118,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
         <div className="p-1 flex items-center justify-center h-full w-full bg-white dark:bg-gray-900">
           <button
             onClick={() => setIsPanelOpen(!isPanelOpen)}
-            className="relative z-10 bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm dark:shadow-gray-800/30">
+            className="relative z-10">
             <ChevronRight className="h-5 w-5 text-gray-700 dark:text-gray-50" />
           </button>
         </div>
