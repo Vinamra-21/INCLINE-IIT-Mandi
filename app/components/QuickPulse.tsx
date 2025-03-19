@@ -1,30 +1,44 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  BarChart,
+  CloudSun,
+  PieChart,
+  Building,
+  Users,
+  Lightbulb,
+} from "lucide-react";
 
 const TimelineData = [
   {
     index: 1,
     title: "Climate Data Visualization",
+    icon: BarChart,
   },
   {
     index: 2,
     title: "Historical Weather Patterns",
+    icon: CloudSun,
   },
   {
     index: 3,
     title: "Future Projections & Modeling",
+    icon: PieChart,
   },
   {
     index: 4,
     title: "Climate Impact Analysis",
+    icon: Building,
   },
   {
     index: 5,
     title: "Community Resilience Planning",
+    icon: Users,
   },
   {
     index: 6,
     title: "Adaptive Strategies and Solutions",
+    icon: Lightbulb,
   },
 ];
 
@@ -150,21 +164,28 @@ const QuickPulse = () => {
 
       {/* Timeline Items */}
       <div className="relative ml-[200px] md:ml-[400px] lg:ml-[600px] md:mt-0 pt-0">
-        {TimelineData.map((item, index) => (
-          <motion.div
-            key={item.index}
-            className="relative flex items-center mb-6 md:mb-20"
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5, delay: index * 0.2 }}>
-            <div className="w-full md:w-11/12 md:pl-10 text-left">
-              <h3 className="text-sm md:text-2xl font-bold text-gray-800 dark:text-gray-200">
-                {item.title}
-              </h3>
-            </div>
-          </motion.div>
-        ))}
+        {TimelineData.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={item.index}
+              className="relative flex items-center mb-6 md:mb-20"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}>
+              <div className="w-full md:w-11/12 md:pl-10 text-left flex items-center">
+                <Icon
+                  className="mr-2 text-green-600 dark:text-green-400"
+                  size={isMobile ? 16 : 24}
+                />
+                <h3 className="text-sm md:text-2xl font-bold text-gray-800 dark:text-gray-200">
+                  {item.title}
+                </h3>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
