@@ -109,6 +109,7 @@ const QuickPulse = () => {
 
   return (
     <div
+      id="quickPulse"
       ref={containerRef}
       className="relative w-full py-4 md:py-8 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Zigzag SVG Line Container */}
@@ -141,7 +142,6 @@ const QuickPulse = () => {
             />
           </svg>
 
-          {/* CTA Button positioned at the end of vertical line */}
           <div
             className="absolute z-10"
             style={{
@@ -173,7 +173,7 @@ const QuickPulse = () => {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}>
+              transition={{ duration: 0.5, delay: index * 0.1 }}>
               <div className="w-full md:w-11/12 md:pl-10 text-left flex items-center">
                 <Icon
                   className="mr-2 text-green-600 dark:text-green-400"

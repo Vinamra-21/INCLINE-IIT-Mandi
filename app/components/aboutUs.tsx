@@ -5,8 +5,6 @@ import {
   Linkedin,
   Github,
   Instagram,
-  Sun,
-  Moon,
   CheckCircle,
   Lightbulb,
   Target,
@@ -103,17 +101,21 @@ const AboutUs: React.FC = () => {
     {
       name: "Piyush Panpaliya",
       role: "Developer",
-      description: "Sophomore at IIT Mandi, Developer in the Incline program.",
-      image: "/himpact.png",
+      description:
+        "Sophomore at IIT Mandi, Backend Developer in the Incline program.",
+      image: "/piyush.webp",
       socialLinks: [
-        { icon: <Github size={20} />, url: "https://github.com/Kishankp9990" },
+        {
+          icon: <Github size={20} />,
+          url: "https://github.com/piyush-panpaliya",
+        },
         {
           icon: <Instagram size={20} />,
-          url: "https://www.instagram.com/kishankashyap5688/",
+          url: "https://www.instagram.com/piyush.json/",
         },
         {
           icon: <Linkedin size={20} />,
-          url: "https://www.linkedin.com/in/kishan-kashyap-b17640245/",
+          url: "https://www.linkedin.com/in/piyush-panpaliya",
         },
       ],
     },
@@ -135,12 +137,12 @@ const AboutUs: React.FC = () => {
 
   return (
     <div
-      className={`mt-16 sm:mt-20 w-full transition-colors duration-300 
+      className={` w-full transition-colors duration-300 
   bg-gradient-to-b from-gray-50 to-white text-gray-800 
   dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 dark:text-white`}>
-      <div className="relative flex justify-center mt-5">
+      <div className=" relative flex justify-center mt-5">
         <div
-          className={`hidden md:flex px-14 py-2 rounded-full bg-white text-gray-800 border border-gray-300 shadow-lg text-sm font-medium transition-all
+          className={`mt-16 sm:mt-20 hidden md:flex px-14 py-2 rounded-full bg-white text-gray-800 border border-gray-300 shadow-lg text-sm font-medium transition-all
         dark:bg-gray-800 dark:text-white dark:border-gray-700
           `}>
           {navItems.map((item) => (
@@ -538,15 +540,15 @@ const AboutUs: React.FC = () => {
                              `}>
                     <div
                       className={`h-2 w-full dark:bg-blue-500 bg-blue-600`}></div>
-                    <div className="p-4 sm:p-6">
+                    <div className="p-2 sm:p-4">
                       <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 sm:gap-6">
                         <div className="relative">
                           <div
-                            className={`absolute inset-0 rounded-full blur-md opacity-20bg-green-300 dark:bg-green-400`}></div>
+                            className={`absolute inset-0 rounded-full blur-md opacity-20 bg-green-300 dark:bg-green-400`}></div>
                           <img
                             src={member.image}
                             alt={member.name}
-                            className="w-20 h-20 sm:w-28 sm:h-28 rounded-full object-cover relative border-4 border-white dark:border-gray-800"
+                            className="w-25 h-25 sm:w-28 sm:h-28 rounded-full object-cover relative border-4 border-white dark:border-gray-800"
                           />
                         </div>
                         <div>

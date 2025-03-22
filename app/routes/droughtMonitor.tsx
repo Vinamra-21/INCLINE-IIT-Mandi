@@ -1,7 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import GraphComponent from "~/featureComponents/graph";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelDrought";
-const BASE_URL = "http://172.18.16.21:8002";
+import API_BASE from "~/api";
 const MapContent = lazy(() => import("~/components/FeatureMap"));
 
 export default function Dashboard() {
@@ -92,9 +92,9 @@ export default function Dashboard() {
       }
       let url = "";
       if (params.spatial_scale === "location") {
-        url = `${BASE_URL}/api/ds_drought/?${query.toString()}`;
+        url = `${API_BASE}/api/ds_drought/?${query.toString()}`;
       } else {
-        url = `${BASE_URL}/api/df_drought/?${query.toString()}`;
+        url = `${API_BASE}/api/df_drought/?${query.toString()}`;
       }
       const response = await fetch(url, {
         method: "GET",

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
-
+import API_BASE from "~/api";
 interface AuthContextType {
   isAuthenticated: boolean;
   user: any | null;
@@ -30,10 +30,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const API_URL = "http://172.18.16.21:8002";
+  const API_URL = API_BASE;
 
   useEffect(() => {
-    // Check if user is logged in on initial load
     checkAuthStatus();
   }, []);
 

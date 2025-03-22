@@ -8,14 +8,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import type { DroughtData } from "./types";
 
 interface GraphComponentProps {
   data?: Record<string, number>[];
 }
 const GraphComponent = ({ data = [] }: GraphComponentProps) => {
-
-
   return (
     <div className="w-full h-full bg-white rounded-lg shadow-lg p-6">
       <div className="mb-6">

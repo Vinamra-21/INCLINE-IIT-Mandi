@@ -107,6 +107,9 @@ const Hero = () => {
 
     scene.add(earthGroup);
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enableRotate = !isMobile;
+    controls.enablePan = false;
 
     const stars = getStarfield({ numStars: 10000 });
     scene.add(stars);
@@ -187,15 +190,17 @@ const Hero = () => {
             Essential data and tools for climate adaptation, resiliency
             building, and community engagement.
           </motion.p>
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="lg:w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
-            Start Exploring
-          </motion.button>
+          <a href="#quickPulse">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="lg:w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-semibold transition-colors duration-300 shadow-lg hover:shadow-xl">
+              Start Exploring
+            </motion.button>
+          </a>
         </div>
       </div>
 
