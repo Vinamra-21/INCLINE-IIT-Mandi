@@ -220,6 +220,16 @@ export function LeftPanel({
                                focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
                                shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
               <div className="flex items-center justify-center">
+                <span>Apply</span>
+              </div>
+            </button>
+            <button
+              className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
+                               rounded-lg transition-all duration-200 font-medium
+                               hover:bg-green-400 dark:hover:bg-green-300
+                               focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
+                               shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
+              <div className="flex items-center justify-center">
                 <Download className="mr-2 h-4 w-4" />
                 <span>Download Drought Data</span>
               </div>

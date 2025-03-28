@@ -10,14 +10,17 @@ export default function Dashboard() {
   const [mapHeight, setMapHeight] = useState(50);
   const [isMobile, setIsMobile] = useState(false);
   const [params, setParams] = useState<Record<string, string>>({
-    lat: "28.7041",
-    lng: "77.1025",
+    variable: "spi",
+    spatial_scale: "location",
+    latitude: "31.7754",
+    longitude: "76.9861",
     objectId: "24",
     scale: "1",
   });
   const [geoJsonData, setGeoJsonData] =
     useState<GeoJSON.FeatureCollection | null>(null);
   const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setMapLoaded(true);
@@ -77,9 +80,16 @@ export default function Dashboard() {
   }, [params.spatial_scale]);
 
   const getData = async () => {
+    if (!params.variable || !params.spatial_scale) {
+      console.error("Missing required parameters");
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const query = new URLSearchParams();
-      const p = {
+      const paramMapping = {
         latitude: "lat",
         longitude: "lng",
         variable: "variable",
@@ -87,23 +97,89 @@ export default function Dashboard() {
         objectId: "objectid",
         scale: "scale",
       };
+
       for (const key in params) {
-        query.append(p[key as keyof typeof p], params[key]);
+        if (key in paramMapping) {
+          const apiKey = paramMapping[key as keyof typeof paramMapping];
+          query.append(apiKey, params[key]);
+        }
       }
+
       let url = "";
       if (params.spatial_scale === "location") {
         url = `${API_BASE}/api/ds_drought/?${query.toString()}`;
       } else {
         url = `${API_BASE}/api/df_drought/?${query.toString()}`;
       }
+
+      console.log("Fetching data from:", url);
+
       const response = await fetch(url, {
         method: "GET",
       });
-      const data = await response.json();
-      setData(data);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log("Received data:", responseData);
+      setData(responseData);
     } catch (error) {
       console.error("Error fetching data:", error);
+      // Show error notification to user here
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Add a handler for map clicks
+  const handleMapClick = (lat: number, lng: number) => {
+    console.log(`Map clicked at lat: ${lat}, lng: ${lng}`);
+
+    // Update params with new latitude and longitude
+    const updatedParams = {
+      ...params,
+      spatial_scale: "location", // Switch to location mode
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    };
+
+    setParams(updatedParams);
+
+    // Auto-open panel if it's closed
+    if (!isPanelOpen) {
+      setIsPanelOpen(true);
+    }
+
+    // Auto-fetch data after a short delay (to ensure params are updated)
+    setTimeout(() => {
+      getData();
+    }, 100);
+  };
+
+  const handleFeatureSelect = (objectId: string) => {
+    console.log("Selected feature:", objectId);
+
+    // Update params with new objectId
+    setParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        objectId: objectId || "24",
+      };
+
+      // Auto-fetch data after updating objectId
+      setTimeout(() => {
+        getData();
+      }, 100);
+
+      return updatedParams;
+    });
+  };
+
+  // Manual submission from the control panel
+  const handleSubmitParams = () => {
+    getData();
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -156,27 +232,12 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Add a handler for map clicks
-  const handleMapClick = (lat: number, lng: number) => {
-    setParams({
-      ...params,
-      spatial_scale: "location",
-      latitude: lat.toFixed(6),
-      longitude: lng.toFixed(6),
-    });
-
-    if (!isPanelOpen) {
-      setIsPanelOpen(true);
+  // Fetch data initially when component loads
+  useEffect(() => {
+    if (params.variable && params.spatial_scale) {
+      getData();
     }
-  };
-
-  const handleFeatureSelect = (objectId: string) => {
-    console.log("Selected feature:", objectId);
-    setParams((prevParams) => ({
-      ...prevParams,
-      objectId: objectId || "24",
-    }));
-  };
+  }, []);
 
   return (
     <div
@@ -219,7 +280,7 @@ export default function Dashboard() {
             setIsPanelOpen={setIsPanelOpen}
             params={params}
             setParams={setParams}
-            getData={getData}
+            getData={handleSubmitParams}
           />
         </div>
       </div>
@@ -268,7 +329,13 @@ export default function Dashboard() {
             height: `${100 - mapHeight - (isMobile ? 12 : 6)}vh`,
             minHeight: isMobile ? "300px" : "200px",
           }}>
-          <GraphComponent data={data} />
+          {isLoading ? (
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="animate-pulse text-gray-500">Loading data...</div>
+            </div>
+          ) : (
+            <GraphComponent data={data} />
+          )}
         </div>
       </div>
     </div>

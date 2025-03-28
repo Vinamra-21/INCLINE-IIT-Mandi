@@ -29,54 +29,170 @@ const heads = [
     index: 1,
     temperature: "13°",
     condition: "Stormy",
-    description: "with partly cloudy",
+    description: "Precipitation",
   },
   {
     index: 2,
     temperature: "25°",
     condition: "Sunny",
-    description: "Clear sky",
+    description: "TMax",
   },
   {
     index: 3,
     temperature: "18°",
     condition: "Rainy",
-    description: "Light showers",
+    description: "TMin",
   },
 ];
 
 export default function WeatherDashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [location, setLocation] = useState({
+    name: "Mandi,India",
+    coordinates: [31.7087, 76.932],
+    zoom: 5,
+  });
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setMapLoaded(true);
   }, []);
+
+  const handleMapLocationUpdate = async (coordinates) => {
+    try {
+      // Optional: Reverse geocode to get location name
+      // This is a placeholder - replace with actual reverse geocoding service
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coordinates[0]}&lon=${coordinates[1]}`
+      );
+      const data = await response.json();
+
+      setLocation({
+        name:
+          data.display_name ||
+          `${coordinates[0].toFixed(4)}, ${coordinates[1].toFixed(4)}`,
+        coordinates: coordinates,
+        zoom: 10,
+      });
+
+      // Here you would also fetch weather or other data for this location
+      // fetchWeatherData(coordinates);
+    } catch (error) {
+      console.error("Error with reverse geocoding:", error);
+      setLocation({
+        name: `${coordinates[0].toFixed(4)}, ${coordinates[1].toFixed(4)}`,
+        coordinates: coordinates,
+        zoom: 10,
+      });
+    }
+  };
+
+  // Function to handle location search
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) return;
+
+    try {
+      // You would replace this with your actual geocoding API
+      const response = await fetch(
+        `https://api.example.com/geocode?address=${encodeURIComponent(
+          searchTerm
+        )}`
+      );
+      const data = await response.json();
+
+      if (data && data.results && data.results.length > 0) {
+        const result = data.results[0];
+        setLocation({
+          name: result.formatted_address,
+          coordinates: [
+            result.geometry.location.lat,
+            result.geometry.location.lng,
+          ],
+          zoom: 12,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching location data:", error);
+    }
+  };
+
+  // Function to get current user location
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          // Optional: Reverse geocode to get location name
+          fetch(
+            `https://api.example.com/reverse-geocode?lat=${latitude}&lng=${longitude}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              setLocation({
+                name: data.formatted_address || "Current Location",
+                coordinates: [latitude, longitude],
+                zoom: 14,
+              });
+            })
+            .catch((error) => {
+              console.error("Error with reverse geocoding:", error);
+              setLocation({
+                name: "Current Location",
+                coordinates: [latitude, longitude],
+                zoom: 14,
+              });
+            });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    }
+  };
 
   return (
     <div className="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-2 sm:p-4 md:p-6 min-h-screen transition-colors">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(250px,300px)_1fr] gap-4 md:gap-6">
         {/* Sidebar */}
         <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-3 md:p-4 space-y-3 md:space-y-4 transition-colors">
-          <div className="space-y-2">
-            <input
-              type="search"
-              placeholder="Search location..."
-              className="w-full bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <form onSubmit={handleSearch} className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="search"
+                placeholder="Search location..."
+                className="w-full bg-white dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="bg-green-500 hover:bg-green-600 text-white rounded-lg px-3 py-2 text-sm transition-colors">
+                Search
+              </button>
+            </div>
+          </form>
 
           {/* Current Location Section */}
           <div className="bg-gray-200/50 dark:bg-gray-700/30 rounded-lg p-2 md:p-3 transition-colors">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-100 dark:bg-blue-500/20 p-2 rounded-lg transition-colors">
-                <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-600 dark:text-green-300" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="bg-blue-100 dark:bg-blue-500/20 p-2 rounded-lg transition-colors">
+                  <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-600 dark:text-green-300" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Current Location</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {location.name}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-medium">Current Location</h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  New York, USA
-                </p>
-              </div>
+              <button
+                onClick={getUserLocation}
+                className="text-xs bg-green-100 hover:bg-green-200 dark:bg-green-700/30 dark:hover:bg-green-700/50 text-green-800 dark:text-green-200 px-2 py-1 rounded transition-colors">
+                Get Location
+              </button>
             </div>
           </div>
 
@@ -90,7 +206,12 @@ export default function WeatherDashboard() {
                       Loading map...
                     </div>
                   }>
-                  <MapContent />
+                  <MapContent
+                    center={location.coordinates}
+                    zoom={location.zoom}
+                    pinLocation={location.coordinates}
+                    onLocationUpdate={handleMapLocationUpdate}
+                  />
                 </Suspense>
               )}
             </div>
@@ -124,20 +245,11 @@ export default function WeatherDashboard() {
                 </div>
               ))}
             </div>
-            {/* <div className="flex flex-wrap gap-2 sm:gap-3">
-              {["Button 1", "Button 2", "Button 3", "Button 4"].map((label) => (
-                <button
-                  key={label}
-                  className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
-                  {label}
-                </button>
-              ))}
-            </div> */}
           </div>
 
           {/* Time Range Buttons */}
           <div className="flex flex-wrap justify-end gap-2">
-            {["Day", "Week", "Month", "Year"].map((label) => (
+            {["Hist(Mod)", "Hist(Obs)", "SSP 2.45", "SSP 5.85"].map((label) => (
               <button
                 key={label}
                 className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-md transition-colors">
