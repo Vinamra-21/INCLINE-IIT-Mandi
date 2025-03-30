@@ -1,19 +1,30 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/Homegraph";
+import GraphComponent from "~/featureComponents/graph";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelClimate";
-
-const MapContent = lazy(() => import("../components/HomeMap"));
+import API_BASE from "~/api";
+const MapContent = lazy(() => import("~/components/FeatureMap"));
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [mapHeight, setMapHeight] = useState(50);
   const [isMobile, setIsMobile] = useState(false);
+  const [params, setParams] = useState<Record<string, string>>({
+    variable: "pr",
+    spatial_scale: "location",
+    latitude: "31.7754",
+    longitude: "76.9861",
+    model: "ACCESS_CM2",
+    temporal_scale: "annual",
+  });
+  const [geoJsonData, setGeoJsonData] =
+    useState<GeoJSON.FeatureCollection | null>(null);
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setMapLoaded(true);
 
-    // Check if we're on mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth < 768 && isPanelOpen) {
@@ -21,18 +32,162 @@ export default function Dashboard() {
       }
     };
 
-    // Initial check
     checkMobile();
-
-    // Add resize listener
     window.addEventListener("resize", checkMobile);
-
     return () => {
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
-  // Handle mouse movement for resizing
+  useEffect(() => {
+    const fetchGeoJson = async () => {
+      if (params.spatial_scale) {
+        const location = {
+          district: "district",
+          state: "state",
+          location: "india",
+          basin: "basin",
+        };
+
+        try {
+          const response = await fetch(
+            `/geojson/${
+              location[
+                (params.spatial_scale as keyof typeof location) || "location"
+              ]
+            }.json`,
+            {
+              method: "GET",
+              headers: {
+                "Cache-Control": "max-age=86400", // Ensure the server sets this header
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data: GeoJSON.FeatureCollection = await response.json();
+            setGeoJsonData(data);
+          } else {
+            console.error("Failed to fetch GeoJSON data");
+          }
+        } catch (error) {
+          console.error("Error fetching GeoJSON data:", error);
+        }
+      }
+    };
+
+    fetchGeoJson();
+  }, [params.spatial_scale]);
+
+  const getData = async () => {
+    if (!params.variable || !params.spatial_scale || !params.model) {
+      console.error("Missing required parameters");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      let url = "";
+
+      // Build URL based on spatial_scale
+      if (params.spatial_scale === "location") {
+        // For point location - use ds_cis endpoint
+        url = `${API_BASE}/api/ds_cis/?lat=${params.latitude}&lng=${params.longitude}&variable=${params.variable}&temporal_scale=${params.temporal_scale}&spatial_scale=${params.spatial_scale}&model=${params.model}`;
+      } else {
+        // For state, district, basin - use df_cis endpoint with objectid
+        // Note: You'll need to ensure objectid is available in your params or determined elsewhere
+        const objectId = params.objectId || "23.0"; // Default to a sample objectId if not provided
+        url = `${API_BASE}/api/df_cis/?objectid=${objectId}&variable=${params.variable}&temporal_scale=${params.temporal_scale}&spatial_scale=${params.spatial_scale}&model=${params.model}`;
+      }
+
+      console.log("Fetching climate data from:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log("Received climate data:", responseData);
+      setData(responseData);
+    } catch (error) {
+      console.error("Error fetching climate data:", error);
+      // Show error notification to user here
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Add a handler for map clicks
+  const handleMapClick = (lat: number, lng: number) => {
+    console.log(`Map clicked at lat: ${lat}, lng: ${lng}`);
+
+    // Update params with new latitude and longitude
+    const updatedParams = {
+      ...params,
+      spatial_scale: "location", // Switch to location mode
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    };
+
+    setParams(updatedParams);
+
+    // Auto-open panel if it's closed
+    if (!isPanelOpen) {
+      setIsPanelOpen(true);
+    }
+
+    // Auto-fetch data after a short delay (to ensure params are updated)
+    setTimeout(() => {
+      getData();
+    }, 100);
+  };
+
+  const handleFeatureSelect = (feature: any) => {
+    console.log("Selected feature:", feature);
+
+    // Get the objectId from the selected feature
+    const objectId =
+      feature.properties?.objectid || feature.properties?.OBJECTID || "23.0";
+
+    // Update params with feature information
+    setParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        objectId: objectId.toString(),
+        // Keep the spatial_scale from the current state
+      };
+
+      // Auto-fetch data after updating feature
+      setTimeout(() => {
+        getData();
+      }, 100);
+
+      return updatedParams;
+    });
+  };
+
+  // Handle model selection from control panel
+  const handleModelSelect = (model: string) => {
+    setParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        model: model || "ACCESS_CM2",
+      };
+
+      return updatedParams;
+    });
+  };
+
+  // Manual submission from the control panel
+  const handleSubmitParams = () => {
+    getData();
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     document.addEventListener("mousemove", handleMouseMove);
@@ -83,6 +238,13 @@ export default function Dashboard() {
     }
   }, []);
 
+  // Fetch data initially when component loads
+  useEffect(() => {
+    if (params.variable && params.spatial_scale) {
+      getData();
+    }
+  }, []);
+
   return (
     <div
       className="mt-4 sm:mt-8 md:mt-18 flex flex-col md:flex-row w-full min-h-screen bg-white/90 dark:bg-gray-800 pb-16 md:pb-4"
@@ -122,6 +284,9 @@ export default function Dashboard() {
           <LeftPanel
             isPanelOpen={isPanelOpen}
             setIsPanelOpen={setIsPanelOpen}
+            params={params}
+            setParams={setParams}
+            getData={handleSubmitParams}
           />
         </div>
       </div>
@@ -145,7 +310,12 @@ export default function Dashboard() {
                   </div>
                 </div>
               }>
-              <MapContent />
+              <MapContent
+                onMapClick={handleMapClick}
+                params={params}
+                geoJsonData={geoJsonData || undefined}
+                onFeatureSelect={handleFeatureSelect}
+              />
             </Suspense>
           )}
         </div>
@@ -166,7 +336,15 @@ export default function Dashboard() {
             height: `${100 - mapHeight - (isMobile ? 12 : 6)}vh`,
             minHeight: isMobile ? "300px" : "200px",
           }}>
-          <GraphComponent />
+          {isLoading ? (
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="animate-pulse text-gray-500">
+                Loading climate data...
+              </div>
+            </div>
+          ) : (
+            <GraphComponent data={data} />
+          )}
         </div>
       </div>
     </div>
