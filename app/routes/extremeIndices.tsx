@@ -1,8 +1,8 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/Homegraph";
+import GraphComponent from "~/featureComponents/graph";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelIndices";
-
-const MapContent = lazy(() => import("../components/HomeMap"));
+import API_BASE from "~/api";
+const MapContent = lazy(() => import("../components/FeatureMap"));
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -10,10 +10,23 @@ export default function Dashboard() {
   const [mapHeight, setMapHeight] = useState(50);
   const [isMobile, setIsMobile] = useState(false);
 
+  const [params, setParams] = useState<Record<string, string>>({
+    primary_selection: "Analytics View",
+    variable_type: "Temperature", // Default variable type
+    data_type: "Raw Data",
+    time_range: "Past Week",
+    latitude: "31.7754",
+    longitude: "76.9861",
+    precipitation_index: "Rx1day", // Default precipitation extreme index
+  });
+  const [geoJsonData, setGeoJsonData] =
+    useState<GeoJSON.FeatureCollection | null>(null);
+  const [data, setData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setMapLoaded(true);
 
-    // Check if we're on mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth < 768 && isPanelOpen) {
@@ -21,18 +34,184 @@ export default function Dashboard() {
       }
     };
 
-    // Initial check
     checkMobile();
-
-    // Add resize listener
     window.addEventListener("resize", checkMobile);
-
     return () => {
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
-  // Handle mouse movement for resizing
+  useEffect(() => {
+    const fetchGeoJson = async () => {
+      // We'll base the spatial scale on the primary_selection
+      const spatialScale =
+        params.primary_selection === "Custom Dashboard"
+          ? "location"
+          : params.primary_selection === "Performance Metrics"
+          ? "district"
+          : "state";
+
+      if (spatialScale) {
+        const location = {
+          district: "district",
+          state: "state",
+          location: "india",
+          basin: "basin",
+        };
+
+        try {
+          const response = await fetch(
+            `/geojson/${
+              location[(spatialScale as keyof typeof location) || "location"]
+            }.json`,
+            {
+              method: "GET",
+              headers: {
+                "Cache-Control": "max-age=86400",
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data: GeoJSON.FeatureCollection = await response.json();
+            setGeoJsonData(data);
+          } else {
+            console.error("Failed to fetch GeoJSON data");
+          }
+        } catch (error) {
+          console.error("Error fetching GeoJSON data:", error);
+        }
+      }
+    };
+
+    fetchGeoJson();
+  }, [params.primary_selection]);
+
+  const getData = async () => {
+    // Make sure we have the required parameters
+    if (
+      !params.variable_type ||
+      !params.primary_selection ||
+      !params.latitude ||
+      !params.longitude
+    ) {
+      console.error("Missing required parameters");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      let url = "";
+      // Determine whether we're using precipitation or temperature
+      const variable =
+        params.variable_type === "Precipitation" ? "ppt" : "temp";
+
+      // Determine the spatial scale based on primary selection
+      const spatialScale =
+        params.primary_selection === "Custom Dashboard"
+          ? "location"
+          : params.primary_selection === "Performance Metrics"
+          ? "district"
+          : "state";
+
+      // Get the appropriate index based on variable type
+      const index =
+        params.variable_type === "Precipitation"
+          ? params.precipitation_index || "Rx1day"
+          : "TNx"; // Default temperature index
+
+      // Build URL based on spatial_scale
+      if (spatialScale === "location") {
+        // For point location - use ds_extreme endpoint
+        url = `${API_BASE}/api/ds_extreme/?lat=${params.latitude}&lng=${
+          params.longitude
+        }&variable=${variable}&spatial_scale=${spatialScale}&pptindices=${
+          params.precipitation_index || "Rx1day"
+        }&tempindices=TNx`;
+      } else {
+        // For state, district, basin with objectid
+        const objectId = params.objectId || "23.0"; // Default to a sample objectId if not provided
+        url = `${API_BASE}/api/df_extreme/?objectid=${objectId}&variable=${variable}&spatial_scale=${spatialScale}&pptindices=${
+          params.precipitation_index || "Rx1day"
+        }&tempindices=TNx`;
+      }
+
+      console.log("Fetching extremes data from:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log("Received extremes data:", responseData);
+      setData(responseData);
+    } catch (error) {
+      console.error("Error fetching extremes data:", error);
+      // Show error notification to user here
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Add a handler for map clicks
+  const handleMapClick = (lat: number, lng: number) => {
+    console.log(`Map clicked at lat: ${lat}, lng: ${lng}`);
+
+    // Update params with new latitude and longitude
+    const updatedParams = {
+      ...params,
+      primary_selection: "Custom Dashboard", // Switch to custom dashboard mode
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    };
+
+    setParams(updatedParams);
+
+    // Auto-open panel if it's closed
+    if (!isPanelOpen) {
+      setIsPanelOpen(true);
+    }
+
+    // Auto-fetch data after a short delay (to ensure params are updated)
+    setTimeout(() => {
+      getData();
+    }, 100);
+  };
+
+  const handleFeatureSelect = (feature: any) => {
+    console.log("Selected feature:", feature);
+
+    // Get the objectId from the selected feature
+    const objectId =
+      feature.properties?.objectid || feature.properties?.OBJECTID || "23.0";
+
+    // Update params with feature information
+    setParams((prevParams) => {
+      const updatedParams = {
+        ...prevParams,
+        objectId: objectId.toString(),
+        // Keep the primary_selection from the current state
+      };
+
+      // Auto-fetch data after updating feature
+      setTimeout(() => {
+        getData();
+      }, 100);
+
+      return updatedParams;
+    });
+  };
+
+  // Handle manual submission from the control panel
+  const handleSubmitParams = () => {
+    getData();
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     document.addEventListener("mousemove", handleMouseMove);
@@ -83,6 +262,11 @@ export default function Dashboard() {
     }
   }, []);
 
+  // Fetch data initially when component loads
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div
       className="mt-4 sm:mt-8 md:mt-18 flex flex-col md:flex-row w-full min-h-screen bg-white/90 dark:bg-gray-800 pb-16 md:pb-4"
@@ -122,6 +306,9 @@ export default function Dashboard() {
           <LeftPanel
             isPanelOpen={isPanelOpen}
             setIsPanelOpen={setIsPanelOpen}
+            params={params}
+            setParams={setParams}
+            getData={handleSubmitParams}
           />
         </div>
       </div>
@@ -145,7 +332,12 @@ export default function Dashboard() {
                   </div>
                 </div>
               }>
-              <MapContent />
+              <MapContent
+                onMapClick={handleMapClick}
+                params={params}
+                geoJsonData={geoJsonData || undefined}
+                onFeatureSelect={handleFeatureSelect}
+              />
             </Suspense>
           )}
         </div>
@@ -166,7 +358,15 @@ export default function Dashboard() {
             height: `${100 - mapHeight - (isMobile ? 12 : 6)}vh`,
             minHeight: isMobile ? "300px" : "200px",
           }}>
-          <GraphComponent />
+          {isLoading ? (
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="animate-pulse text-gray-500">
+                Loading extremes data...
+              </div>
+            </div>
+          ) : (
+            <GraphComponent data={data} />
+          )}
         </div>
       </div>
     </div>
