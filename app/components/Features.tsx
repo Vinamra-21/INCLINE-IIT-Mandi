@@ -1,59 +1,64 @@
 import { motion } from "framer-motion";
 import {
-  BarChart3,
-  CloudSun,
-  TrendingUp,
-  Zap,
-  Shield,
-  Lightbulb,
+  ThermometerSun,
+  CloudRain,
+  Mountain,
+  BarChart2,
+  Database,
+  Sparkles,
 } from "lucide-react";
 
 const features = [
   {
-    icon: BarChart3,
+    icon: ThermometerSun,
     title: "Climate Impact Snapshot",
     description:
       "Get a quick overview of climate impacts in your region with projections for temperature and precipitation using CMIP6. Designed for accessibility, this app helps users explore climate trends across India.",
     link: "/climateImpact",
   },
   {
-    icon: CloudSun,
+    icon: CloudRain,
     title: "Drought Monitor App",
     description:
       "Track and analyze drought conditions using SPI, SPEI, and NDVI indices. This tool provides insights into precipitation trends, drought severity, and vegetation health, offering a comprehensive view of climate-driven changes.",
     link: "/droughtMonitor",
   },
   {
-    icon: TrendingUp,
+    icon: Mountain,
     title: "Incline Watershed Delineation",
     description:
       "Easily delineate watersheds across India using high-quality datasets like MERIT-Hydro and MERIT-Basins. Visualize watershed boundaries and export data in multiple formats for further analysis.",
     link: "/watershedDelineation",
   },
   {
-    icon: Zap,
+    icon: BarChart2,
     title: "Extreme Indices",
     description:
       "Analyze extreme climate indices, including temperature and precipitation trends. This tool offers time series visualization and allows users to compute indices using their own datasets.",
     link: "/extremeIndices",
   },
   {
-    icon: Shield,
+    icon: Database,
     title: "Data Portal",
     description:
       "Access tools to help communities plan and prepare for climate change by leveraging scientific data and insights.",
     link: "/dataPortal",
   },
   {
-    icon: Lightbulb,
-    title: "Adaptive Strategies and Solutions",
+    icon: Sparkles,
+    title: "View More Features",
     description:
-      "Explore and share innovative approaches to climate adaptation, fostering resilience against environmental changes.",
-    link: "#",
+      "Exciting new features are on the horizon—stay tuned for what's next. ✨",
+    link: "/features",
   },
 ];
 
 const Features = () => {
+  const isFeaturePage = window.location.pathname === "/features";
+
+  // Filter out the last feature if on the features page
+  const visibleFeatures = isFeaturePage ? features.slice(0, -1) : features;
+
   return (
     <section
       id="features"
@@ -63,11 +68,11 @@ const Features = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl font-bold text-center text-green-700 dark:text-green-300 mb-12">
+          className="text-3xl font-bold text-center text-green-600 dark:text-green-300 mb-12">
           Our Features
         </motion.h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => {
+          {visibleFeatures.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <motion.a
@@ -77,11 +82,11 @@ const Features = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg dark:shadow-md hover:shadow-xl dark:hover:shadow-green-500/30 transition-all duration-300 border border-gray-200 dark:border-gray-700 block">
-                <div className="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-4">
-                  <Icon className="w-10 h-10 text-green-600 dark:text-green-300" />
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-xl dark:hover:shadow-green-500/30 transition-all duration-300 border border-gray-100 dark:border-gray-700 block">
+                <div className="flex items-center justify-center w-16 h-16 bg-green-50 dark:bg-green-900 rounded-full mb-4">
+                  <Icon className="w-10 h-10 text-green-500 dark:text-green-300" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
