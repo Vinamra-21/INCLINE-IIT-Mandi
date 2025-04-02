@@ -14,6 +14,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      external: ["react-google-recaptcha"],
       output: {
         manualChunks: (id) => {
           if (id.includes("lucide-react")) return "lucide";
