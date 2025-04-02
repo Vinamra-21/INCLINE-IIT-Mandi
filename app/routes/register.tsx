@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import {
   ChevronDown,
   Eye,
@@ -305,7 +305,7 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  // const [captchaVerified, setCaptchaVerified] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [step, setStep] = useState(1); // Multi-step form
@@ -321,9 +321,9 @@ const Register = () => {
     });
   };
 
-  const handleCaptchaChange = (value) => {
-    setCaptchaVerified(!!value);
-  };
+  // const handleCaptchaChange = (value) => {
+  //   setCaptchaVerified(!!value);
+  // };
 
   const validateStep1 = () => {
     const newErrors = {};
@@ -386,9 +386,9 @@ const Register = () => {
       newErrors.password1 = ["Password must be at least 8 characters long"];
     }
 
-    if (!captchaVerified) {
-      newErrors.captcha = ["Please verify you are not a robot"];
-    }
+    // if (!captchaVerified) {
+    //   newErrors.captcha = ["Please verify you are not a robot"];
+    // }
 
     if (!userData.terms_accepted) {
       newErrors.terms = ["You must accept the terms and conditions"];
@@ -860,7 +860,7 @@ const Register = () => {
                   )}
                 </div>
 
-                <div className="flex justify-center mt-6">
+                {/* <div className="flex justify-center mt-6">
                   <ReCAPTCHA
                     sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                     onChange={handleCaptchaChange}
@@ -871,7 +871,7 @@ const Register = () => {
                   <p className="text-center text-sm text-red-600 dark:text-red-400">
                     {errors.captcha[0]}
                   </p>
-                )}
+                )} */}
 
                 <div className="flex items-start bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-100 dark:border-green-800">
                   <div className="flex items-center h-5">
