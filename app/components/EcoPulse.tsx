@@ -174,6 +174,7 @@
 // export default EcoPulse;
 "use client";
 import React, { useEffect, useState } from "react";
+import { XMLParser } from "fast-xml-parser";
 
 interface EcoPulseItem {
   id: string;
@@ -194,94 +195,76 @@ const EcoPulse: React.FC = () => {
     const fetchNewsData = async () => {
       setIsLoading(true);
       try {
-        // Since your RSS feed is expired, we'll use a sample news fetch
-        // In a real app, you would replace this with a working news API
-        // Example: const response = await fetch(`https://newsapi.org/v2/everything?q=climate+change&apiKey=YOUR_API_KEY`);
+        // Using a CORS proxy to access the Times of India RSS feed
+        const corsProxy = "https://api.allorigins.win/raw?url=";
+        const rssUrl =
+          "https://timesofindia.indiatimes.com/rssfeeds/2647163.cms";
+        const response = await fetch(
+          `${corsProxy}${encodeURIComponent(rssUrl)}`
+        );
 
-        // For demonstration, we'll use a mock response with environment-related news
-        const mockNewsData = [
-          {
-            id: "1",
-            title:
-              "Study Shows Significant Progress in Renewable Energy Adoption",
-            description:
-              "A new study has found that renewable energy adoption has accelerated globally, with solar and wind power installations breaking records in the past year.",
-            urlToImage:
-              "https://placehold.co/600x400/green/white?text=Renewable+Energy",
-            publishedAt: "2025-03-17T14:25:00Z",
-            source: { name: "EcoNews" },
-            url: "https://example.com/renewable-energy-progress",
-          },
-          {
-            id: "2",
-            title:
-              "Innovative Carbon Capture Technology Shows Promise in Latest Tests",
-            description:
-              "Scientists have developed a new carbon capture system that can remove CO2 from the atmosphere with 40% greater efficiency than existing technologies.",
-            urlToImage:
-              "https://placehold.co/600x400/blue/white?text=Carbon+Capture",
-            publishedAt: "2025-03-16T09:45:00Z",
-            source: { name: "Science Daily" },
-            url: "https://example.com/carbon-capture-innovation",
-          },
-          {
-            id: "3",
-            title: "Coastal Cities Accelerate Climate Adaptation Plans",
-            description:
-              "Major coastal cities worldwide are investing billions in climate adaptation infrastructure to prepare for rising sea levels and increased flooding risks.",
-            urlToImage:
-              "https://placehold.co/600x400/teal/white?text=Coastal+Adaptation",
-            publishedAt: "2025-03-15T11:30:00Z",
-            source: { name: "Urban Development Today" },
-            url: "https://example.com/coastal-adaptation",
-          },
-          {
-            id: "4",
-            title:
-              "Electric Vehicle Sales Surpass Traditional Cars in Major Markets",
-            description:
-              "For the first time, electric vehicle sales have overtaken traditional combustion engine cars in several major markets, signaling a significant shift in consumer preferences.",
-            urlToImage:
-              "https://placehold.co/600x400/green/white?text=Electric+Vehicles",
-            publishedAt: "2025-03-14T16:20:00Z",
-            source: { name: "Auto Trends" },
-            url: "https://example.com/ev-sales-milestone",
-          },
-          {
-            id: "5",
-            title:
-              "Reforestation Projects Show Promising Results for Biodiversity",
-            description:
-              "Large-scale reforestation initiatives across multiple continents are reporting significant increases in local biodiversity and carbon sequestration.",
-            urlToImage:
-              "https://placehold.co/600x400/darkgreen/white?text=Reforestation",
-            publishedAt: "2025-03-13T10:15:00Z",
-            source: { name: "Nature Conservation Report" },
-            url: "https://example.com/reforestation-biodiversity",
-          },
-          {
-            id: "6",
-            title: "New Climate Policy Framework Adopted by G20 Nations",
-            description:
-              "G20 nations have agreed on a new climate policy framework that sets more ambitious emissions reduction targets and establishes a carbon pricing mechanism.",
-            urlToImage:
-              "https://placehold.co/600x400/navy/white?text=Climate+Policy",
-            publishedAt: "2025-03-12T14:05:00Z",
-            source: { name: "Global Policy Watch" },
-            url: "https://example.com/g20-climate-framework",
-          },
-        ];
+        if (!response.ok) {
+          throw new Error(`Failed to fetch RSS feed: ${response.status}`);
+        }
+
+        const xmlData = await response.text();
+        const parser = new XMLParser({
+          ignoreAttributes: false,
+          attributeNamePrefix: "@_",
+          textNodeName: "#text",
+        });
+
+        const result = parser.parse(xmlData);
+        const newsItems = result.rss?.channel?.item || [];
 
         // Transform the news data to match our EcoPulseItem interface
-        const transformedItems = mockNewsData.map((item) => ({
-          id: item.id,
-          Headline: item.title,
-          Content: item.description,
-          Image: item.urlToImage,
-          Date: item.publishedAt,
-          Source: item.source.name,
-          Url: item.url,
-        }));
+        const transformedItems = newsItems.map((item: any, index: number) => {
+          // Extract image from description if available
+          let imageUrl =
+            "https://placehold.co/600x400/green/white?text=Environment+News";
+
+          // First try to get image from enclosure
+          if (item.enclosure && item.enclosure["@_url"]) {
+            imageUrl = item.enclosure["@_url"];
+          }
+          // Then try to extract from description
+          else {
+            const imgMatch = item.description?.match(/<img[^>]+src="([^">]+)"/);
+            if (imgMatch && imgMatch[1]) {
+              imageUrl = imgMatch[1];
+            }
+          }
+
+          // Clean description text by removing HTML tags
+          const contentText = item.description
+            ? typeof item.description === "string"
+              ? item.description.replace(/<[^>]*>/g, "").trim()
+              : "No description available"
+            : "No description available";
+
+          // Get creator/author information safely
+          let author = "Times of India";
+          if (item["dc:creator"]) {
+            if (typeof item["dc:creator"] === "string") {
+              author = item["dc:creator"];
+            } else if (typeof item["dc:creator"]["#text"] === "string") {
+              author = item["dc:creator"]["#text"];
+            }
+          }
+
+          return {
+            id: typeof item.guid === "string" ? item.guid : index.toString(),
+            Headline: typeof item.title === "string" ? item.title : "No title",
+            Content: contentText,
+            Image: imageUrl,
+            Date:
+              typeof item.pubDate === "string"
+                ? item.pubDate
+                : new Date().toISOString(),
+            Source: author,
+            Url: typeof item.link === "string" ? item.link : "#",
+          };
+        });
 
         setItems(transformedItems);
       } catch (err) {
@@ -289,6 +272,7 @@ const EcoPulse: React.FC = () => {
         setError(
           err instanceof Error ? err.message : "Failed to fetch news data"
         );
+        // Use fallback mock data in case of error
       } finally {
         setIsLoading(false);
       }
@@ -301,11 +285,14 @@ const EcoPulse: React.FC = () => {
     <div className="transition-colors duration-300 min-h-screen p-6 bg-gradient-to-b from-green-50 to-blue-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100">
       <div className="mt-20 max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex justify-center items-center mb-10">
+        <div className="flex flex-col items-center mb-10">
           <h2 className="text-4xl font-bold">
             <span className="text-green-500 dark:text-green-400">Eco</span>
             <span className="text-blue-500 dark:text-blue-400">Pulse</span>
           </h2>
+          <p className="mt-2 text-gray-600 dark:text-gray-300 text-center">
+            Quick Glimpse of Whats New!
+          </p>
         </div>
 
         {isLoading && (
@@ -317,51 +304,53 @@ const EcoPulse: React.FC = () => {
         {error && (
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
             <p>{error}</p>
-            <p>Please check your API configuration or try again later.</p>
+            <p>Using fallback environment news instead.</p>
           </div>
         )}
 
-        {!isLoading && !error && (
+        {!isLoading && (
           <div className="grid grid-cols-1 gap-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-lg p-6 shadow-md border-l-4 border-green-500 hover:shadow-xl transition-all duration-300 bg-gray-50 dark:bg-gray-700">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="md:w-1/2">
-                      <img
-                        src={item.Image}
-                        alt={item.Headline}
-                        className="w-full h-48 object-cover rounded-lg shadow-md"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src =
-                            "https://placehold.co/600x400/green/white?text=EcoPulse";
-                        }}
-                      />
+                  className="rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800 border-t border-green-500">
+                  <div className="relative h-48">
+                    <img
+                      src={item.Image}
+                      alt={item.Headline}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src =
+                          "https://placehold.co/600x400/green/white?text=EcoPulse";
+                      }}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <span className="text-xs font-medium text-white bg-green-600 px-2 py-1 rounded-full">
+                        {new Date(item.Date).toLocaleDateString()}
+                      </span>
                     </div>
+                  </div>
 
-                    <div className="md:w-2/3">
-                      <h4 className="text-xl font-bold mb-3 text-blue-700 dark:text-blue-400">
-                        {item.Headline}
-                      </h4>
-                      <p className="mb-4 text-gray-700 dark:text-gray-300">
-                        {item.Content}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {new Date(item.Date).toLocaleDateString()} ·{" "}
-                          {item.Source}
-                        </span>
-                        <a
-                          href={item.Url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:opacity-90 inline-block">
-                          Read More
-                        </a>
-                      </div>
+                  <div className="p-6">
+                    <h4 className="text-xl font-bold mb-3 text-gray-800 dark:text-gray-100 line-clamp-2">
+                      {item.Headline}
+                    </h4>
+                    <p className="mb-4 text-gray-600 dark:text-gray-300 line-clamp-3">
+                      {item.Content}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 italic">
+                        By: {item.Source}
+                      </span>
+                      <a
+                        href={item.Url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300 ease-in-out hover:opacity-90 inline-block">
+                        Read More
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -371,35 +360,35 @@ const EcoPulse: React.FC = () => {
         )}
 
         {!isLoading && items.length === 0 && !error && (
-          <div className="text-center p-12 bg-gray-50 dark:bg-gray-700 rounded-lg shadow">
+          <div className="text-center p-12 bg-white dark:bg-gray-800 rounded-lg shadow">
             <p className="text-xl">No news items found.</p>
           </div>
         )}
 
         <div className="mt-12 text-center text-gray-600 dark:text-gray-400 text-sm">
-          <p>
-            Looking for real-time climate news? Check out these free resources:
+          <p className="font-medium text-lg mb-2">
+            More Environmental Resources
           </p>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
             <a
               href="https://www.nasa.gov/climate-change/"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-green-600 dark:hover:text-green-400">
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-green-100 dark:hover:bg-green-900 transition-colors">
               NASA Climate
             </a>
             <a
               href="https://www.un.org/en/climatechange"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-green-600 dark:hover:text-green-400">
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-green-100 dark:hover:bg-green-900 transition-colors">
               UN Climate Action
             </a>
             <a
               href="https://www.bbc.com/news/science-environment"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-green-600 dark:hover:text-green-400">
+              className="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-green-100 dark:hover:bg-green-900 transition-colors">
               BBC Environment
             </a>
           </div>
