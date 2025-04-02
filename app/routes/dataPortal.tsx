@@ -1,173 +1,37 @@
-import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/Homegraph";
-import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelDataPoratal";
-
-const MapContent = lazy(() => import("../components/HomeMap"));
+import { useEffect } from "react";
 
 export default function Dashboard() {
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [mapHeight, setMapHeight] = useState(50);
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
-    setMapLoaded(true);
-
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768 && isPanelOpen) {
-        setIsPanelOpen(false);
-      }
-    };
-
-    // Initial check
-    checkMobile();
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
-  }, []);
-
-  // Handle mouse movement for resizing
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.preventDefault();
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    const newHeight = (e.clientY / window.innerHeight) * 100;
-    if (newHeight > 10 && newHeight < 90) {
-      setMapHeight(newHeight);
-    }
-  };
-
-  const handleMouseUp = () => {
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
-  };
-
-  // Handle touch events for mobile resize
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("touchend", handleTouchEnd);
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
-    if (e.touches && e.touches[0]) {
-      const newHeight = (e.touches[0].clientY / window.innerHeight) * 100;
-      if (newHeight > 15 && newHeight < 85) {
-        setMapHeight(newHeight);
-      }
-    }
-  };
-
-  const handleTouchEnd = () => {
-    document.removeEventListener("touchmove", handleTouchMove);
-    document.removeEventListener("touchend", handleTouchEnd);
-  };
-
-  useEffect(() => {
-    const mainSection = document.getElementById("main-section");
-    if (mainSection) {
-      window.scrollTo({
-        top: mainSection.offsetTop,
-        behavior: "smooth",
-      });
-    }
+    // Change page title
+    document.title = "Data Portal - Coming Soon";
   }, []);
 
   return (
-    <div
-      className="mt-4 sm:mt-8 md:mt-18 flex flex-col md:flex-row w-full min-h-screen bg-white/90 dark:bg-gray-800 pb-16 md:pb-4"
-      id="main-section">
-      {/* Menu Toggle Button - Now on the left side */}
-      {isMobile && (
-        <button
-          className={`fixed z-40 top-16 right-4 bg-gray-700 text-white p-2 rounded-xl shadow-lgtransition-all duration-300 ${
-            isPanelOpen ? "transform rotate-0" : ""
-          }`}
-          onClick={() => setIsPanelOpen(!isPanelOpen)}
-          aria-label={isPanelOpen ? "Close panel" : "Open panel"}>
-          {isPanelOpen ? "✕" : "☰"}
-        </button>
-      )}
-      {/* Left Panel - adjusts for mobile */}
-      <div
-        className={`md:relative transition-all duration-300 ease-in-out ${
-          isMobile
-            ? isPanelOpen
-              ? "h-screen fixed z-30 w-full top-0 left-0"
-              : "h-0 w-0"
-            : isPanelOpen
-            ? "w-1/4"
-            : "w-1/30"
-        }`}>
-        <div
-          className={`${
-            isMobile
-              ? isPanelOpen
-                ? "absolute inset-0 mt-16 mb-4 mx-3"
-                : "hidden"
-              : "absolute top-2 left-2 bottom-2"
-          } 
-                    bg-gray-700 rounded-2xl shadow-lg
-                    transition-all duration-300 ease-in-out overflow-hidden`}>
-          <LeftPanel
-            isPanelOpen={isPanelOpen}
-            setIsPanelOpen={setIsPanelOpen}
-          />
-        </div>
-      </div>
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-900">
+      <div className="text-center px-4 max-w-2xl">
+        <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-700 dark:from-green-400 dark:to-green-600 mb-4">
+          Coming Soon
+        </h1>
 
-      {/* Main Content */}
-      <div
-        className={`flex flex-col flex-1 p-2 md:p-3 transition-all duration-300 ${
-          isPanelOpen ? "md:ml-4" : ""
-        }`}>
-        {/* Map Container */}
-        <div
-          className="border border-gray-200 rounded-2xl overflow-hidden resize-y
-                    bg-white shadow-lg mb-4"
-          style={{ height: `${mapHeight}vh` }}>
-          {mapLoaded && (
-            <Suspense
-              fallback={
-                <div className="h-full w-full bg-gray-50 flex items-center justify-center">
-                  <div className="animate-pulse text-gray-500">
-                    Loading map...
-                  </div>
-                </div>
-              }>
-              <MapContent />
-            </Suspense>
-          )}
+        <div className="relative my-8">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white dark:bg-gray-800 px-4 text-sm text-gray-500 dark:text-gray-400">
+              Under Development
+            </span>
+          </div>
         </div>
 
-        {/* Resize Handle - works with touch and mouse */}
-        <div
-          className="w-full h-6 md:h-2 cursor-row-resize flex items-center justify-center touch-manipulation mb-4"
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}>
-          <div className="w-16 md:w-10 h-2 bg-gray-300 rounded-full"></div>
-        </div>
+        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6">
+          Our data portal is currently under construction. We're working hard to
+          bring you a powerful tool for exploring and analyzing our datasets.
+        </p>
 
-        {/* Graph Container */}
-        <div
-          className="border border-gray-200 rounded-2xl overflow-hidden
-                    bg-white shadow-lg"
-          style={{
-            height: `${100 - mapHeight - (isMobile ? 12 : 6)}vh`,
-            minHeight: isMobile ? "300px" : "200px",
-          }}>
-          <GraphComponent />
-        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Check back soon for updates on our progress.
+        </p>
       </div>
     </div>
   );
