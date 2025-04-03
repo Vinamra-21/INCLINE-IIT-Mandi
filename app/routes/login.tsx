@@ -57,6 +57,7 @@ const GoogleAuth = () => {
 export default function Login() {
   const [credentials, setCredentials] = useState({
     username: "",
+    email: "",
     password: "",
     remember: false,
   });
@@ -83,6 +84,7 @@ export default function Login() {
     try {
       const success = await login({
         username: credentials.username,
+        email: credentials.email,
         password: credentials.password,
         remember: credentials.remember,
       });
@@ -90,7 +92,7 @@ export default function Login() {
       if (success) {
         navigate("/dashboard");
       } else {
-        setError("Invalid username or password");
+        setError("Invalid login credentials");
       }
     } catch (error) {
       setError("Something went wrong. Please try again.");
@@ -145,6 +147,27 @@ export default function Login() {
                 required
                 placeholder="johndoe"
                 value={credentials.username}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-gray-700 dark:text-gray-300 text-sm font-medium mb-2"
+                htmlFor="email">
+                Email
+              </label>
+              <input
+                className="appearance-none block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg 
+                placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 
+                focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 
+                bg-white dark:bg-gray-700 sm:text-sm transition-all duration-200"
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="john.doe@example.com"
+                value={credentials.email}
                 onChange={handleChange}
               />
             </div>
