@@ -5,9 +5,95 @@ import {
   Download,
   MapPin,
 } from "lucide-react";
+import { useState } from "react";
+import API_BASE from "~/api";
 
-//@ts-expect-error
-export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
+// Define types for watershed data
+interface WatershedData {
+  watershed: GeoJSON.FeatureCollection;
+  riverline: GeoJSON.FeatureCollection;
+  stream_lat: number;
+  stream_lng: number;
+}
+
+interface LeftPanelProps {
+  isPanelOpen: boolean;
+  setIsPanelOpen: (isOpen: boolean) => void;
+  setWatershedData: (data: WatershedData | null) => void;
+  latitude: string;
+  longitude: string;
+  setLatitude: (lat: string) => void;
+  setLongitude: (lng: string) => void;
+}
+
+export function LeftPanel({
+  isPanelOpen,
+  setIsPanelOpen,
+  setWatershedData,
+  latitude,
+  longitude,
+  setLatitude,
+  setLongitude,
+}: LeftPanelProps) {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Handle getting current location
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      setIsLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude.toString());
+          setLongitude(position.coords.longitude.toString());
+          setIsLoading(false);
+          setError(null);
+        },
+        (error) => {
+          setIsLoading(false);
+          setError("Error getting location: " + error.message);
+        }
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  };
+
+  // Handle delineate button click
+  const handleDelineate = async () => {
+    if (!latitude || !longitude) {
+      setError("Please enter both latitude and longitude");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Call the watershed API
+      const response = await fetch(
+        `${API_BASE}/api/watershed/?lat=${latitude}&lng=${longitude}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data: WatershedData = await response.json();
+
+      // Pass the watershed data up to the parent component
+      setWatershedData(data);
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      setError(
+        `Failed to fetch watershed data: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
+    }
+  };
+
   return (
     <>
       {isPanelOpen ? (
@@ -26,7 +112,17 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
               Watersheds
             </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Click on the map to set a location or use the inputs below.
+            </p>
           </div>
+
+          {/* Display error message if any */}
+          {error && (
+            <div className="p-2 bg-red-100 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
 
           {/* Get Current Location Button */}
           <button
@@ -34,10 +130,18 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                        rounded-lg transition-all duration-200 font-medium
                        hover:bg-blue-200 dark:hover:bg-blue-800/50
                        focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-700/30
-                       border border-blue-200 dark:border-blue-800/50">
+                       border border-blue-200 dark:border-blue-800/50"
+            onClick={getCurrentLocation}
+            disabled={isLoading}>
             <div className="flex items-center justify-center">
-              <MapPin className="mr-2 h-4 w-4" />
-              <span>Fetch Current Location</span>
+              {isLoading ? (
+                <span className="animate-pulse">Loading...</span>
+              ) : (
+                <>
+                  <MapPin className="mr-2 h-4 w-4" />
+                  <span>Fetch Current Location</span>
+                </>
+              )}
             </div>
           </button>
 
@@ -50,6 +154,8 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                 </label>
                 <input
                   type="text"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
                   placeholder="Enter latitude"
                   className="w-full p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                              text-gray-900 dark:text-gray-100 rounded-lg 
@@ -63,6 +169,8 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                 </label>
                 <input
                   type="text"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
                   placeholder="Enter longitude"
                   className="w-full p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                              text-gray-900 dark:text-gray-100 rounded-lg 
@@ -81,9 +189,15 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                          rounded-lg transition-all duration-200 font-medium
                          hover:bg-green-400 dark:hover:bg-green-300
                          focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                         shadow-sm hover:shadow-md dark:shadow-gray-800/30">
+                         shadow-sm hover:shadow-md dark:shadow-gray-800/30"
+              onClick={handleDelineate}
+              disabled={isLoading}>
               <div className="flex items-center justify-center">
-                <span>Delineate</span>
+                {isLoading ? (
+                  <span className="animate-pulse">Processing...</span>
+                ) : (
+                  <span>Delineate</span>
+                )}
               </div>
             </button>
 
@@ -95,21 +209,7 @@ export function LeftPanel({ isPanelOpen, setIsPanelOpen }) {
                                shadow-sm hover:shadow-md dark:shadow-gray-800/30">
               <div className="flex items-center justify-center">
                 <Download className="mr-2 h-4 w-4" />
-                <span>Download Drought Data</span>
-              </div>
-            </button>
-
-            <button
-              className="w-full p-3 border border-gray-200 dark:border-gray-700
-                               text-gray-700 dark:text-gray-300 rounded-lg
-                               hover:border-green-300 dark:hover:border-green-300/50
-                               hover:text-green-600 dark:hover:text-green-300
-                               transition-all duration-200 font-medium
-                               focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                               bg-white dark:bg-gray-800 shadow-sm hover:shadow-md dark:shadow-gray-800/30">
-              <div className="flex items-center justify-center">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                <span>Request Additional Data</span>
+                <span>Download Watershed Data</span>
               </div>
             </button>
           </div>

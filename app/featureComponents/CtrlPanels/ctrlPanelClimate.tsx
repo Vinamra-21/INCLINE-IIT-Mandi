@@ -6,7 +6,89 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+// Parameter mappings
+const paramMappings = {
+  // Variable mappings
+  climate_variable: {
+    displayToApi: {
+      Precipitation: "pr",
+      "Maximum Temperature": "tasmax",
+      "Minimum Temperature": "tasmin",
+    },
+    apiToDisplay: {
+      pr: "Precipitation",
+      tasmax: "Maximum temperature",
+      tasmin: "Minimum Temperature",
+    },
+  },
+  // Temporal scale mappings
+  temporal_scale: {
+    displayToApi: {
+      Annual: "annual",
+      Monthly: "monthly",
+      Daily: "daily",
+    },
+    apiToDisplay: {
+      annual: "Annual",
+      monthly: "Monthly",
+      daily: "Daily",
+    },
+  },
+  // Spatial scale mappings
+  spatial_scale: {
+    displayToApi: {
+      "India Average": "country_avg",
+      District: "district",
+      State: "state",
+      Basin: "basin",
+      Location: "location",
+    },
+    apiToDisplay: {
+      country_avg: "India Average",
+      district: "District",
+      state: "State",
+      basin: "Basin",
+      location: "Location",
+    },
+  },
+  // Model mappings
+  climate_model: {
+    displayToApi: {
+      "Ensemble Mean": "EM_imd",
+      ACCESS_CM2: "ACCESS_CM2",
+      "CMCC-ESM2": "CMCC-ESM2",
+      "INM-CM5-0": "INM-CM5-0",
+      "MRI_ESM2-0": "MRI_ESM2-0",
+      "NorESM2-MM": "NorESM2-MM",
+      "ACCESS_ESM1-5": "ACCESS_ESM1-5",
+      MIROC6: "MIROC6",
+      NESM3: "NESM3",
+      TaiESM1: "TaiESM1",
+      "BCC_CSM2-MR": "BCC_CSM2-MR",
+      "INM-CM4-8": "INM-CM4-8",
+      "MPI_ESM1-2-LR": "MPI_ESM1-2-LR",
+      "NorESM2-LM": "NorESM2-LM",
+    },
+    apiToDisplay: {
+      EM_imd: "Ensemble Mean",
+      ACCESS_CM2: "ACCESS_CM2",
+      "CMCC-ESM2": "CMCC-ESM2",
+      "INM-CM5-0": "INM-CM5-0",
+      "MRI_ESM2-0": "MRI_ESM2-0",
+      "NorESM2-MM": "NorESM2-MM",
+      "ACCESS_ESM1-5": "ACCESS_ESM1-5",
+      MIROC6: "MIROC6",
+      NESM3: "NESM3",
+      TaiESM1: "TaiESM1",
+      "BCC_CSM2-MR": "BCC_CSM2-MR",
+      "INM-CM4-8": "INM-CM4-8",
+      "MPI_ESM1-2-LR": "MPI_ESM1-2-LR",
+      "NorESM2-LM": "NorESM2-LM",
+    },
+  },
+};
 
 export function LeftPanel({
   isPanelOpen,
@@ -21,20 +103,20 @@ export function LeftPanel({
   setParams: (value: Record<string, string>) => void;
   getData: () => void;
 }) {
-  // Climate panel options
+  // Climate panel options - Keep display names the same
   const climateVariables = [
-    "precipitation",
-    "maximum temperature",
-    "minimum Temperature",
+    "Precipitation",
+    "Maximum Temperature",
+    "Minimum Temperature",
   ];
   const climateSpatialScales = [
     "India Average",
-    "district",
-    "state",
-    "basin",
-    "location",
+    "District",
+    "State",
+    "Basin",
+    "Location",
   ];
-  const climateTemporalScales = ["annual", "monthly", "daily"];
+  const climateTemporalScales = ["Annual", "Monthly", "Daily"];
   const climateModels = [
     "Ensemble Mean",
     "ACCESS_CM2",
@@ -42,41 +124,136 @@ export function LeftPanel({
     "INM-CM5-0",
     "MRI_ESM2-0",
     "NorESM2-MM",
-    "india_avg_imdaa",
     "ACCESS_ESM1-5",
-    "EM_imd",
     "MIROC6",
     "NESM3",
     "TaiESM1",
-    "observed",
     "BCC_CSM2-MR",
     "INM-CM4-8",
     "MPI_ESM1-2-LR",
     "NorESM2-LM",
-    "india_avg_imd",
   ];
 
+  // State to store display values
+  const [displayParams, setDisplayParams] = useState<Record<string, string>>(
+    {}
+  );
+
+  // Initialize display parameters from API parameters
+  useEffect(() => {
+    const newDisplayParams: Record<string, string> = {};
+
+    // Convert API parameters to display parameters
+    for (const [key, value] of Object.entries(params)) {
+      if (paramMappings[key] && paramMappings[key].apiToDisplay[value]) {
+        newDisplayParams[key] = paramMappings[key].apiToDisplay[value];
+      } else {
+        newDisplayParams[key] = value;
+      }
+    }
+
+    setDisplayParams(newDisplayParams);
+  }, [params]);
+
+  useEffect(() => {
+    const defaultDisplayParams = {
+      climate_variable: "Precipitation",
+      spatial_scale: "India Average",
+      temporal_scale: "Annual",
+      climate_model: "Ensemble Mean",
+    };
+
+    const defaultApiParams: Record<string, string> = {};
+    let hasChanges = false;
+
+    // Convert display defaults to API values and check if params need updating
+    for (const [key, displayValue] of Object.entries(defaultDisplayParams)) {
+      if (!params[key]) {
+        // Convert display value to API value
+        const apiValue =
+          paramMappings[key]?.displayToApi[displayValue] || displayValue;
+        defaultApiParams[key] = apiValue;
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      // Update with API values but keep any existing params
+      setParams({ ...params, ...defaultApiParams });
+
+      // Also update display params for only the missing parameters
+      const newDisplayParams = { ...displayParams };
+      for (const [key, value] of Object.entries(defaultDisplayParams)) {
+        if (!displayParams[key]) {
+          newDisplayParams[key] = value;
+        }
+      }
+      setDisplayParams(newDisplayParams);
+    }
+  }, []);
+
+  // Fix for handleParamChange to prevent unwanted temporal_scale changes
+
+  const handleParamChange = (paramType: string, displayValue: string) => {
+    // Update display params
+    setDisplayParams({
+      ...displayParams,
+      [paramType]: displayValue,
+    });
+
+    // Convert to API value for backend
+    const apiValue =
+      paramMappings[paramType]?.displayToApi[displayValue] || displayValue;
+
+    // Create a complete updated params object
+    const updatedParams = {
+      ...params,
+      [paramType]: apiValue,
+    };
+
+    // If climate_variable changes, update the variable field too
+    if (paramType === "climate_variable") {
+      updatedParams.variable = apiValue;
+    }
+
+    // Special handling for location spatial scale
+    if (paramType === "spatial_scale" && displayValue === "Location") {
+      // Make sure we have valid coordinates
+      if (!params.latitude || !params.longitude) {
+        updatedParams.latitude = "31.7754";
+        updatedParams.longitude = "76.9861";
+      }
+      // IMPORTANT: Do NOT change temporal_scale here
+    }
+
+    // Set the updated params
+    setParams(updatedParams);
+
+    // Directly call getData without delay - this removes the setTimeout
+    getData();
+  };
+
   const renderCoordinateInputs = () => {
-    if (params.spatial_scale === "location") {
+    if (displayParams.spatial_scale === "Location") {
       return (
-        <div
-          className={`space-y-2 
-           p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700`}>
+        <div className="space-y-2 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700">
           <div className="grid grid-cols-2 gap-2">
             <div className="relative">
-              <label
-                className={`
-                     text-sm font-medium text-gray-700 dark:text-gray-300"
-                `}>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Latitude
               </label>
               <input
                 type="number"
                 step="0.000001"
-                placeholder={"Latitude"}
+                placeholder="Latitude"
                 value={params.latitude || ""}
                 onChange={(e) => {
-                  setParams({ ...params, latitude: e.target.value });
+                  const newParams = { ...params, latitude: e.target.value };
+                  setParams(newParams);
+                }}
+                onBlur={() => {
+                  // Fetch data when user finishes editing coordinates
+                  getData();
                 }}
                 className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                           text-gray-900 dark:text-gray-100 rounded-lg 
@@ -87,20 +264,21 @@ export function LeftPanel({
               />
             </div>
             <div className="relative">
-              <label
-                className={`
-                  "text-sm font-medium text-gray-700 dark:text-gray-300"
-                   
-                `}>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Longitude
               </label>
               <input
                 type="number"
                 step="0.000001"
-                placeholder={"Longitude"}
+                placeholder="Longitude"
                 value={params.longitude || ""}
                 onChange={(e) => {
-                  setParams({ ...params, longitude: e.target.value });
+                  const newParams = { ...params, longitude: e.target.value };
+                  setParams(newParams);
+                }}
+                onBlur={() => {
+                  // Fetch data when user finishes editing coordinates
+                  getData();
                 }}
                 className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                           text-gray-900 dark:text-gray-100 rounded-lg 
@@ -121,7 +299,7 @@ export function LeftPanel({
     return null;
   };
 
-  // Render the appropriate action buttons based on panel type
+  const handleDownload = () => {};
 
   return (
     <>
@@ -158,18 +336,15 @@ export function LeftPanel({
               </label>
               <div className="relative">
                 <select
-                  value={params.climate_variable || ""}
-                  onChange={(e) => {
-                    setParams({ ...params, climate_variable: e.target.value });
-                  }}
+                  value={displayParams.climate_variable || ""}
+                  onChange={(e) =>
+                    handleParamChange("climate_variable", e.target.value)
+                  }
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                        text-gray-900 dark:text-gray-100 rounded-lg 
                        focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                        appearance-none transition-all duration-200
                        hover:border-green-300 dark:hover:border-green-300/50">
-                  <option value="" disabled selected>
-                    Select variable
-                  </option>
                   {climateVariables.map((variable) => (
                     <option
                       key={variable}
@@ -193,18 +368,15 @@ export function LeftPanel({
               </label>
               <div className="relative">
                 <select
-                  value={params.temporal_scale || ""}
-                  onChange={(e) => {
-                    setParams({ ...params, temporal_scale: e.target.value });
-                  }}
+                  value={displayParams.temporal_scale || ""}
+                  onChange={(e) =>
+                    handleParamChange("temporal_scale", e.target.value)
+                  }
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                        text-gray-900 dark:text-gray-100 rounded-lg 
                        focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                        appearance-none transition-all duration-200
                        hover:border-green-300 dark:hover:border-green-300/50">
-                  <option value="" disabled selected>
-                    Select temporal scale
-                  </option>
                   {climateTemporalScales.map((scale) => (
                     <option
                       key={scale}
@@ -228,18 +400,15 @@ export function LeftPanel({
               </label>
               <div className="relative">
                 <select
-                  value={params.spatial_scale || ""}
-                  onChange={(e) => {
-                    setParams({ ...params, spatial_scale: e.target.value });
-                  }}
+                  value={displayParams.spatial_scale || ""}
+                  onChange={(e) =>
+                    handleParamChange("spatial_scale", e.target.value)
+                  }
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                        text-gray-900 dark:text-gray-100 rounded-lg 
                        focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                        appearance-none transition-all duration-200
                        hover:border-green-300 dark:hover:border-green-300/50">
-                  <option value="" disabled selected>
-                    Select spatial scale
-                  </option>
                   {climateSpatialScales.map((scale) => (
                     <option
                       key={scale}
@@ -266,18 +435,15 @@ export function LeftPanel({
               </label>
               <div className="relative">
                 <select
-                  value={params.climate_model || ""}
-                  onChange={(e) => {
-                    setParams({ ...params, climate_model: e.target.value });
-                  }}
+                  value={displayParams.climate_model || ""}
+                  onChange={(e) =>
+                    handleParamChange("climate_model", e.target.value)
+                  }
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                        text-gray-900 dark:text-gray-100 rounded-lg 
                        focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
                        appearance-none transition-all duration-200
                        hover:border-green-300 dark:hover:border-green-300/50">
-                  <option value="" disabled selected>
-                    Select climate model
-                  </option>
                   {climateModels.map((model) => (
                     <option
                       key={model}
@@ -295,45 +461,20 @@ export function LeftPanel({
             </div>
           </div>
 
-          <div className="space-y-3 pt-6">
+          <div className="space-y-3 pt-6 ">
             <button
-              onClick={getData}
-              className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
-                               rounded-lg transition-all duration-200 font-medium
-                               hover:bg-green-400 dark:hover:bg-green-300
-                               focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                               shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
-              <div className="flex items-center justify-center">
-                <span>Apply</span>
-              </div>
-            </button>
-            <button
+              onClick={handleDownload}
               className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
                          rounded-lg transition-all duration-200 font-medium
                          hover:bg-green-400 dark:hover:bg-green-300
                          focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
                          shadow-sm hover:shadow-md">
               <div className="flex items-center justify-center">
-                <Download className="mr-2 h-4 w-4" />
-                <span>Download Climate Data</span>
+                <Download className="mr-4 h-4 w-4" />
+                <span>Download Data</span>
               </div>
             </button>
           </div>
-
-          {/* Common button for both panels */}
-          <button
-            className="w-full p-3 border border-gray-200 dark:border-gray-700
-                         text-gray-700 dark:text-gray-300 rounded-lg
-                         hover:border-green-300 dark:hover:border-green-300/50
-                         hover:text-green-600 dark:hover:text-green-300
-                         transition-all duration-200 font-medium
-                         focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                         bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
-            <div className="flex items-center justify-center">
-              <MessageSquare className="mr-2 h-4 w-4" />
-              <span>Request Additional Data</span>
-            </div>
-          </button>
         </div>
       ) : (
         <div className="p-1 flex items-center justify-center h-full w-full bg-white dark:bg-gray-900">

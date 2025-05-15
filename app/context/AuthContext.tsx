@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.key);
+      localStorage.setItem("token", data.access);
       await checkAuthStatus(); // Refresh user data
       return true;
     } catch (error) {

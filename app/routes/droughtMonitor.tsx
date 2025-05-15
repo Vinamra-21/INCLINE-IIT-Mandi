@@ -1,26 +1,41 @@
+import type React from "react";
+
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/graph";
+import GraphComponent from "~/featureComponents/Graphs/graphDrought";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelDrought";
 import API_BASE from "~/api";
-const MapContent = lazy(() => import("~/components/FeatureMap"));
+const MapContent = lazy(() => import("~/featureComponents/Graphs/FeatureMap"));
+
+type DroughtParams = {
+  objectId: number;
+  variable: string;
+  spatial_scale: string;
+  time_scale: string;
+  latitude: string;
+  longitude: string;
+};
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
   const [mapHeight, setMapHeight] = useState(50);
   const [isMobile, setIsMobile] = useState(false);
-  const [params, setParams] = useState<Record<string, string>>({
+  const [params, setParams] = useState<DroughtParams>({
+    objectId: 24,
     variable: "spi",
     spatial_scale: "location",
-    latitude: "31.7754",
-    longitude: "76.9861",
-    objectId: "24",
-    scale: "1",
+    time_scale: "1",
+    latitude: "31.78",
+    longitude: "76.99",
   });
   const [geoJsonData, setGeoJsonData] =
     useState<GeoJSON.FeatureCollection | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  // Add state to store feature properties for location name display
+  const [selectedFeatureProps, setSelectedFeatureProps] = useState<any>(null);
+  // Add a ref to store the current objectId for API calls
+  const currentObjectId = useState<number>(params.objectId)[0];
 
   useEffect(() => {
     setMapLoaded(true);
@@ -79,40 +94,38 @@ export default function Dashboard() {
     fetchGeoJson();
   }, [params.spatial_scale]);
 
-  const getData = async () => {
-    if (!params.variable || !params.spatial_scale) {
-      console.error("Missing required parameters");
+  // Function to get data with a specific objectId
+  const getDataWithObjectId = async (objectId: number) => {
+    console.log("getDataWithObjectId called with objectId:", objectId);
+
+    if (!params.variable || !params.spatial_scale || !params.time_scale) {
+      console.error("Missing required parameters:", {
+        variable: params.variable,
+        spatial_scale: params.spatial_scale,
+        time_scale: params.time_scale,
+      });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const query = new URLSearchParams();
-      const paramMapping = {
-        latitude: "lat",
-        longitude: "lng",
-        variable: "variable",
-        spatial_scale: "spatial_scale",
-        objectId: "objectid",
-        scale: "scale",
-      };
-
-      for (const key in params) {
-        if (key in paramMapping) {
-          const apiKey = paramMapping[key as keyof typeof paramMapping];
-          query.append(apiKey, params[key]);
-        }
-      }
-
       let url = "";
+      // Build URL based on spatial_scale
       if (params.spatial_scale === "location") {
-        url = `${API_BASE}/api/ds_drought/?${query.toString()}`;
+        // For point location - use ds_drought endpoint
+        url = `${API_BASE}/api/ds_drought/?lat=${params.latitude}&lng=${params.longitude}&variable=${params.variable}&scale=${params.time_scale}&spatial_scale=${params.spatial_scale}`;
       } else {
-        url = `${API_BASE}/api/df_drought/?${query.toString()}`;
+        // For state, district, basin - use df_drought endpoint with objectid
+        url = `${API_BASE}/api/df_drought/?objectid=${objectId}&variable=${params.variable}&scale=${params.time_scale}&spatial_scale=${params.spatial_scale}`;
       }
 
-      console.log("Fetching data from:", url);
+      console.log(
+        "Fetching drought data from:",
+        url,
+        "with objectId:",
+        objectId
+      );
 
       const response = await fetch(url, {
         method: "GET",
@@ -123,58 +136,141 @@ export default function Dashboard() {
       }
 
       const responseData = await response.json();
-      console.log("Received data:", responseData);
+      console.log("Received drought data:", responseData);
       setData(responseData);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      // Show error notification to user here
+      console.error("Error fetching drought data:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Add a handler for map clicks
-  const handleMapClick = (lat: number, lng: number) => {
-    console.log(`Map clicked at lat: ${lat}, lng: ${lng}`);
+  // Original getData function now uses the current params.objectId
+  const getData = async () => {
+    console.log("getData called with params:", params);
+    console.log("objectId value:", params.objectId);
+    await getDataWithObjectId(params.objectId);
+  };
 
-    // Update params with new latitude and longitude
-    const updatedParams = {
-      ...params,
-      spatial_scale: "location", // Switch to location mode
+  const handleMapClick = (lat: number, lng: number, objectId: number) => {
+    console.log(
+      `Map clicked at lat: ${lat}, lng: ${lng}, objectId: ${objectId}`
+    );
+
+    // Reset selected feature properties for point locations
+    setSelectedFeatureProps(null);
+
+    // Update params with new latitude, longitude, and objectId
+    setParams((prevParams) => ({
+      ...prevParams,
+      objectId: objectId,
       latitude: lat.toFixed(6),
       longitude: lng.toFixed(6),
-    };
-
-    setParams(updatedParams);
+      spatial_scale: "location", // Switch to location mode for direct map clicks
+    }));
 
     // Auto-open panel if it's closed
     if (!isPanelOpen) {
       setIsPanelOpen(true);
     }
 
-    // Auto-fetch data after a short delay (to ensure params are updated)
+    // Call getDataWithObjectId directly with the objectId
     setTimeout(() => {
-      getData();
+      console.log("Fetching data with objectId from map click:", objectId);
+      getDataWithObjectId(objectId);
     }, 100);
   };
 
-  const handleFeatureSelect = (objectId: string) => {
-    console.log("Selected feature:", objectId);
+  const handleFeatureSelect = (feature: any) => {
+    if (!feature || !feature.properties) {
+      console.error("Invalid feature selected");
+      return;
+    }
 
-    // Update params with new objectId
-    setParams((prevParams) => {
-      const updatedParams = {
-        ...prevParams,
-        objectId: objectId || "24",
+    // Try to find objectId from various property names
+    const keys = Object.keys(feature.properties);
+    let objId = null;
+
+    const idProps = [
+      "OBJECTID",
+      "objectid",
+      "object_id",
+      "object",
+      "id",
+      "ID",
+      "fid",
+      "FID",
+    ];
+
+    for (const prop of idProps) {
+      if (feature.properties[prop] !== undefined) {
+        objId = feature.properties[prop];
+        break;
+      }
+    }
+
+    // Make sure objId is a valid number
+    if (objId === null || objId === undefined) {
+      console.error(
+        "Could not find objectId in feature properties:",
+        feature.properties
+      );
+      return;
+    }
+
+    if (typeof objId === "string") {
+      objId = Number.parseInt(objId, 10);
+    }
+
+    // Ensure objId is a valid number and not 0 or NaN
+    if (!objId || isNaN(objId)) {
+      console.error("Invalid objectId:", objId);
+      return;
+    }
+
+    console.log("Selected feature with objectId:", objId);
+    console.log("Feature properties:", feature.properties);
+
+    let spatialScale = params.spatial_scale;
+
+    if (feature.properties.type) {
+      const typeMap: Record<string, string> = {
+        district: "district",
+        state: "state",
+        basin: "basin",
+        location: "location",
       };
+      if (feature.properties.type in typeMap) {
+        spatialScale = typeMap[feature.properties.type];
+      }
+    }
 
-      // Auto-fetch data after updating objectId
-      setTimeout(() => {
-        getData();
-      }, 100);
+    // Store the feature properties for use in the GraphComponent
+    setSelectedFeatureProps(feature.properties);
 
-      return updatedParams;
-    });
+    // Create a new params object with all updates at once
+    const newParams = {
+      ...params,
+      objectId: objId,
+      spatial_scale: spatialScale,
+    };
+
+    // If this is a point feature, also update lat/lng
+    if (feature.geometry && feature.geometry.type === "Point") {
+      const coordinates = feature.geometry.coordinates;
+      newParams.latitude = coordinates[1].toFixed(6);
+      newParams.longitude = coordinates[0].toFixed(6);
+    }
+
+    // Update params once with all changes
+    console.log("Updating params with:", newParams);
+    setParams(newParams);
+
+    // Call getDataWithObjectId directly with the objectId
+    setTimeout(() => {
+      console.log("Fetching data with objectId:", objId);
+      getDataWithObjectId(objId);
+    }, 100);
   };
 
   // Manual submission from the control panel
@@ -231,6 +327,13 @@ export default function Dashboard() {
       });
     }
   }, []);
+
+  // When spatial_scale changes to "india", set a default name
+  useEffect(() => {
+    if (params.spatial_scale === "india") {
+      setSelectedFeatureProps({ name: "India (Average)" });
+    }
+  }, [params.spatial_scale]);
 
   // Fetch data initially when component loads
   useEffect(() => {
@@ -314,6 +417,7 @@ export default function Dashboard() {
           )}
         </div>
 
+        {/* Resize Handle - works with touch and mouse */}
         <div
           className="w-full h-6 md:h-2 cursor-row-resize flex items-center justify-center touch-manipulation mb-4"
           onMouseDown={handleMouseDown}
@@ -331,10 +435,22 @@ export default function Dashboard() {
           }}>
           {isLoading ? (
             <div className="h-full w-full flex items-center justify-center">
-              <div className="animate-pulse text-gray-500">Loading data...</div>
+              <div className="animate-pulse text-gray-500">
+                Loading drought data...
+              </div>
             </div>
           ) : (
-            <GraphComponent data={data} />
+            <GraphComponent
+              data={data}
+              temporalScale={params.time_scale}
+              variable={params.variable}
+              locationInfo={{
+                type: params.spatial_scale,
+                lat: params.latitude,
+                lng: params.longitude,
+              }}
+              featureProperties={selectedFeatureProps}
+            />
           )}
         </div>
       </div>

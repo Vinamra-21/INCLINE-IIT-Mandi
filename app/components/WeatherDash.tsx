@@ -153,10 +153,10 @@ export default function WeatherDashboard() {
   };
 
   return (
-    <div className="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-2 sm:p-4 md:p-6 min-h-screen transition-colors">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(250px,300px)_1fr] gap-4 md:gap-6">
+    <div className="relative bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-2 sm:p-4 md:p-6 w-full min-h-screen flex flex-col transition-colors">
+      <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-[minmax(250px,350px)_1fr] gap-4 md:gap-6 xl:gap-8 flex-grow">
         {/* Sidebar */}
-        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-3 md:p-4 space-y-3 md:space-y-4 transition-colors">
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-3 md:p-4 flex flex-col space-y-3 md:space-y-4 transition-colors">
           <form onSubmit={handleSearch} className="space-y-2">
             <div className="flex gap-2">
               <input
@@ -197,8 +197,8 @@ export default function WeatherDashboard() {
           </div>
 
           {/* Map Section with Title */}
-          <div className="space-y-2">
-            <div className="relative h-[200px] sm:h-[250px] md:h-[300px] rounded-lg overflow-hidden">
+          <div className="space-y-2 flex-grow flex flex-col">
+            <div className="relative flex-grow rounded-lg overflow-hidden z-0">
               {mapLoaded && (
                 <Suspense
                   fallback={
@@ -225,21 +225,21 @@ export default function WeatherDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 md:p-6 space-y-4 transition-colors">
+        <div className="bg-gray-100 dark:bg-gray-800/50 rounded-xl p-4 md:p-6 flex flex-col space-y-4 transition-colors">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div className="flex justify-center gap-3 items-center w-full">
               {heads.map((item) => (
                 <div
                   key={item.index}
-                  className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-                  <div className="text-3xl sm:text-4xl md:text-6xl font-light">
+                  className="text-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex-1">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light">
                     {item.temperature}
                   </div>
-                  <h1 className="text-md sm:text-xl mt-2 font-medium">
+                  <h1 className="text-md sm:text-lg lg:text-xl mt-2 font-medium">
                     {item.condition}
                   </h1>
-                  <p className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-[10px] sm:text-xs lg:text-sm text-gray-600 dark:text-gray-400">
                     {item.description}
                   </p>
                 </div>
@@ -259,7 +259,7 @@ export default function WeatherDashboard() {
           </div>
 
           {/* Weather Graph */}
-          <div className="h-[200px] sm:h-[250px] md:h-[300px]">
+          <div className="h-[150px] sm:h-[200px] md:h-[250px] lg:h-[300px] xl:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={weatherData}

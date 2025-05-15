@@ -7,7 +7,7 @@ import {
   MapPin,
 } from "lucide-react";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function LeftPanel({
   isPanelOpen,
@@ -23,12 +23,18 @@ export function LeftPanel({
   getData: () => void;
 }) {
   // Dashboard panel options
-  const primarySelections = [
-    "Analytics View",
-    "Performance Metrics",
-    "Custom Dashboard",
-  ];
   const variableTypes = ["Temperature", "Precipitation"];
+  const temperatureIndices = [
+    "TNx",
+    "TNn",
+    "FD",
+    "TR",
+    "TX10p",
+    "TX90p",
+    "TN10p",
+    "TN90p",
+    "CSDI",
+  ];
   const precipitationIndices = [
     "Rx1day",
     "Rx5day",
@@ -40,6 +46,22 @@ export function LeftPanel({
     "PRCPTOT",
   ];
   const [showSpatialPattern, setShowSpatialPattern] = useState(false);
+
+  // Auto-apply changes when variable type or index changes
+  useEffect(() => {
+    if (params.variable_type === "Temperature" && params.temperature_index) {
+      getData();
+    } else if (
+      params.variable_type === "Precipitation" &&
+      params.precipitation_index
+    ) {
+      getData();
+    }
+  }, [
+    params.variable_type,
+    params.temperature_index,
+    params.precipitation_index,
+  ]);
 
   // Function to get current location
   const getCurrentLocation = () => {
@@ -140,41 +162,6 @@ export function LeftPanel({
               </button>
             </div>
 
-            {/* Primary Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Primary Selection
-              </label>
-              <div className="relative">
-                <select
-                  value={params.primary_selection || ""}
-                  onChange={(e) => {
-                    setParams({ ...params, primary_selection: e.target.value });
-                  }}
-                  className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
-                       text-gray-900 dark:text-gray-100 rounded-lg 
-                       focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
-                       appearance-none transition-all duration-200
-                       hover:border-green-300 dark:hover:border-green-300/50">
-                  <option value="" disabled selected>
-                    Select primary selection
-                  </option>
-                  {primarySelections.map((selection) => (
-                    <option
-                      key={selection}
-                      value={selection}
-                      className="dark:bg-gray-800 dark:text-gray-100">
-                      {selection}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 
-                              text-gray-400 dark:text-gray-500 pointer-events-none"
-                />
-              </div>
-            </div>
-
             {/* Variable Type Selection */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -184,7 +171,14 @@ export function LeftPanel({
                 <select
                   value={params.variable_type || ""}
                   onChange={(e) => {
-                    setParams({ ...params, variable_type: e.target.value });
+                    // Clear any previously selected indices when changing variable type
+                    const newParams = {
+                      ...params,
+                      variable_type: e.target.value,
+                      temperature_index: "",
+                      precipitation_index: "",
+                    };
+                    setParams(newParams);
                   }}
                   className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
                        text-gray-900 dark:text-gray-100 rounded-lg 
@@ -209,6 +203,46 @@ export function LeftPanel({
                 />
               </div>
             </div>
+
+            {/* Temperature Indices */}
+            {params.variable_type === "Temperature" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Temperature Indices
+                </label>
+                <div className="relative">
+                  <select
+                    value={params.temperature_index || ""}
+                    onChange={(e) => {
+                      setParams({
+                        ...params,
+                        temperature_index: e.target.value,
+                      });
+                    }}
+                    className="w-full p-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                         text-gray-900 dark:text-gray-100 rounded-lg 
+                         focus:ring-2 focus:ring-green-300 dark:focus:ring-green-300/50 focus:border-transparent
+                         appearance-none transition-all duration-200
+                         hover:border-green-300 dark:hover:border-green-300/50">
+                    <option value="" disabled selected>
+                      Select temperature index
+                    </option>
+                    {temperatureIndices.map((index) => (
+                      <option
+                        key={index}
+                        value={index}
+                        className="dark:bg-gray-800 dark:text-gray-100">
+                        {index}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 
+                                text-gray-400 dark:text-gray-500 pointer-events-none"
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Precipitation Indices */}
             {params.variable_type === "Precipitation" && (
@@ -250,6 +284,7 @@ export function LeftPanel({
               </div>
             )}
           </div>
+
           {/* Spatial Pattern Toggle */}
           <div className="pt-2">
             <div className="flex items-center justify-between">
@@ -257,7 +292,11 @@ export function LeftPanel({
                 Spatial Indices Pattern
               </label>
               <button
-                onClick={() => setShowSpatialPattern(!showSpatialPattern)}
+                onClick={() => {
+                  setShowSpatialPattern(!showSpatialPattern);
+                  // Trigger getData when toggling spatial pattern
+                  getData();
+                }}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   showSpatialPattern
                     ? "bg-green-300 dark:bg-green-300/90"
@@ -273,17 +312,6 @@ export function LeftPanel({
           </div>
 
           <div className="space-y-3 pt-6">
-            <button
-              onClick={getData}
-              className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
-                               rounded-lg transition-all duration-200 font-medium
-                               hover:bg-green-400 dark:hover:bg-green-300
-                               focus:ring-2 focus:ring-green-200 dark:focus:ring-green-300/50
-                               shadow-sm dark:shadow-gray-700/30 hover:shadow-md dark:hover:shadow-gray-600/40">
-              <div className="flex items-center justify-center">
-                <span>Apply</span>
-              </div>
-            </button>
             <button
               className="w-full p-3 bg-green-300 dark:bg-green-300/90 text-gray-800 dark:text-gray-900
                          rounded-lg transition-all duration-200 font-medium

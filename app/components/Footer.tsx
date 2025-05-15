@@ -128,9 +128,10 @@ const Footer: React.FC = () => {
             </p>
             <div className="flex space-x-6 align-middle">
               <a
-                href="/privacy"
+                href="https://docs.google.com/forms/u/0/d/1_jUNoF07Bxb7_Qe0rKLzgX18MCR5ljLwtCd9ePxyrvI/viewform?edit_requested=true"
+                target="_blank"
                 className="hover:text-green-600 dark:hover:text-green-300 transition-colors duration-200">
-                Privacy Policy
+                Feedback
               </a>
               <a
                 href="/terms"

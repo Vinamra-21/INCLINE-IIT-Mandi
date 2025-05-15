@@ -1,8 +1,8 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import GraphComponent from "~/featureComponents/graph";
+import GraphComponent from "~/featureComponents/Graphs/graphIndices";
 import { LeftPanel } from "~/featureComponents/CtrlPanels/ctrlPanelIndices";
 import API_BASE from "~/api";
-const MapContent = lazy(() => import("../components/FeatureMap"));
+const MapContent = lazy(() => import("../featureComponents/Graphs/FeatureMap"));
 
 export default function Dashboard() {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -11,13 +11,12 @@ export default function Dashboard() {
   const [isMobile, setIsMobile] = useState(false);
 
   const [params, setParams] = useState<Record<string, string>>({
-    primary_selection: "Analytics View",
-    variable_type: "Temperature", // Default variable type
+    spatial_scale: "location",
+    variable_type: "Temperature",
     data_type: "Raw Data",
-    time_range: "Past Week",
     latitude: "31.7754",
     longitude: "76.9861",
-    precipitation_index: "Rx1day", // Default precipitation extreme index
+    precipitation_index: "Rx1day",
   });
   const [geoJsonData, setGeoJsonData] =
     useState<GeoJSON.FeatureCollection | null>(null);
@@ -43,20 +42,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchGeoJson = async () => {
-      // We'll base the spatial scale on the primary_selection
-      const spatialScale =
-        params.primary_selection === "Custom Dashboard"
-          ? "location"
-          : params.primary_selection === "Performance Metrics"
-          ? "district"
-          : "state";
+      const spatialScale = "location";
 
       if (spatialScale) {
         const location = {
-          district: "district",
-          state: "state",
           location: "india",
-          basin: "basin",
         };
 
         try {
@@ -85,16 +75,10 @@ export default function Dashboard() {
     };
 
     fetchGeoJson();
-  }, [params.primary_selection]);
+  }, []);
 
   const getData = async () => {
-    // Make sure we have the required parameters
-    if (
-      !params.variable_type ||
-      !params.primary_selection ||
-      !params.latitude ||
-      !params.longitude
-    ) {
+    if (!params.variable_type || !params.latitude || !params.longitude) {
       console.error("Missing required parameters");
       return;
     }
@@ -103,39 +87,15 @@ export default function Dashboard() {
 
     try {
       let url = "";
-      // Determine whether we're using precipitation or temperature
       const variable =
         params.variable_type === "Precipitation" ? "ppt" : "temp";
-
-      // Determine the spatial scale based on primary selection
-      const spatialScale =
-        params.primary_selection === "Custom Dashboard"
-          ? "location"
-          : params.primary_selection === "Performance Metrics"
-          ? "district"
-          : "state";
-
-      // Get the appropriate index based on variable type
+      const spatialScale = "location";
       const index =
         params.variable_type === "Precipitation"
           ? params.precipitation_index || "Rx1day"
-          : "TNx"; // Default temperature index
+          : params.temperature_index || "TNx";
 
-      // Build URL based on spatial_scale
-      if (spatialScale === "location") {
-        // For point location - use ds_extreme endpoint
-        url = `${API_BASE}/api/ds_extreme/?lat=${params.latitude}&lng=${
-          params.longitude
-        }&variable=${variable}&spatial_scale=${spatialScale}&pptindices=${
-          params.precipitation_index || "Rx1day"
-        }&tempindices=TNx`;
-      } else {
-        // For state, district, basin with objectid
-        const objectId = params.objectId || "23.0"; // Default to a sample objectId if not provided
-        url = `${API_BASE}/api/df_extreme/?objectid=${objectId}&variable=${variable}&spatial_scale=${spatialScale}&pptindices=${
-          params.precipitation_index || "Rx1day"
-        }&tempindices=TNx`;
-      }
+      url = `${API_BASE}/api/ds_extreme/?lat=${params.latitude}&lng=${params.longitude}&variable=${variable}&spatial_scale=${spatialScale}&indices=${index}`;
 
       console.log("Fetching extremes data from:", url);
 
@@ -165,7 +125,6 @@ export default function Dashboard() {
     // Update params with new latitude and longitude
     const updatedParams = {
       ...params,
-      primary_selection: "Custom Dashboard", // Switch to custom dashboard mode
       latitude: lat.toFixed(6),
       longitude: lng.toFixed(6),
     };
@@ -195,7 +154,6 @@ export default function Dashboard() {
       const updatedParams = {
         ...prevParams,
         objectId: objectId.toString(),
-        // Keep the primary_selection from the current state
       };
 
       // Auto-fetch data after updating feature
@@ -365,7 +323,7 @@ export default function Dashboard() {
               </div>
             </div>
           ) : (
-            <GraphComponent data={data} />
+            <GraphComponent data={data} variable="indices" />
           )}
         </div>
       </div>
